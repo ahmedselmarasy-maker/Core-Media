@@ -101,6 +101,18 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
+  const openSingleMedia = (filePath, title, description) => {
+    const isVideo = filePath.toLowerCase().endsWith('.mp4') || filePath.toLowerCase().endsWith('.mov') || filePath.toLowerCase().endsWith('.avi');
+    const safe = filePath.replace(/"/g, "&quot;");
+    let mediaHtml = "";
+    if (isVideo) {
+      mediaHtml = `<video src="${safe}" controls autoplay muted playsinline style="${styleMedia}"></video>`;
+    } else {
+      mediaHtml = `<img src="${safe}" alt="" style="${styleMedia}" />`;
+    }
+    openLightbox(title, description, mediaHtml);
+  };
+
   const closeLightbox = () => {
     if (!lightbox) return;
     lightbox.classList.remove("is-open");
@@ -120,6 +132,20 @@ document.addEventListener("DOMContentLoaded", () => {
       const description = card.querySelector("p")?.textContent || "";
       const mediaHtml = buildMediaContent(card);
       openLightbox(title, description, mediaHtml);
+    });
+  });
+
+  // Add click listeners to tags
+  document.querySelectorAll(".cm-tag").forEach((tag) => {
+    tag.addEventListener("click", (e) => {
+      e.stopPropagation(); // Prevent card click
+      const filePath = tag.getAttribute("data-file");
+      if (filePath) {
+        const card = tag.closest(".cm-portfolio-card");
+        const title = card.querySelector("h3")?.textContent || "Project";
+        const description = card.querySelector("p")?.textContent || "";
+        openSingleMedia(filePath, title, description);
+      }
     });
   });
 });
