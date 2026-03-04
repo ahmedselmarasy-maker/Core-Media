@@ -235,6 +235,10 @@ a {
 .cm-highlight {
   display: block;
   margin-top: 0.25rem;
+}
+
+.cm-highlight,
+.cm-gradient-text {
   background: linear-gradient(135deg, var(--cm-green), var(--cm-dark));
   -webkit-background-clip: text;
   background-clip: text;
@@ -243,7 +247,7 @@ a {
 
 .cm-hero p {
   margin: 0 0 1.5rem;
-  color: var(--cm-muted);
+  color: var(--cm-dark);
 }
 
 .cm-hero-actions {
@@ -268,7 +272,7 @@ a {
 }
 
 .cm-metric-label {
-  color: var(--cm-muted);
+  color: var(--cm-dark);
 }
 
 .cm-hero-visual {
@@ -301,7 +305,7 @@ a {
 
 .cm-hero-card-main p {
   margin: 0 0 1rem;
-  color: var(--cm-muted);
+  color: var(--cm-dark);
   font-size: 0.85rem;
 }
 
@@ -361,7 +365,7 @@ a {
 
 .cm-section-head p {
   margin: 0;
-  color: var(--cm-muted);
+  color: var(--cm-dark);
   font-size: 0.95rem;
 }
 
@@ -408,7 +412,7 @@ a {
 
 .cm-about-row p {
   margin: 0;
-  color: var(--cm-muted);
+  color: var(--cm-dark);
 }
 
 /* Services */
@@ -442,14 +446,14 @@ a {
 .cm-card p {
   margin: 0 0 0.8rem;
   font-size: 0.9rem;
-  color: var(--cm-muted);
+  color: var(--cm-dark);
 }
 
 .cm-card ul {
   margin: 0;
   padding-left: 1.1rem;
   font-size: 0.85rem;
-  color: #4b5563;
+  color: var(--cm-dark);
 }
 
 .cm-card li + li {
@@ -554,6 +558,7 @@ a {
 .cm-portfolio-thumb span {
   font-weight: 500;
   font-size: 0.95rem;
+  color: var(--cm-dark);
 }
 
 .cm-portfolio-info {
@@ -568,7 +573,7 @@ a {
 
 .cm-portfolio-info p {
   margin: 0 0 0.65rem;
-  color: var(--cm-muted);
+  color: var(--cm-dark);
   font-size: 0.85rem;
 }
 
@@ -583,7 +588,7 @@ a {
   padding: 0.25rem 0.6rem;
   border-radius: 999px;
   background: rgba(107, 114, 128, 0.12);
-  color: #4b5563;
+  color: var(--cm-dark);
   font-size: 0.72rem;
   font-weight: 500;
   cursor: pointer;
@@ -592,7 +597,7 @@ a {
 .cm-note {
   margin-top: 1.75rem;
   font-size: 0.8rem;
-  color: var(--cm-muted);
+  color: var(--cm-dark);
   text-align: center;
 }
 
@@ -830,8 +835,16 @@ a {
     padding-top: 3.8rem;
   }
 
+  .cm-hero h1 {
+    font-size: 2.1rem;
+  }
+
   .cm-section {
     padding: 3.2rem 0;
+  }
+
+  .cm-container {
+    padding: 0 1.1rem;
   }
 
   .cm-about-panel {
@@ -856,5 +869,20 @@ a {
   .cm-footer-inner {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .cm-hero-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .cm-hero-actions .cm-btn,
+  .cm-hero-actions .cm-link {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .cm-hero-metrics {
+    gap: 1.1rem;
   }
 }
