@@ -63,7 +63,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     videos.forEach((src, i) => {
       const safe = (src || "").replace(/"/g, "&quot;");
-      const autoplay = i === 0 ? " autoplay muted playsinline" : " playsinline";
+      const autoplay = i === 0 ? " autoplay playsinline" : " playsinline";
       parts.push(
         `<video src="${safe}" controls ${autoplay} style="${styleMedia}"></video>`
       );
@@ -79,7 +79,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!(lightbox && lightboxTitle && lightboxText)) return;
     lightboxTitle.textContent = title;
     const defaultText =
-      "More details about this project will appear here.";
+      "ستظهر تفاصيل إضافية عن هذا المشروع هنا.";
     lightboxText.innerHTML = `${mediaHtml || ""}<span class="cm-lightbox-desc">${
       description || defaultText
     }</span>`;
@@ -88,16 +88,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const firstVideo = lightboxText.querySelector("video");
     if (firstVideo) {
+      firstVideo.muted = false;
       firstVideo.play?.().catch(() => {});
-      const unmuteBtn = document.createElement("button");
-      unmuteBtn.type = "button";
-      unmuteBtn.className = "cm-video-unmute";
-      unmuteBtn.innerHTML = "🔊 Enable sound";
-      unmuteBtn.addEventListener("click", () => {
-        firstVideo.muted = false;
-        unmuteBtn.remove();
-      });
-      firstVideo.parentNode.insertBefore(unmuteBtn, firstVideo.nextSibling);
     }
   };
 
@@ -106,7 +98,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const safe = filePath.replace(/"/g, "&quot;");
     let mediaHtml = "";
     if (isVideo) {
-      mediaHtml = `<video src="${safe}" controls autoplay muted playsinline style="${styleMedia}"></video>`;
+      mediaHtml = `<video src="${safe}" controls autoplay playsinline style="${styleMedia}"></video>`;
     } else {
       mediaHtml = `<img src="${safe}" alt="" style="${styleMedia}" />`;
     }
@@ -128,7 +120,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   portfolioCards.forEach((card) => {
     card.addEventListener("click", () => {
-      const title = card.querySelector("h3")?.textContent || "Project";
+      const title = card.querySelector("h3")?.textContent || "مشروع";
       const description = card.querySelector("p")?.textContent || "";
       const mediaHtml = buildMediaContent(card);
       openLightbox(title, description, mediaHtml);
@@ -142,7 +134,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const filePath = tag.getAttribute("data-file");
       if (filePath) {
         const card = tag.closest(".cm-portfolio-card");
-        const title = card.querySelector("h3")?.textContent || "Project";
+        const title = card.querySelector("h3")?.textContent || "مشروع";
         const description = card.querySelector("p")?.textContent || "";
         openSingleMedia(filePath, title, description);
       }
