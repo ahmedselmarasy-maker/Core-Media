@@ -320,6 +320,7 @@ a {
   padding: 0.25rem 0.7rem;
   border-radius: 999px;
   background: rgba(15, 23, 42, 0.04);
+  color: var(--cm-dark);
 }
 
 .cm-hero-card-secondary {
@@ -336,11 +337,12 @@ a {
 
 .cm-hero-card-secondary p {
   margin: 0 0 0.5rem;
+  color: #e5e7eb;
 }
 
 .cm-hero-card-client {
   font-size: 0.75rem;
-  color: #9ca3af;
+  color: #f3f4f6;
 }
 
 /* Sections */
