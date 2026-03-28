@@ -19,25 +19,34 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  const filterButtons = document.querySelectorAll(".cm-filter-btn");
   const portfolioCards = document.querySelectorAll(".cm-portfolio-card");
+  const portfolioGroups = document.querySelectorAll(".cm-portfolio-group");
 
-  filterButtons.forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const filter = btn.getAttribute("data-filter");
-      filterButtons.forEach((b) => b.classList.remove("active"));
-      btn.classList.add("active");
+  const applyPortfolioFilters = () => {
+    const sectorBtn = document.querySelector(".cm-sector-btn.active");
+    const sector = sectorBtn?.getAttribute("data-sector") || "all";
 
-      portfolioCards.forEach((card) => {
-        const categories = card.getAttribute("data-category") || "";
-        if (filter === "all" || categories.includes(filter)) {
+    portfolioGroups.forEach((group) => {
+      const groupSector = group.getAttribute("data-sector") || "";
+      const show = sector === "all" || groupSector === sector;
+      group.style.display = show ? "" : "none";
+      if (show) {
+        group.querySelectorAll(".cm-portfolio-card").forEach((card) => {
           card.style.display = "";
-        } else {
-          card.style.display = "none";
-        }
-      });
+        });
+      }
+    });
+  };
+
+  document.querySelectorAll(".cm-sector-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll(".cm-sector-btn").forEach((b) => b.classList.remove("active"));
+      btn.classList.add("active");
+      applyPortfolioFilters();
     });
   });
+
+  applyPortfolioFilters();
 
   const lightbox = document.getElementById("cm-lightbox");
   const lightboxTitle = lightbox?.querySelector(".cm-lightbox-title");
