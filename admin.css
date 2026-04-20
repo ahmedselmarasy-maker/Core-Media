@@ -1,0 +1,137 @@
+.cm-admin-page {
+  min-height: 100vh;
+  background: #f3f4f6;
+}
+
+.cm-admin-wrap {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem 1rem 3rem;
+}
+
+.cm-admin-card {
+  background: #fff;
+  border-radius: 18px;
+  padding: 1.2rem;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.09);
+}
+
+.cm-admin-card + .cm-admin-card {
+  margin-top: 1rem;
+}
+
+.cm-admin-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.cm-admin-actions {
+  display: inline-flex;
+  gap: 0.6rem;
+}
+
+.cm-admin-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.cm-admin-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 1rem;
+}
+
+.cm-admin-form h2 {
+  margin: 0 0 0.5rem;
+  font-size: 1.02rem;
+}
+
+.cm-admin-form input,
+.cm-admin-form select {
+  width: 100%;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  padding: 0.55rem 0.65rem;
+  font: inherit;
+}
+
+.cm-admin-inline,
+.cm-admin-media-add {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.cm-admin-media-add input {
+  flex: 1;
+  min-width: 240px;
+}
+
+.cm-admin-list {
+  list-style: none;
+  margin: 0.5rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.cm-admin-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 0.4rem 0.5rem;
+  font-size: 0.85rem;
+}
+
+.cm-admin-brand-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.cm-admin-brand-item {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.5rem;
+  align-items: center;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 0.55rem 0.7rem;
+}
+
+.cm-admin-brand-meta {
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+
+.cm-admin-brand-actions {
+  display: inline-flex;
+  gap: 0.4rem;
+}
+
+.cm-admin-note {
+  margin: 0;
+  color: #6b7280;
+  font-size: 0.82rem;
+}
+
+.hidden {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .cm-admin-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

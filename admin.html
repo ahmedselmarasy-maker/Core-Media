@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Core Media | لوحة الإدارة</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="admin.css" />
+  </head>
+  <body class="cm-admin-page">
+    <main class="cm-admin-wrap">
+      <section class="cm-admin-card" id="admin-login-card">
+        <h1 class="cm-gradient-text">تسجيل دخول الإدارة</h1>
+        <p>هذه الصفحة مخصصة لفريق Core Media فقط.</p>
+        <form id="admin-login-form" class="cm-admin-form">
+          <label for="admin-pass">كود الإدارة</label>
+          <input id="admin-pass" type="password" required placeholder="اكتب كود الإدارة" />
+          <button class="cm-btn" type="submit">دخول</button>
+        </form>
+        <a class="cm-link" href="index.html">العودة للموقع</a>
+      </section>
+
+      <section class="cm-admin-card hidden" id="admin-app-card">
+        <div class="cm-admin-head">
+          <h1 class="cm-gradient-text">إدارة البراندات والميديا</h1>
+          <div class="cm-admin-actions">
+            <button class="cm-btn cm-btn-outline" id="admin-logout" type="button">تسجيل خروج</button>
+            <a class="cm-btn" href="index.html" target="_blank" rel="noopener noreferrer">فتح الموقع</a>
+          </div>
+        </div>
+
+        <div class="cm-admin-grid">
+          <form id="brand-form" class="cm-admin-form">
+            <h2>بيانات البراند</h2>
+            <input type="hidden" id="brand-id" />
+            <label for="brand-name">اسم البراند</label>
+            <input id="brand-name" required />
+
+            <label for="brand-market">القطاع</label>
+            <select id="brand-market" required>
+              <option value="saudi">القطاع السعودي</option>
+              <option value="egypt">القطاع المصري</option>
+            </select>
+
+            <label for="brand-egypt-category">تصنيف القطاع المصري</label>
+            <select id="brand-egypt-category">
+              <option value="restaurants">مطاعم</option>
+              <option value="cafes">كافيهات</option>
+              <option value="medical">ميديكل</option>
+              <option value="other">مشاريع أخرى</option>
+            </select>
+
+            <div class="cm-admin-inline">
+              <button class="cm-btn" type="submit">حفظ البراند</button>
+              <button class="cm-btn cm-btn-outline" type="button" id="brand-reset">جديد</button>
+            </div>
+          </form>
+
+          <div class="cm-admin-form">
+            <h2>الوسائط للبراند المحدد</h2>
+            <div class="cm-admin-media-add">
+              <select id="media-type">
+                <option value="design">تصميم</option>
+                <option value="video">فيديو</option>
+              </select>
+              <input id="media-file" placeholder="المسار مثل: Brand/file.png" />
+              <button class="cm-btn" type="button" id="add-media">إضافة</button>
+            </div>
+            <ul id="media-list" class="cm-admin-list"></ul>
+          </div>
+        </div>
+
+        <section class="cm-admin-form">
+          <h2>كل البراندات</h2>
+          <p class="cm-admin-note">تعديلاتك تُحفظ محليًا في هذا الجهاز والمتصفح.</p>
+          <div id="brand-list" class="cm-admin-brand-list"></div>
+        </section>
+      </section>
+    </main>
+
+    <script src="admin.js"></script>
+  </body>
+</html>

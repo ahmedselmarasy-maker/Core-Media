@@ -231,59 +231,170 @@
             <h2 class="cm-gradient-text">أعمالنا</h2>
           </div>
 
-          <div class="cm-portfolio-filter-block">
+          <div class="cm-portfolio-filter-block cm-portfolio-sector-block">
             <span class="cm-portfolio-filter-label">القطاع</span>
             <div class="cm-portfolio-filters" aria-label="تصفية حسب القطاع">
-              <button type="button" class="cm-filter-btn cm-sector-btn active" data-sector="all">الكل</button>
-              <button type="button" class="cm-filter-btn cm-sector-btn" data-sector="restaurants">مطاعم</button>
-              <button type="button" class="cm-filter-btn cm-sector-btn" data-sector="cafes">كافيهات</button>
-              <button type="button" class="cm-filter-btn cm-sector-btn" data-sector="medical">ميديكل</button>
-              <button type="button" class="cm-filter-btn cm-sector-btn" data-sector="other">أخرى</button>
+              <button type="button" class="cm-filter-btn cm-sector-btn active" data-market="all">الكل</button>
+              <button type="button" class="cm-filter-btn cm-sector-btn" data-market="saudi">القطاع السعودي</button>
+              <button type="button" class="cm-filter-btn cm-sector-btn" data-market="egypt">القطاع المصري</button>
             </div>
           </div>
 
           <div class="cm-portfolio-groups" id="portfolio-groups">
-            <!-- مطاعم -->
-            <div class="cm-portfolio-group" data-sector="restaurants">
+            <!-- قطاع سعودي -->
+            <div class="cm-portfolio-market" data-market="saudi">
+            <div class="cm-portfolio-group">
               <div class="cm-portfolio-group-head">
-                <h3 class="cm-portfolio-group-title cm-gradient-text">مطاعم</h3>
-                <p class="cm-portfolio-group-desc">افندينا · بنت السلطان · دهب للمشويات</p>
+                <h3 class="cm-portfolio-group-title cm-gradient-text">القطاع السعودي</h3>
               </div>
               <div class="cm-portfolio-grid">
-                <article class="cm-portfolio-card" data-category="video" data-sector="restaurants">
+                <article class="cm-portfolio-card" data-category="design" data-market="saudi">
+                  <div class="cm-portfolio-thumb placeholder-video">
+                    <span>Teaandmore</span>
+                  </div>
+                  <div class="cm-portfolio-info">
+                    <h3 class="cm-gradient-text">Teaandmore</h3>
+                    <div class="cm-portfolio-tags">
+                      <div class="cm-portfolio-tags-row cm-portfolio-tags-designs">
+                        <span class="cm-tag" data-file="Teaandmore/شاي 1.jpg">تصميم 1</span>
+                        <span class="cm-tag" data-file="Teaandmore/شاي 2.jpg">تصميم 2</span>
+                        <span class="cm-tag" data-file="Teaandmore/شاي 3.jpg">تصميم 3</span>
+                        <span class="cm-tag" data-file="Teaandmore/شاي 4.jpg">تصميم 4</span>
+                      </div>
+                    </div>
+                  </div>
+                </article>
+                <article class="cm-portfolio-card" data-category="design" data-market="saudi">
+                  <div class="cm-portfolio-thumb placeholder-video">
+                    <span>Zawitzad</span>
+                  </div>
+                  <div class="cm-portfolio-info">
+                    <h3 class="cm-gradient-text">Zawitzad</h3>
+                    <div class="cm-portfolio-tags">
+                      <div class="cm-portfolio-tags-row cm-portfolio-tags-designs">
+                        <span class="cm-tag" data-file="Zawitzad/ذاد 1.jpg">تصميم 1</span>
+                        <span class="cm-tag" data-file="Zawitzad/ذاد 2.jpg">تصميم 2</span>
+                        <span class="cm-tag" data-file="Zawitzad/ذاد 3.png">تصميم 3</span>
+                        <span class="cm-tag" data-file="Zawitzad/ذاد 4.jpg">تصميم 4</span>
+                      </div>
+                    </div>
+                  </div>
+                </article>
+                <article class="cm-portfolio-card" data-category="design video" data-market="saudi">
+                  <div class="cm-portfolio-thumb placeholder-video">
+                    <span>Nkht.balh</span>
+                  </div>
+                  <div class="cm-portfolio-info">
+                    <h3 class="cm-gradient-text">Nkht.balh</h3>
+                    <div class="cm-portfolio-tags">
+                      <div class="cm-portfolio-tags-row cm-portfolio-tags-designs">
+                        <span class="cm-tag" data-file="Nkht.balh/نكهة بلح 1.jpg">تصميم 1</span>
+                        <span class="cm-tag" data-file="Nkht.balh/نكهة بلح 2.jpg">تصميم 2</span>
+                        <span class="cm-tag" data-file="Nkht.balh/نكهة بلح 3.jpg">تصميم 3</span>
+                        <span class="cm-tag" data-file="Nkht.balh/نكهة بلح 4.jpg">تصميم 4</span>
+                        <span class="cm-tag" data-file="Nkht.balh/اول--عرض.png">تصميم 5</span>
+                        <span class="cm-tag" data-file="Nkht.balh/تاني--عرض.png">تصميم 6</span>
+                        <span class="cm-tag" data-file="Nkht.balh/العرض--الثالث.png">تصميم 7</span>
+                      </div>
+                      <div class="cm-portfolio-tags-row cm-portfolio-tags-videos">
+                        <span class="cm-tag" data-file="Nkht.balh/مولح  نكهة بلح  .mp4">فيديو 1</span>
+                        <span class="cm-tag" data-file="Nkht.balh/نكهة بلح  نهائي  .mp4">فيديو 2</span>
+                      </div>
+                    </div>
+                  </div>
+                </article>
+              </div>
+            </div>
+            </div>
+
+            <!-- قطاع مصري -->
+            <div class="cm-portfolio-market" data-market="egypt">
+              <div class="cm-portfolio-group-head">
+                <h3 class="cm-portfolio-group-title cm-gradient-text">القطاع المصري</h3>
+              </div>
+              <div
+                class="cm-portfolio-filter-block cm-portfolio-sector-block cm-portfolio-egypt-subfilter-block"
+              >
+                <span class="cm-portfolio-filter-label">التصنيف</span>
+                <div class="cm-portfolio-filters" aria-label="تصفية القطاع المصري">
+                  <button
+                    type="button"
+                    class="cm-filter-btn cm-egypt-cat-btn active"
+                    data-egypt-cat="all"
+                  >
+                    الكل
+                  </button>
+                  <button type="button" class="cm-filter-btn cm-egypt-cat-btn" data-egypt-cat="restaurants">
+                    مطاعم
+                  </button>
+                  <button type="button" class="cm-filter-btn cm-egypt-cat-btn" data-egypt-cat="cafes">
+                    كافيهات
+                  </button>
+                  <button type="button" class="cm-filter-btn cm-egypt-cat-btn" data-egypt-cat="medical">
+                    ميديكل
+                  </button>
+                  <button type="button" class="cm-filter-btn cm-egypt-cat-btn" data-egypt-cat="other">
+                    مشاريع أخرى
+                  </button>
+                </div>
+              </div>
+              <div class="cm-portfolio-market-body">
+            <!-- مطاعم -->
+            <div class="cm-portfolio-group" data-egypt-cat="restaurants">
+              <div class="cm-portfolio-group-head">
+                <h3 class="cm-portfolio-group-title cm-gradient-text">مطاعم</h3>
+              </div>
+              <div class="cm-portfolio-grid">
+                <article class="cm-portfolio-card" data-category="design video" data-market="egypt">
                   <div class="cm-portfolio-thumb placeholder-video">
                     <span>افندينا</span>
                   </div>
                   <div class="cm-portfolio-info">
                     <h3 class="cm-gradient-text">افندينا</h3>
-                    <p>فيديو ترويجي لبراند افندينا.</p>
                     <div class="cm-portfolio-tags">
-                      <span class="cm-tag" data-file="افندينا/YouCut_20260221_010705741.mp4">فيديو 1</span>
+                      <div class="cm-portfolio-tags-row cm-portfolio-tags-designs">
+                        <span class="cm-tag" data-file="افندينا/افندينا.png">تصميم 1</span>
+                      </div>
+                      <div class="cm-portfolio-tags-row cm-portfolio-tags-videos">
+                        <span class="cm-tag" data-file="افندينا/YouCut_20260221_010705741.mp4">فيديو 1</span>
+                        <span class="cm-tag" data-file="افندينا/YouCut_20260420_023003316.mp4">فيديو 2</span>
+                      </div>
                     </div>
                   </div>
                 </article>
-                <article class="cm-portfolio-card" data-category="video" data-sector="restaurants">
+                <article class="cm-portfolio-card" data-category="design video" data-market="egypt">
                   <div class="cm-portfolio-thumb placeholder-video">
                     <span>بنت السلطان</span>
                   </div>
                   <div class="cm-portfolio-info">
                     <h3 class="cm-gradient-text">بنت السلطان</h3>
-                    <p>فيديو ترويجي لبراند بنت السلطان.</p>
                     <div class="cm-portfolio-tags">
-                      <span class="cm-tag" data-file="بنت السلطان/بنت السلطان.mp4">فيديو 1</span>
+                      <div class="cm-portfolio-tags-row cm-portfolio-tags-designs">
+                        <span class="cm-tag" data-file="بنت السلطان/عرض.png">تصميم 1</span>
+                      </div>
+                      <div class="cm-portfolio-tags-row cm-portfolio-tags-videos">
+                        <span class="cm-tag" data-file="بنت السلطان/بنت السلطان.mp4">فيديو 1</span>
+                        <span class="cm-tag" data-file="بنت السلطان/بنت  السلطان  شركة.mp4">فيديو 2</span>
+                        <span class="cm-tag" data-file="بنت السلطان/YouCut_20260420_023306260.mp4">فيديو 3</span>
+                      </div>
                     </div>
                   </div>
                 </article>
-                <article class="cm-portfolio-card" data-category="video" data-sector="restaurants">
+                <article class="cm-portfolio-card" data-category="design video" data-market="egypt">
                   <div class="cm-portfolio-thumb placeholder-video">
                     <span>دهب للمشويات</span>
                   </div>
                   <div class="cm-portfolio-info">
                     <h3 class="cm-gradient-text">دهب للمشويات</h3>
-                    <p>فيديوهات حملات لبراند دهب للمشويات.</p>
                     <div class="cm-portfolio-tags">
-                      <span class="cm-tag" data-file="دهب للمشويات/دهب .mp4">فيديو 1</span>
-                      <span class="cm-tag" data-file="دهب للمشويات/0126 (1).mp4">فيديو 2</span>
+                      <div class="cm-portfolio-tags-row cm-portfolio-tags-designs">
+                        <span class="cm-tag" data-file="دهب للمشويات/Untitled-1-Recovered.png">تصميم 1</span>
+                        <span class="cm-tag" data-file="دهب للمشويات/رمضان.png">تصميم 2</span>
+                      </div>
+                      <div class="cm-portfolio-tags-row cm-portfolio-tags-videos">
+                        <span class="cm-tag" data-file="دهب للمشويات/0126 (1).mp4">فيديو 1</span>
+                        <span class="cm-tag" data-file="دهب للمشويات/YouCut_20260420_022713726.mp4">فيديو 2</span>
+                      </div>
                     </div>
                   </div>
                 </article>
@@ -291,59 +402,51 @@
             </div>
 
             <!-- كافيهات -->
-            <div class="cm-portfolio-group" data-sector="cafes">
+            <div class="cm-portfolio-group" data-egypt-cat="cafes">
               <div class="cm-portfolio-group-head">
                 <h3 class="cm-portfolio-group-title cm-gradient-text">كافيهات</h3>
-                <p class="cm-portfolio-group-desc">zawitzad · Nkht.balh · teaandmore</p>
               </div>
               <div class="cm-portfolio-grid">
-                <article class="cm-portfolio-card" data-category="design" data-sector="cafes">
+                <article class="cm-portfolio-card" data-category="design video" data-market="egypt">
                   <div class="cm-portfolio-thumb placeholder-video">
-                    <span>zawitzad</span>
+                    <span>Arkid</span>
                   </div>
                   <div class="cm-portfolio-info">
-                    <h3 class="cm-gradient-text">zawitzad</h3>
-                    <p>تصميمات لبراند zawitzad.</p>
+                    <h3 class="cm-gradient-text">Arkid</h3>
                     <div class="cm-portfolio-tags">
-                      <span class="cm-tag" data-file="zawitzad/ذاد 1.jpg">تصميم 1</span>
-                      <span class="cm-tag" data-file="zawitzad/ذاد 2.jpg">تصميم 2</span>
-                      <span class="cm-tag" data-file="zawitzad/ذاد 3.png">تصميم 3</span>
-                      <span class="cm-tag" data-file="zawitzad/ذاد 4.jpg">تصميم 4</span>
+                      <div class="cm-portfolio-tags-row cm-portfolio-tags-designs">
+                        <span class="cm-tag" data-file="Arkid/تصميم--1--اركيد.png">تصميم 1</span>
+                        <span class="cm-tag" data-file="Arkid/تصميم--2.png">تصميم 2</span>
+                        <span class="cm-tag" data-file="Arkid/اركيد (1).png">تصميم 3</span>
+                        <span class="cm-tag" data-file="Arkid/اركيد  -0=.png">تصميم 4</span>
+                        <span class="cm-tag" data-file="Arkid/2-اطفال.png">تصميم 5</span>
+                      </div>
+                      <div class="cm-portfolio-tags-row cm-portfolio-tags-videos">
+                        <span class="cm-tag" data-file="Arkid/YouCut_20260420_022858326.mp4">فيديو 1</span>
+                        <span class="cm-tag" data-file="Arkid/اركيد  بارستا  .mp4">فيديو 2</span>
+                        <span class="cm-tag" data-file="Arkid/اركيد -=-=.mp4">فيديو 3</span>
+                      </div>
                     </div>
                   </div>
                 </article>
-                <article class="cm-portfolio-card" data-category="design video" data-sector="cafes">
+                <article class="cm-portfolio-card" data-category="design video" data-market="egypt">
                   <div class="cm-portfolio-thumb placeholder-video">
-                    <span>Nkht.balh</span>
+                    <span>Smoothie</span>
                   </div>
                   <div class="cm-portfolio-info">
-                    <h3 class="cm-gradient-text">Nkht.balh</h3>
-                    <p>تصميمات وفيديوهات لحملة Nkht.balh.</p>
+                    <h3 class="cm-gradient-text">Smoothie</h3>
                     <div class="cm-portfolio-tags">
-                      <span class="cm-tag" data-file="Nkht.balh/نكهة بلح 1.jpg">تصميم 1</span>
-                      <span class="cm-tag" data-file="Nkht.balh/نكهة بلح 2.jpg">تصميم 2</span>
-                      <span class="cm-tag" data-file="Nkht.balh/نكهة بلح 3.jpg">تصميم 3</span>
-                      <span class="cm-tag" data-file="Nkht.balh/نكهة بلح 4.jpg">تصميم 4</span>
-                      <span class="cm-tag" data-file="Nkht.balh/اول--عرض.png">تصميم 5</span>
-                      <span class="cm-tag" data-file="Nkht.balh/تاني--عرض.png">تصميم 6</span>
-                      <span class="cm-tag" data-file="Nkht.balh/العرض--الثالث.png">تصميم 7</span>
-                      <span class="cm-tag" data-file="Nkht.balh/مولح  نكهة بلح  .mp4">فيديو 1</span>
-                      <span class="cm-tag" data-file="Nkht.balh/نكهة بلح  نهائي  .mp4">فيديو 2</span>
-                    </div>
-                  </div>
-                </article>
-                <article class="cm-portfolio-card" data-category="design" data-sector="cafes">
-                  <div class="cm-portfolio-thumb placeholder-video">
-                    <span>teaandmore</span>
-                  </div>
-                  <div class="cm-portfolio-info">
-                    <h3 class="cm-gradient-text">teaandmore</h3>
-                    <p>تصميمات لبراند teaandmore.</p>
-                    <div class="cm-portfolio-tags">
-                      <span class="cm-tag" data-file="teaandmore/شاي 1.jpg">تصميم 1</span>
-                      <span class="cm-tag" data-file="teaandmore/شاي 2.jpg">تصميم 2</span>
-                      <span class="cm-tag" data-file="teaandmore/شاي 3.jpg">تصميم 3</span>
-                      <span class="cm-tag" data-file="teaandmore/شاي 4.jpg">تصميم 4</span>
+                      <div class="cm-portfolio-tags-row cm-portfolio-tags-designs">
+                        <span class="cm-tag" data-file="Smoothie/سوشيال.png">تصميم 1</span>
+                        <span class="cm-tag" data-file="Smoothie/جرين-اسموزي (1).png">تصميم 2</span>
+                        <span class="cm-tag" data-file="Smoothie/جحج.png">تصميم 3</span>
+                      </div>
+                      <div class="cm-portfolio-tags-row cm-portfolio-tags-videos">
+                        <span class="cm-tag" data-file="Smoothie/YouCut_20260420_023107562.mp4">فيديو 1</span>
+                        <span class="cm-tag" data-file="Smoothie/اسموزي  تعريفي  .mp4">فيديو 2</span>
+                        <span class="cm-tag" data-file="Smoothie/الجابري 1(2).mp4">فيديو 3</span>
+                        <span class="cm-tag" data-file="Smoothie/نهائي  اسموزي  .mp4">فيديو 4</span>
+                      </div>
                     </div>
                   </div>
                 </article>
@@ -351,77 +454,114 @@
             </div>
 
             <!-- ميديكل -->
-            <div class="cm-portfolio-group" data-sector="medical">
+            <div class="cm-portfolio-group" data-egypt-cat="medical">
               <div class="cm-portfolio-group-head">
                 <h3 class="cm-portfolio-group-title cm-gradient-text">ميديكل</h3>
-                <p class="cm-portfolio-group-desc">clinic · medical · Plasma Lab</p>
               </div>
               <div class="cm-portfolio-grid">
-                <article class="cm-portfolio-card" data-category="design" data-sector="medical">
+                <article class="cm-portfolio-card" data-category="design" data-market="egypt">
                   <div class="cm-portfolio-thumb placeholder-video">
                     <span>clinic</span>
                   </div>
                   <div class="cm-portfolio-info">
                     <h3 class="cm-gradient-text">clinic</h3>
-                    <p>تصميمات لبراند clinic الطبي.</p>
                     <div class="cm-portfolio-tags">
-                      <span class="cm-tag" data-file="clinic/3.png">تصميم 1</span>
-                      <span class="cm-tag" data-file="clinic/4.png">تصميم 2</span>
+                      <div class="cm-portfolio-tags-row cm-portfolio-tags-designs">
+                        <span class="cm-tag" data-file="Clinic/3.png">تصميم 1</span>
+                        <span class="cm-tag" data-file="Clinic/4.png">تصميم 2</span>
+                      </div>
                     </div>
                   </div>
                 </article>
-                <article class="cm-portfolio-card" data-category="video" data-sector="medical">
+                <article class="cm-portfolio-card" data-category="video" data-market="egypt">
                   <div class="cm-portfolio-thumb placeholder-video">
                     <span>medical</span>
                   </div>
                   <div class="cm-portfolio-info">
                     <h3 class="cm-gradient-text">medical</h3>
-                    <p>فيديوهات حملات للقطاع الطبي.</p>
                     <div class="cm-portfolio-tags">
-                      <span class="cm-tag" data-file="medical/WhatsApp Video 2026-02-19 at 2.34.18 PM.mp4">فيديو 1</span>
-                      <span class="cm-tag" data-file="medical/WhatsApp Video 2026-02-19 at 2.34.18 PM (1).mp4">فيديو 2</span>
-                      <span class="cm-tag" data-file="medical/WhatsApp Video 2026-02-19 at 2.34.18 PM (2).mp4">فيديو 3</span>
-                      <span class="cm-tag" data-file="medical/WhatsApp Video 2026-02-19 at 2.34.18 PM (3).mp4">فيديو 4</span>
-                      <span class="cm-tag" data-file="medical/WhatsApp Video 2026-02-19 at 2.34.18 PM (4).mp4">فيديو 5</span>
+                      <div class="cm-portfolio-tags-row cm-portfolio-tags-videos">
+                        <span class="cm-tag" data-file="Medical/WhatsApp Video 2026-02-19 at 2.34.18 PM.mp4">فيديو 1</span>
+                        <span class="cm-tag" data-file="Medical/WhatsApp Video 2026-02-19 at 2.34.18 PM (1).mp4">فيديو 2</span>
+                        <span class="cm-tag" data-file="Medical/WhatsApp Video 2026-02-19 at 2.34.18 PM (2).mp4">فيديو 3</span>
+                        <span class="cm-tag" data-file="Medical/WhatsApp Video 2026-02-19 at 2.34.18 PM (3).mp4">فيديو 4</span>
+                        <span class="cm-tag" data-file="Medical/WhatsApp Video 2026-02-19 at 2.34.18 PM (4).mp4">فيديو 5</span>
+                      </div>
                     </div>
                   </div>
                 </article>
-                <article class="cm-portfolio-card" data-category="design" data-sector="medical">
+                <article class="cm-portfolio-card" data-category="design" data-market="egypt">
                   <div class="cm-portfolio-thumb placeholder-video">
                     <span>Plasma Lab</span>
                   </div>
                   <div class="cm-portfolio-info">
                     <h3 class="cm-gradient-text">Plasma Lab</h3>
-                    <p>هوية بصرية وتصميمات لبراند Plasma Lab.</p>
                     <div class="cm-portfolio-tags">
-                      <span class="cm-tag" data-file="Plasma Lab/8.png">تصميم 1</span>
-                      <span class="cm-tag" data-file="Plasma Lab/9.png">تصميم 2</span>
+                      <div class="cm-portfolio-tags-row cm-portfolio-tags-designs">
+                        <span class="cm-tag" data-file="Plasma Lab/8.png">تصميم 1</span>
+                        <span class="cm-tag" data-file="Plasma Lab/9.png">تصميم 2</span>
+                      </div>
                     </div>
                   </div>
                 </article>
               </div>
             </div>
 
-            <!-- أخرى -->
-            <div class="cm-portfolio-group" data-sector="other">
+            <!-- مشاريع أخرى -->
+            <div class="cm-portfolio-group" data-egypt-cat="other">
               <div class="cm-portfolio-group-head">
                 <h3 class="cm-portfolio-group-title cm-gradient-text">مشاريع أخرى</h3>
-                <p class="cm-portfolio-group-desc">علامات إضافية عملنا معها</p>
               </div>
               <div class="cm-portfolio-grid">
-                <article class="cm-portfolio-card" data-category="design" data-sector="other">
+                <article class="cm-portfolio-card" data-category="design video" data-market="egypt">
                   <div class="cm-portfolio-thumb placeholder-video">
                     <span>NAAMA</span>
                   </div>
                   <div class="cm-portfolio-info">
                     <h3 class="cm-gradient-text">NAAMA</h3>
-                    <p>هوية بصرية وتصميمات لبراند NAAMA.</p>
                     <div class="cm-portfolio-tags">
-                      <span class="cm-tag" data-file="NAAMA/11.png">تصميم 1</span>
-                      <span class="cm-tag" data-file="NAAMA/12.png">تصميم 2</span>
+                      <div class="cm-portfolio-tags-row cm-portfolio-tags-designs">
+                        <span class="cm-tag" data-file="NAAMA/11.png">تصميم 1</span>
+                        <span class="cm-tag" data-file="NAAMA/12.png">تصميم 2</span>
+                        <span class="cm-tag" data-file="NAAMA/2.png">تصميم 3</span>
+                        <span class="cm-tag" data-file="NAAMA/3.png">تصميم 4</span>
+                        <span class="cm-tag" data-file="NAAMA/4.png">تصميم 5</span>
+                        <span class="cm-tag" data-file="NAAMA/Untitled-1.png">تصميم 6</span>
+                        <span class="cm-tag" data-file="NAAMA/Untitled-2.png">تصميم 7</span>
+                        <span class="cm-tag" data-file="NAAMA/بلية.png">تصميم 8</span>
+                        <span class="cm-tag" data-file="NAAMA/بلية--1.png">تصميم 9</span>
+                        <span class="cm-tag" data-file="NAAMA/زززز.png">تصميم 10</span>
+                      </div>
+                      <div class="cm-portfolio-tags-row cm-portfolio-tags-videos">
+                        <span class="cm-tag" data-file="NAAMA/0409 (2).mp4">فيديو 1</span>
+                        <span class="cm-tag" data-file="NAAMA/VID-20260420-WA0000.mp4">فيديو 2</span>
+                        <span class="cm-tag" data-file="NAAMA/VID-20260420-WA0001.mp4">فيديو 3</span>
+                      </div>
                     </div>
                   </div>
                 </article>
+                <article class="cm-portfolio-card" data-category="design video" data-market="egypt">
+                  <div class="cm-portfolio-thumb placeholder-video">
+                    <span>بيت الملكة</span>
+                  </div>
+                  <div class="cm-portfolio-info">
+                    <h3 class="cm-gradient-text">بيت الملكة</h3>
+                    <div class="cm-portfolio-tags">
+                      <div class="cm-portfolio-tags-row cm-portfolio-tags-designs">
+                        <span class="cm-tag" data-file="بيت الملكة/12.png">تصميم 1</span>
+                        <span class="cm-tag" data-file="بيت الملكة/اول--تصميم-نهائي.png">تصميم 2</span>
+                        <span class="cm-tag" data-file="بيت الملكة/الرابع.png">تصميم 3</span>
+                      </div>
+                      <div class="cm-portfolio-tags-row cm-portfolio-tags-videos">
+                        <span class="cm-tag" data-file="بيت الملكة/الفيديو  الاول  .mp4">فيديو 1</span>
+                        <span class="cm-tag" data-file="بيت الملكة/YouCut_20260420_023356763.mp4">فيديو 2</span>
+                        <span class="cm-tag" data-file="بيت الملكة/YouCut_20260420_023708651.mp4">فيديو 3</span>
+                      </div>
+                    </div>
+                  </div>
+                </article>
+              </div>
+            </div>
               </div>
             </div>
           </div>
@@ -440,21 +580,29 @@
             </p>
             <ul class="cm-contact-list">
               <li><strong>البريد الإلكتروني:</strong> core.media.333@gmail.com</li>
-              <li><strong>الهاتف:</strong> 01515122134</li>
+              <li><strong>الهاتف:</strong> 01019132369</li>
               <li><strong>الموقع:</strong> القاهرة، مصر (متاحون للعمل عالميًا)</li>
             </ul>
-            <div class="cm-social">
-              <a href="#" aria-label="Instagram">إنستجرام</a>
-              <a href="#" aria-label="Facebook">فيسبوك</a>
-              <a href="#" aria-label="LinkedIn">لينكدإن</a>
-              <a href="#" aria-label="YouTube">يوتيوب</a>
+            <div class="cm-contact-social-btns">
+              <a
+                class="cm-btn"
+                href="https://www.facebook.com/share/1bM3zcFksr/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="فيسبوك"
+                >فيسبوك</a
+              >
+              <a
+                class="cm-btn"
+                href="https://wa.me/201019132369"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="واتساب"
+                >واتساب</a
+              >
             </div>
           </div>
-          <form
-            class="cm-contact-form"
-            action="https://formspree.io/f/xojngnvd"
-            method="POST"
-          >
+          <form class="cm-contact-form" action="#contact" id="contact-form">
             <div class="cm-field-group">
               <label for="name">الاسم</label>
               <input id="name" name="name" type="text" placeholder="اكتب اسمك" required />
@@ -479,8 +627,8 @@
               />
             </div>
             <div class="cm-field-group">
-              <label for="services">ما الخدمة التي تحتاجها؟</label>
-              <select id="services" name="services">
+              <label for="contact-service">ما الخدمة التي تحتاجها؟</label>
+              <select id="contact-service" name="services">
                 <option>دعم تسويقي متكامل</option>
                 <option>استراتيجية تسويقية</option>
                 <option>محتوى وسوشيال ميديا</option>
@@ -508,7 +656,10 @@
     <footer class="cm-footer">
       <div class="cm-container cm-footer-inner">
         <span>© <span id="year"></span> Core Media. جميع الحقوق محفوظة.</span>
-        <a href="#top" class="cm-link">العودة للأعلى</a>
+        <div class="cm-footer-links">
+          <a href="admin.html" class="cm-link">لوحة الإدارة</a>
+          <a href="#top" class="cm-link">العودة للأعلى</a>
+        </div>
       </div>
     </footer>
 
