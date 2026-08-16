@@ -6,7 +6,7 @@ create table if not exists public.cm_brands (
   id uuid primary key default gen_random_uuid(),
   name text not null,
   market text not null check (market in ('saudi','egypt')),
-  egypt_category text null check (egypt_category in ('restaurants','cafes','medical','other')),
+  egypt_category text null,
   media jsonb not null default '[]'::jsonb,
   cover_url text null,
   sort_order int not null default 0,

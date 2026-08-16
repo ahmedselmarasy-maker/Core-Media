@@ -74,6 +74,10 @@
               <i data-lucide="briefcase"></i>
               <span>البراندات والقاطعات</span>
             </button>
+            <button class="cm-nav-item" data-view="sectors" type="button">
+              <i data-lucide="folder-tree"></i>
+              <span>القطاعات والتصنيفات</span>
+            </button>
             <button class="cm-nav-item" data-view="hero" type="button">
               <i data-lucide="sparkles"></i>
               <span>الصفحة الرئيسية</span>
@@ -162,6 +166,10 @@
                   <i data-lucide="briefcase"></i>
                   <span>إدارة البراندات</span>
                 </button>
+                <button type="button" class="cm-quick-link" data-goto="sectors">
+                  <i data-lucide="folder-tree"></i>
+                  <span>القطاعات والتصنيفات</span>
+                </button>
                 <button type="button" class="cm-quick-link" data-goto="hero">
                   <i data-lucide="sparkles"></i>
                   <span>تعديل الهيرو والفيديو</span>
@@ -226,14 +234,14 @@
 
                     <div class="cm-form-row">
                       <div class="cm-form-group">
-                        <label for="brand-market">القطاع</label>
+                        <label for="brand-market">السوق / القطاع الرئيسي</label>
                         <select id="brand-market" required>
                           <option value="saudi">القطاع السعودي</option>
                           <option value="egypt">القطاع المصري</option>
                         </select>
                       </div>
                       <div class="cm-form-group">
-                        <label for="brand-egypt-category">التصنيف (للقطاع المصري)</label>
+                        <label for="brand-egypt-category">التصنيف الفرعي (للقطاع المصري)</label>
                         <select id="brand-egypt-category">
                           <option value="restaurants">مطاعم</option>
                           <option value="cafes">كافيهات</option>
@@ -318,6 +326,45 @@
                   </div>
                 </div>
               </div>
+            </div>
+
+            <!-- Sectors -->
+            <div class="cm-view" id="view-sectors">
+              <div class="cm-view-header">
+                <h2>القطاعات والتصنيفات</h2>
+                <p>غيّر أسماء الأسواق، وأضف/عدّل/احذف تصنيفات القطاع المصري</p>
+              </div>
+              <form id="sectors-form" class="cm-card cm-settings-card">
+                <div class="cm-card-head">
+                  <h2><i data-lucide="globe-2"></i> أسماء الأسواق الرئيسية</h2>
+                </div>
+                <div class="cm-form-row">
+                  <div class="cm-form-group">
+                    <label for="market-saudi-label">اسم السوق السعودي</label>
+                    <input id="market-saudi-label" placeholder="القطاع السعودي" />
+                  </div>
+                  <div class="cm-form-group">
+                    <label for="market-egypt-label">اسم السوق المصري</label>
+                    <input id="market-egypt-label" placeholder="القطاع المصري" />
+                  </div>
+                </div>
+
+                <div class="cm-card-head cm-card-head-inline">
+                  <h2><i data-lucide="tags"></i> تصنيفات القطاع المصري</h2>
+                </div>
+                <p class="cm-admin-note" style="padding: 0 1.25rem; margin-top: 0.75rem;">
+                  غيّر الاسم الظاهر، رتّب التصنيفات، أو أضف تصنيفًا جديدًا. حذف تصنيف ينقل البراندات التابعة له لأول تصنيف متاح.
+                </p>
+                <div id="categories-editor" class="cm-services-editor"></div>
+                <div class="cm-form-footer">
+                  <button class="cm-btn cm-btn-outline" type="button" id="add-category">
+                    <i data-lucide="plus"></i> <span>إضافة تصنيف</span>
+                  </button>
+                  <button class="cm-btn cm-btn-primary" type="submit">
+                    <i data-lucide="save"></i> <span>حفظ القطاعات</span>
+                  </button>
+                </div>
+              </form>
             </div>
 
             <!-- Hero -->

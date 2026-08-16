@@ -166,12 +166,21 @@ document.addEventListener("DOMContentLoaded", () => {
   let WHATSAPP_E164 = "201019132369";
   const BRAND_TABLE = "cm_brands";
   const SITE_TABLE = "cm_site_settings";
-  const EGYPT_CATEGORIES = [
+  const DEFAULT_EGYPT_CATEGORIES = [
     { id: "restaurants", label: "مطاعم" },
     { id: "cafes", label: "كافيهات" },
     { id: "medical", label: "ميديكل" },
     { id: "other", label: "مشاريع أخرى" },
   ];
+  const DEFAULT_MARKETS = [
+    { id: "saudi", label: "القطاع السعودي" },
+    { id: "egypt", label: "القطاع المصري" },
+  ];
+  let EGYPT_CATEGORIES = [...DEFAULT_EGYPT_CATEGORIES];
+  let MARKET_LABELS = {
+    saudi: "القطاع السعودي",
+    egypt: "القطاع المصري",
+  };
 
   const supabaseUrl = window.CM_SUPABASE_URL;
   const supabaseAnonKey = window.CM_SUPABASE_ANON_KEY;
@@ -275,6 +284,27 @@ document.addEventListener("DOMContentLoaded", () => {
 
     setText('[data-cm="portfolio-title"]', content.portfolio?.title);
     setText('[data-cm="portfolio-subtitle"]', content.portfolio?.subtitle);
+
+    const sectors = content.sectors || {};
+    if (Array.isArray(sectors.egyptCategories) && sectors.egyptCategories.length) {
+      EGYPT_CATEGORIES = sectors.egyptCategories
+        .map((c) => ({ id: String(c.id || "").trim(), label: String(c.label || "").trim() }))
+        .filter((c) => c.id && c.label);
+    } else {
+      EGYPT_CATEGORIES = [...DEFAULT_EGYPT_CATEGORIES];
+    }
+    if (Array.isArray(sectors.markets) && sectors.markets.length) {
+      sectors.markets.forEach((m) => {
+        if (m?.id && m?.label) MARKET_LABELS[m.id] = m.label;
+      });
+    } else {
+      MARKET_LABELS = {
+        saudi: DEFAULT_MARKETS[0].label,
+        egypt: DEFAULT_MARKETS[1].label,
+      };
+    }
+    setText('[data-cm="market-saudi"]', MARKET_LABELS.saudi);
+    setText('[data-cm="market-egypt"]', MARKET_LABELS.egypt);
 
     const services = content.services || {};
     setText('[data-cm="services-title"]', services.title);
@@ -434,11 +464,17 @@ document.addEventListener("DOMContentLoaded", () => {
     const saudiBrands = data.filter((b) => b.market === "saudi");
     const egyptBrands = data.filter((b) => b.market === "egypt");
     const egyptGroupsHtml = EGYPT_CATEGORIES.map((cat) => {
-      const list = egyptBrands.filter((b) => (b.egyptCategory || "other") === cat.id);
+      const knownIds = new Set(EGYPT_CATEGORIES.map((c) => c.id));
+      const fallbackId = EGYPT_CATEGORIES[EGYPT_CATEGORIES.length - 1]?.id || "other";
+      const list = egyptBrands.filter((b) => {
+        let id = b.egyptCategory || fallbackId;
+        if (!knownIds.has(id)) id = fallbackId;
+        return id === cat.id;
+      });
       const cards = list.map(buildCardHtml).join("");
-      return `<div class="cm-portfolio-group" data-egypt-cat="${cat.id}" data-aos="fade-up">
+      return `<div class="cm-portfolio-group" data-egypt-cat="${escAttr(cat.id)}" data-aos="fade-up">
         <div class="cm-portfolio-group-head">
-          <h3 class="cm-portfolio-group-title cm-gradient-text">${cat.label}</h3>
+          <h3 class="cm-portfolio-group-title cm-gradient-text">${escAttr(cat.label)}</h3>
         </div>
         <div class="cm-portfolio-grid">${cards}</div>
       </div>`;
@@ -448,14 +484,14 @@ document.addEventListener("DOMContentLoaded", () => {
       <div class="cm-portfolio-market" data-market="saudi" data-aos="fade-up">
         <div class="cm-portfolio-group">
           <div class="cm-portfolio-group-head">
-            <h3 class="cm-portfolio-group-title cm-gradient-text">القطاع السعودي</h3>
+            <h3 class="cm-portfolio-group-title cm-gradient-text">${escAttr(MARKET_LABELS.saudi || "القطاع السعودي")}</h3>
           </div>
           <div class="cm-portfolio-grid">${saudiBrands.map(buildCardHtml).join("")}</div>
         </div>
       </div>
       <div class="cm-portfolio-market" data-market="egypt" data-aos="fade-up">
         <div class="cm-portfolio-group-head">
-          <h3 class="cm-portfolio-group-title cm-gradient-text">القطاع المصري</h3>
+          <h3 class="cm-portfolio-group-title cm-gradient-text">${escAttr(MARKET_LABELS.egypt || "القطاع المصري")}</h3>
         </div>
         <div class="cm-portfolio-filter-block cm-portfolio-sector-block cm-portfolio-egypt-subfilter-block">
           <span class="cm-portfolio-filter-label">التصنيف</span>
@@ -463,7 +499,7 @@ document.addEventListener("DOMContentLoaded", () => {
             <button type="button" class="cm-filter-btn cm-egypt-cat-btn active" data-egypt-cat="all">الكل</button>
             ${EGYPT_CATEGORIES.map(
               (cat) =>
-                `<button type="button" class="cm-filter-btn cm-egypt-cat-btn" data-egypt-cat="${cat.id}">${cat.label}</button>`
+                `<button type="button" class="cm-filter-btn cm-egypt-cat-btn" data-egypt-cat="${escAttr(cat.id)}">${escAttr(cat.label)}</button>`
             ).join("")}
           </div>
         </div>
@@ -492,7 +528,9 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   const applyPortfolioFilters = () => {
-    const market = document.querySelector(".cm-sector-btn.active")?.getAttribute("data-market") || "all";
+    const market =
+      document.querySelector(".cm-portfolio-filters [data-market].active")?.getAttribute("data-market") ||
+      "all";
     document.querySelectorAll(".cm-portfolio-market").forEach((marketBlock) => {
       const blockMarket = marketBlock.getAttribute("data-market") || "";
       marketBlock.style.display = market === "all" || market === blockMarket ? "" : "none";
@@ -501,9 +539,9 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   const bindFilterEvents = () => {
-    document.querySelectorAll(".cm-sector-btn").forEach((btn) => {
+    document.querySelectorAll(".cm-portfolio-filters [data-market]").forEach((btn) => {
       btn.addEventListener("click", () => {
-        document.querySelectorAll(".cm-sector-btn").forEach((b) => b.classList.remove("active"));
+        document.querySelectorAll(".cm-portfolio-filters [data-market]").forEach((b) => b.classList.remove("active"));
         btn.classList.add("active");
         applyPortfolioFilters();
       });
@@ -550,7 +588,71 @@ document.addEventListener("DOMContentLoaded", () => {
   const getIntroVideoPath = () => (introVideoTrigger?.getAttribute("data-file") || "").trim();
   let introVideoOpen = false;
   const videoProtectionAttrs =
-    'preload="metadata" playsinline controls controlslist="nodownload noplaybackrate" disablepictureinpicture disableremoteplayback';
+    'preload="auto" playsinline webkit-playsinline controls controlslist="nodownload noplaybackrate" disablepictureinpicture disableremoteplayback';
+
+  const videoFallbackHtml =
+    '<p class="cm-lightbox-video-fallback">الصوت شغال بس الصورة مش ظاهرة؟ غالبًا الفيديو بصيغة الموبايل (HEVC). حوّله إلى MP4 بجودة H.264 وأعد رفعه من لوحة الإدارة.</p>';
+
+  const buildVideoHtml = (src, extraAttrs = "") =>
+    `<div class="cm-lightbox-media-frame cm-lightbox-media-frame-video">
+      <video class="cm-lightbox-media cm-lightbox-video" ${videoProtectionAttrs} ${extraAttrs}>
+        <source src="${escAttr(src)}" type="video/mp4" />
+      </video>
+      ${videoFallbackHtml}
+    </div>`;
+
+  const enhanceLightboxVideos = () => {
+    if (!lightbox) return;
+    lightbox.querySelectorAll("video.cm-lightbox-video").forEach((video) => {
+      const frame = video.closest(".cm-lightbox-media-frame-video");
+      const fallback = frame?.querySelector(".cm-lightbox-video-fallback");
+      video.playsInline = true;
+      video.setAttribute("playsinline", "");
+      video.setAttribute("webkit-playsinline", "");
+
+      const showFallback = () => {
+        if (fallback) fallback.classList.add("is-visible");
+      };
+
+      const applySize = () => {
+        if (video.videoWidth > 0 && video.videoHeight > 0) {
+          video.style.aspectRatio = `${video.videoWidth} / ${video.videoHeight}`;
+          video.style.minHeight = "0";
+          if (fallback) fallback.classList.remove("is-visible");
+        }
+      };
+
+      const checkTrack = () => {
+        // Desktop Chrome often plays audio-only for HEVC; videoWidth stays 0.
+        if (video.readyState >= 2 && (!video.videoWidth || !video.videoHeight)) {
+          showFallback();
+        } else {
+          applySize();
+        }
+      };
+
+      video.addEventListener("loadedmetadata", applySize);
+      video.addEventListener("loadeddata", checkTrack);
+      video.addEventListener("playing", checkTrack);
+      video.addEventListener("error", showFallback);
+
+      // Nudge Chrome to decode/paint the first frame on desktop
+      const kick = () => {
+        try {
+          const t = video.currentTime;
+          if (t === 0 && video.readyState >= 1) {
+            video.currentTime = 0.001;
+          }
+        } catch (_) {}
+      };
+      video.addEventListener("loadedmetadata", kick, { once: true });
+
+      if (video.readyState >= 1) {
+        applySize();
+        checkTrack();
+      }
+    });
+  };
 
   const buildMediaContent = (card) => {
     const images = (card.getAttribute("data-images") || "").split("|").filter(Boolean);
@@ -562,9 +664,7 @@ document.addEventListener("DOMContentLoaded", () => {
       );
     });
     videos.forEach((src, i) => {
-      parts.push(
-        `<div class="cm-lightbox-media-frame cm-lightbox-media-frame-video"><video src="${escAttr(src)}" class="cm-lightbox-media cm-lightbox-video" ${videoProtectionAttrs}${i === 0 ? " autoplay" : ""}></video></div>`
-      );
+      parts.push(buildVideoHtml(src, i === 0 ? "autoplay" : ""));
     });
     return parts.length ? `<div class="cm-lightbox-gallery">${parts.join("")}</div>` : "";
   };
@@ -581,13 +681,13 @@ document.addEventListener("DOMContentLoaded", () => {
     lightboxText.innerHTML = `${mediaHtml}<span class="cm-lightbox-desc">${description}</span>`;
     lightbox.classList.add("is-open");
     document.body.style.overflow = "hidden";
+    enhanceLightboxVideos();
   };
 
   const openSingleMedia = (filePath, title) => {
-    const safe = escAttr(filePath);
     const mediaHtml = isVideoPath(filePath)
-      ? `<div class="cm-lightbox-media-frame cm-lightbox-media-frame-video"><video src="${safe}" class="cm-lightbox-media cm-lightbox-video" ${videoProtectionAttrs} autoplay></video></div>`
-      : `<img src="${safe}" alt="" class="cm-lightbox-media cm-lightbox-image" decoding="async" draggable="false" loading="eager" />`;
+      ? buildVideoHtml(filePath, "autoplay")
+      : `<img src="${escAttr(filePath)}" alt="" class="cm-lightbox-media cm-lightbox-image" decoding="async" draggable="false" loading="eager" />`;
     openLightbox(title, mediaHtml);
   };
 
@@ -603,16 +703,16 @@ document.addEventListener("DOMContentLoaded", () => {
   const openCompanyIntro = ({ autoOpen = false } = {}) => {
     const introVideoPath = getIntroVideoPath();
     if (!introVideoPath) return;
-    const safe = escAttr(introVideoPath);
-    
-    // For auto-open, we MUST start muted to satisfy browser autoplay policies
-    const attrs = autoOpen
-      ? `${videoProtectionAttrs} autoplay muted`
-      : `${videoProtectionAttrs} autoplay`;
-      
+
     openLightbox(
       introVideoTrigger?.textContent?.trim() || "Video.Core",
-      `<div class="cm-lightbox-media-frame cm-lightbox-media-frame-video cm-intro-video-frame"><video src="${safe}" class="cm-lightbox-media cm-lightbox-video cm-intro-video" ${attrs}></video></div>`,
+      buildVideoHtml(introVideoPath, autoOpen ? "autoplay muted" : "autoplay").replace(
+        'cm-lightbox-media-frame-video"',
+        'cm-lightbox-media-frame-video cm-intro-video-frame"'
+      ).replace(
+        'cm-lightbox-video"',
+        'cm-lightbox-video cm-intro-video"'
+      ),
       { description: autoOpen ? "فيديو تعريفي - سيتم تفعيل الصوت تلقائياً." : "فيديو تعريفي لشركة Core Media." }
     );
     

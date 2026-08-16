@@ -1264,20 +1264,21 @@ a {
 }
 
 .cm-lightbox-media-frame-video {
+  position: relative;
+  width: 100%;
+  min-height: min(52vh, 420px);
+  max-height: min(78vh, 860px);
+  overflow: hidden;
   background: #0f172a;
-  /* Keep the frame flexible so portrait/landscape videos are never cropped */
-  height: auto;
-  min-height: 0;
-  overflow: visible;
-  background-clip: padding-box;
 }
 
 .cm-intro-video-frame {
+  min-height: min(56vh, 480px);
   max-height: min(82vh, 920px);
 }
 
 .cm-lightbox-media {
-  width: auto;
+  width: 100%;
   max-width: 100%;
   height: auto;
   max-height: min(78vh, 860px);
@@ -1298,21 +1299,42 @@ a {
 
 .cm-lightbox-video,
 video.cm-lightbox-media {
-  width: auto !important;
+  width: 100% !important;
   height: auto !important;
   max-width: 100%;
   max-height: min(78vh, 860px);
+  min-height: 220px;
   margin: 0;
   border-radius: 12px;
   object-fit: contain;
   object-position: center;
   background: #000;
+  /* Force a compositing layer so Chrome paints the video frame on desktop */
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
 }
 
 .cm-lightbox-media-frame-video .cm-lightbox-video {
-  /* Fill available space without cropping either axis */
-  max-width: min(100%, 960px);
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
   max-height: min(78vh, 860px);
+}
+
+.cm-lightbox-video-fallback {
+  display: none;
+  margin: 0.75rem 0 0;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  background: #fef3c7;
+  color: #92400e;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.cm-lightbox-video-fallback.is-visible {
+  display: block;
 }
 
 .cm-lightbox-desc {
@@ -1487,6 +1509,7 @@ video.cm-lightbox-media {
   }
 
   .cm-lightbox-media-frame-video {
+    min-height: min(42vh, 320px);
     max-height: min(72vh, 680px);
   }
 
@@ -1497,10 +1520,11 @@ video.cm-lightbox-media {
 
   .cm-lightbox-video,
   video.cm-lightbox-media {
-    width: auto !important;
+    width: 100% !important;
     height: auto !important;
     max-width: 100%;
     max-height: min(72vh, 680px);
+    min-height: 180px;
   }
 
   .cm-lightbox-text {
@@ -1517,6 +1541,10 @@ video.cm-lightbox-media {
     max-height: min(68vh, 420px);
   }
 
+  .cm-lightbox-media-frame-video {
+    min-height: 160px;
+  }
+
   .cm-lightbox-media,
   .cm-lightbox-image {
     max-height: min(68vh, 420px);
@@ -1524,10 +1552,11 @@ video.cm-lightbox-media {
 
   .cm-lightbox-video,
   video.cm-lightbox-media {
-    width: auto !important;
+    width: 100% !important;
     height: auto !important;
     max-width: 100%;
     max-height: min(68vh, 420px);
+    min-height: 140px;
   }
 
   .cm-lightbox-text {

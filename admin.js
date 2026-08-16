@@ -90,6 +90,18 @@ document.addEventListener("DOMContentLoaded", () => {
       whatsappE164: "201019132369",
       facebookUrl: "https://www.facebook.com/share/1bM3zcFksr/",
     },
+    sectors: {
+      markets: [
+        { id: "saudi", label: "القطاع السعودي" },
+        { id: "egypt", label: "القطاع المصري" },
+      ],
+      egyptCategories: [
+        { id: "restaurants", label: "مطاعم" },
+        { id: "cafes", label: "كافيهات" },
+        { id: "medical", label: "ميديكل" },
+        { id: "other", label: "مشاريع أخرى" },
+      ],
+    },
   };
 
   const hasSupabaseConfig =
@@ -152,8 +164,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const aboutForm = document.getElementById("about-form");
   const servicesForm = document.getElementById("services-form");
   const contactFormSettings = document.getElementById("contact-form-settings");
+  const sectorsForm = document.getElementById("sectors-form");
   const servicesEditor = document.getElementById("services-editor");
+  const categoriesEditor = document.getElementById("categories-editor");
   const addServiceBtn = document.getElementById("add-service");
+  const addCategoryBtn = document.getElementById("add-category");
   const introVideoUpload = document.getElementById("intro-video-upload");
 
   let data = [];
@@ -274,17 +289,36 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const upsertBrand = async (brand) => {
     if (!supabase) throw new Error("Supabase not configured");
-    const payload = {
+    const basePayload = {
       id: isUuid(brand.id) ? brand.id : undefined,
       name: brand.name,
       market: brand.market,
-      egypt_category: brand.market === "egypt" ? brand.egyptCategory || "other" : null,
+      egypt_category:
+        brand.market === "egypt"
+          ? brand.egyptCategory || getSectors().egyptCategories[0]?.id || "other"
+          : null,
       media: Array.isArray(brand.media) ? brand.media.map(normalizeMediaItem) : [],
-      cover_url: brand.coverUrl || null,
       sort_order: typeof brand.sortOrder === "number" ? brand.sortOrder : 0,
       updated_at: new Date().toISOString(),
     };
-    const { data: row, error } = await supabase.from(BRAND_TABLE).upsert(payload).select("*").single();
+
+    let { data: row, error } = await supabase
+      .from(BRAND_TABLE)
+      .upsert({ ...basePayload, cover_url: brand.coverUrl || null })
+      .select("*")
+      .single();
+
+    // Older DBs without cover_url yet — save without it, then ask admin to migrate
+    if (error && /cover_url/i.test(String(error.message || ""))) {
+      ({ data: row, error } = await supabase.from(BRAND_TABLE).upsert(basePayload).select("*").single());
+      if (!error) {
+        showToast(
+          "تم الحفظ، لكن غلاف البراند يحتاج تشغيل supabase-migrate.sql في Supabase",
+          "info"
+        );
+      }
+    }
+
     if (error) throw error;
     return normalizeBrand(row);
   };
@@ -484,15 +518,61 @@ document.addEventListener("DOMContentLoaded", () => {
     return { objectPath, publicUrl: pub?.publicUrl || "" };
   };
 
+  const getSectors = () => {
+    const sectors = site.sectors || DEFAULT_SITE.sectors;
+    const markets = Array.isArray(sectors.markets) && sectors.markets.length
+      ? sectors.markets
+      : DEFAULT_SITE.sectors.markets;
+    const egyptCategories =
+      Array.isArray(sectors.egyptCategories) && sectors.egyptCategories.length
+        ? sectors.egyptCategories
+        : DEFAULT_SITE.sectors.egyptCategories;
+    return { markets, egyptCategories };
+  };
+
+  const marketLabel = (marketId) => {
+    const found = getSectors().markets.find((m) => m.id === marketId);
+    if (found?.label) return found.label;
+    return marketId === "saudi" ? "القطاع السعودي" : "القطاع المصري";
+  };
+
+  const categoryLabel = (catId) => {
+    const found = getSectors().egyptCategories.find((c) => c.id === catId);
+    return found?.label || catId || "تصنيف";
+  };
+
+  const makeCategoryId = (label) => {
+    const slug = String(label || "")
+      .trim()
+      .toLowerCase()
+      .replace(/\s+/g, "-")
+      .replace(/[^a-z0-9-_]/g, "");
+    return slug || `cat-${Date.now()}`;
+  };
+
+  const populateBrandSelects = () => {
+    const { markets, egyptCategories } = getSectors();
+    const currentMarket = brandMarketInput.value;
+    const currentCat = brandEgyptCategoryInput.value;
+
+    brandMarketInput.innerHTML = markets
+      .map((m) => `<option value="${escAttr(m.id)}">${escAttr(m.label)}</option>`)
+      .join("");
+    if (markets.some((m) => m.id === currentMarket)) brandMarketInput.value = currentMarket;
+    else brandMarketInput.value = markets[0]?.id || "egypt";
+
+    brandEgyptCategoryInput.innerHTML = egyptCategories
+      .map((c) => `<option value="${escAttr(c.id)}">${escAttr(c.label)}</option>`)
+      .join("");
+    if (egyptCategories.some((c) => c.id === currentCat)) brandEgyptCategoryInput.value = currentCat;
+    else brandEgyptCategoryInput.value = egyptCategories[0]?.id || "other";
+
+    brandEgyptCategoryInput.disabled = brandMarketInput.value !== "egypt";
+  };
+
   const marketText = (brand) => {
-    if (brand.market === "saudi") return "القطاع السعودي";
-    const catMap = {
-      restaurants: "مطاعم",
-      cafes: "كافيهات",
-      medical: "ميديكل",
-      other: "مشاريع أخرى",
-    };
-    return `القطاع المصري - ${catMap[brand.egyptCategory || "other"]}`;
+    if (brand.market === "saudi") return marketLabel("saudi");
+    return `${marketLabel("egypt")} - ${categoryLabel(brand.egyptCategory || "other")}`;
   };
 
   const mediaLabel = (m, i) => {
@@ -890,6 +970,14 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("services-subtitle").value = site.services?.subtitle || "";
     renderServicesEditor();
 
+    const { markets } = getSectors();
+    document.getElementById("market-saudi-label").value =
+      markets.find((m) => m.id === "saudi")?.label || "القطاع السعودي";
+    document.getElementById("market-egypt-label").value =
+      markets.find((m) => m.id === "egypt")?.label || "القطاع المصري";
+    renderCategoriesEditor();
+    populateBrandSelects();
+
     const c = site.contact || {};
     document.getElementById("contact-title").value = c.title || "";
     document.getElementById("contact-text").value = c.text || "";
@@ -897,6 +985,87 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("contact-whatsapp-display").value = c.whatsappDisplay || "";
     document.getElementById("contact-whatsapp-e164").value = c.whatsappE164 || "";
     document.getElementById("contact-facebook").value = c.facebookUrl || "";
+  };
+
+  const renderCategoriesEditor = () => {
+    if (!categoriesEditor) return;
+    const cats = getSectors().egyptCategories;
+    categoriesEditor.innerHTML = cats
+      .map(
+        (item, i) => `
+      <div class="cm-service-editor-item" data-index="${i}">
+        <div class="cm-service-editor-head">
+          <strong>تصنيف ${i + 1}</strong>
+          <div class="cm-media-actions" style="padding:0;">
+            <button type="button" class="cm-icon-btn" data-move="up" data-index="${i}" title="أعلى"><i data-lucide="arrow-up"></i></button>
+            <button type="button" class="cm-icon-btn" data-move="down" data-index="${i}" title="أسفل"><i data-lucide="arrow-down"></i></button>
+            <button type="button" class="cm-btn cm-btn-outline cm-btn-sm cm-remove-category" data-index="${i}">
+              <i data-lucide="trash-2"></i> حذف
+            </button>
+          </div>
+        </div>
+        <div class="cm-form-group">
+          <label>الاسم الظاهر</label>
+          <input data-field="label" value="${escAttr(item.label || "")}" placeholder="مثلاً: مطاعم" />
+        </div>
+        <div class="cm-form-group">
+          <label>المعرّف الداخلي</label>
+          <input data-field="id" value="${escAttr(item.id || "")}" readonly />
+        </div>
+      </div>`
+      )
+      .join("");
+
+    categoriesEditor.querySelectorAll(".cm-remove-category").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const idx = Number(btn.getAttribute("data-index"));
+        const list = collectCategoriesFromEditor();
+        if (list.length <= 1) {
+          showToast("لازم يبقى تصنيف واحد على الأقل.", "info");
+          return;
+        }
+        const removed = list[idx];
+        const fallback = list.find((_, i) => i !== idx)?.id;
+        if (!window.confirm(`حذف تصنيف "${removed.label}"؟ البراندات التابعة هتتنقل لتصنيف آخر.`)) return;
+        data.forEach((brand) => {
+          if (brand.market === "egypt" && brand.egyptCategory === removed.id) {
+            brand.egyptCategory = fallback;
+          }
+        });
+        list.splice(idx, 1);
+        site.sectors = { ...getSectors(), egyptCategories: list };
+        renderCategoriesEditor();
+        populateBrandSelects();
+      });
+    });
+
+    categoriesEditor.querySelectorAll("[data-move]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const idx = Number(btn.getAttribute("data-index"));
+        const dir = btn.getAttribute("data-move");
+        const list = collectCategoriesFromEditor();
+        const swapWith = dir === "up" ? idx - 1 : idx + 1;
+        if (swapWith < 0 || swapWith >= list.length) return;
+        const tmp = list[idx];
+        list[idx] = list[swapWith];
+        list[swapWith] = tmp;
+        site.sectors = { ...getSectors(), egyptCategories: list };
+        renderCategoriesEditor();
+      });
+    });
+
+    if (window.lucide) window.lucide.createIcons();
+  };
+
+  const collectCategoriesFromEditor = () => {
+    const items = [];
+    categoriesEditor?.querySelectorAll(".cm-service-editor-item").forEach((el) => {
+      const label = el.querySelector('[data-field="label"]')?.value?.trim() || "";
+      const id = el.querySelector('[data-field="id"]')?.value?.trim() || makeCategoryId(label);
+      if (!label) return;
+      items.push({ id, label });
+    });
+    return items.length ? items : DEFAULT_SITE.sectors.egyptCategories;
   };
 
   const renderServicesEditor = () => {
@@ -960,11 +1129,53 @@ document.addEventListener("DOMContentLoaded", () => {
     renderServicesEditor();
   });
 
+  addCategoryBtn?.addEventListener("click", () => {
+    const list = collectCategoriesFromEditor();
+    const label = `تصنيف ${list.length + 1}`;
+    list.push({ id: makeCategoryId(`cat-${Date.now()}`), label });
+    site.sectors = { ...getSectors(), egyptCategories: list };
+    renderCategoriesEditor();
+  });
+
   const persistSite = async (message = "تم حفظ المحتوى") => {
     await assertIsAdmin();
     await saveSiteToDb(site);
     showToast(message, "success");
   };
+
+  sectorsForm?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    try {
+      const egyptCategories = collectCategoriesFromEditor();
+      const saudiLabel =
+        document.getElementById("market-saudi-label")?.value?.trim() || "القطاع السعودي";
+      const egyptLabel =
+        document.getElementById("market-egypt-label")?.value?.trim() || "القطاع المصري";
+      site.sectors = {
+        markets: [
+          { id: "saudi", label: saudiLabel },
+          { id: "egypt", label: egyptLabel },
+        ],
+        egyptCategories,
+      };
+
+      // Persist remapped brand categories if any were moved during delete
+      for (const brand of data) {
+        if (brand.market !== "egypt") continue;
+        if (!egyptCategories.some((c) => c.id === brand.egyptCategory)) {
+          brand.egyptCategory = egyptCategories[0]?.id || "other";
+          await upsertBrand(brand);
+        }
+      }
+
+      await persistSite("تم حفظ القطاعات والتصنيفات");
+      populateBrandSelects();
+      renderBrandList();
+      updateDashboardStats();
+    } catch (err) {
+      showToast(err?.message || "تعذر حفظ القطاعات.", "error");
+    }
+  });
 
   heroForm?.addEventListener("submit", async (e) => {
     e.preventDefault();
