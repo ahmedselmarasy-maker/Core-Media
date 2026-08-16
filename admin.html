@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Core Media | لوحة الإدارة</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="admin.css" />
+  </head>
+  <body class="cm-admin-page">
+    <main class="cm-admin-layout">
+      <section class="cm-admin-card cm-login-card" id="admin-login-card">
+        <div class="cm-login-header">
+          <div class="cm-admin-logo">
+            <img src="الوجو.png" alt="Core Media Logo" />
+          </div>
+          <h1 class="cm-gradient-text">لوحة تحكم Core Media</h1>
+          <p>تحكم كامل في البراندات والقاطعات ومحتوى الموقع</p>
+        </div>
+
+        <form id="admin-login-form" class="cm-admin-form">
+          <div class="cm-form-group">
+            <label for="admin-email">البريد الإلكتروني</label>
+            <div class="cm-input-wrapper">
+              <i data-lucide="mail"></i>
+              <input id="admin-email" type="email" required placeholder="admin@email.com" autocomplete="email" />
+            </div>
+          </div>
+
+          <div class="cm-form-group">
+            <label for="admin-pass">كلمة المرور</label>
+            <div class="cm-input-wrapper">
+              <i data-lucide="lock"></i>
+              <input id="admin-pass" type="password" required placeholder="••••••••" autocomplete="current-password" />
+            </div>
+          </div>
+
+          <button class="cm-btn cm-btn-primary" type="submit">
+            <span>دخول</span>
+            <i data-lucide="log-in"></i>
+          </button>
+        </form>
+        <p class="cm-admin-note" id="admin-login-hint"></p>
+        <div class="cm-login-footer">
+          <a class="cm-link" href="index.html">
+            <i data-lucide="arrow-right"></i>
+            <span>العودة للموقع</span>
+          </a>
+        </div>
+      </section>
+
+      <section class="cm-admin-app hidden" id="admin-app-card">
+        <aside class="cm-app-sidebar">
+          <div class="cm-sidebar-header">
+            <div class="cm-admin-logo-small">
+              <img src="الوجو.png" alt="Logo" />
+            </div>
+            <span class="cm-sidebar-brand-name">Core Media</span>
+          </div>
+
+          <nav class="cm-sidebar-nav">
+            <button class="cm-nav-item active" data-view="dashboard" type="button">
+              <i data-lucide="layout-dashboard"></i>
+              <span>الرئيسية</span>
+            </button>
+            <button class="cm-nav-item" data-view="brands" type="button">
+              <i data-lucide="briefcase"></i>
+              <span>البراندات والقاطعات</span>
+            </button>
+            <button class="cm-nav-item" data-view="hero" type="button">
+              <i data-lucide="sparkles"></i>
+              <span>الصفحة الرئيسية</span>
+            </button>
+            <button class="cm-nav-item" data-view="about" type="button">
+              <i data-lucide="users"></i>
+              <span>من نحن</span>
+            </button>
+            <button class="cm-nav-item" data-view="services" type="button">
+              <i data-lucide="layers"></i>
+              <span>الخدمات</span>
+            </button>
+            <button class="cm-nav-item" data-view="contact" type="button">
+              <i data-lucide="phone"></i>
+              <span>التواصل والإعدادات</span>
+            </button>
+            <div class="cm-nav-spacer"></div>
+            <button class="cm-nav-item cm-nav-logout" id="admin-logout-sidebar" type="button">
+              <i data-lucide="log-out"></i>
+              <span>تسجيل الخروج</span>
+            </button>
+          </nav>
+        </aside>
+
+        <div class="cm-app-main">
+          <header class="cm-app-header">
+            <button class="cm-menu-toggle" id="mobile-menu-toggle" type="button">
+              <i data-lucide="menu"></i>
+            </button>
+            <div class="cm-header-search">
+              <i data-lucide="search"></i>
+              <input type="text" id="global-search" placeholder="بحث سريع عن براند..." />
+            </div>
+            <div class="cm-header-actions">
+              <a class="cm-btn cm-btn-outline cm-btn-sm" href="index.html" target="_blank">
+                <i data-lucide="external-link"></i>
+                <span>عرض الموقع</span>
+              </a>
+              <div class="cm-user-profile">
+                <div class="cm-avatar">A</div>
+                <span class="cm-user-name">Admin</span>
+              </div>
+            </div>
+          </header>
+
+          <div class="cm-app-content">
+            <!-- Dashboard -->
+            <div class="cm-view active" id="view-dashboard">
+              <div class="cm-view-header">
+                <h2>نظرة عامة</h2>
+                <p>إحصائيات سريعة وتحكم كامل في محتوى Core Media</p>
+              </div>
+
+              <div class="cm-stats-grid">
+                <div class="cm-stat-card">
+                  <div class="cm-stat-icon" style="background: rgba(99, 102, 241, 0.1); color: var(--secondary);">
+                    <i data-lucide="briefcase"></i>
+                  </div>
+                  <div class="cm-stat-info">
+                    <span class="cm-stat-label">البراندات</span>
+                    <h3 class="cm-stat-value" id="stat-total-brands">0</h3>
+                  </div>
+                </div>
+                <div class="cm-stat-card">
+                  <div class="cm-stat-icon" style="background: rgba(34, 197, 94, 0.1); color: var(--success);">
+                    <i data-lucide="image"></i>
+                  </div>
+                  <div class="cm-stat-info">
+                    <span class="cm-stat-label">التصاميم</span>
+                    <h3 class="cm-stat-value" id="stat-total-designs">0</h3>
+                  </div>
+                </div>
+                <div class="cm-stat-card">
+                  <div class="cm-stat-icon" style="background: rgba(249, 115, 22, 0.1); color: #f97316;">
+                    <i data-lucide="clapperboard"></i>
+                  </div>
+                  <div class="cm-stat-info">
+                    <span class="cm-stat-label">القاطعات / الفيديوهات</span>
+                    <h3 class="cm-stat-value" id="stat-total-videos">0</h3>
+                  </div>
+                </div>
+              </div>
+
+              <div class="cm-quick-links">
+                <button type="button" class="cm-quick-link" data-goto="brands">
+                  <i data-lucide="briefcase"></i>
+                  <span>إدارة البراندات</span>
+                </button>
+                <button type="button" class="cm-quick-link" data-goto="hero">
+                  <i data-lucide="sparkles"></i>
+                  <span>تعديل الهيرو والفيديو</span>
+                </button>
+                <button type="button" class="cm-quick-link" data-goto="services">
+                  <i data-lucide="layers"></i>
+                  <span>تعديل الخدمات</span>
+                </button>
+                <button type="button" class="cm-quick-link" data-goto="contact">
+                  <i data-lucide="phone"></i>
+                  <span>واتساب والبريد</span>
+                </button>
+              </div>
+
+              <div class="cm-recent-activity">
+                <div class="cm-card">
+                  <div class="cm-card-head">
+                    <h2><i data-lucide="clock"></i> آخر البراندات</h2>
+                  </div>
+                  <div class="cm-recent-list" id="recent-brands-list"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Brands -->
+            <div class="cm-view" id="view-brands">
+              <div class="cm-view-header">
+                <h2>البراندات والقاطعات</h2>
+                <p>غيّر الاسم، صورة الغلاف، التصاميم، والقاطعات لكل براند</p>
+              </div>
+              <div class="cm-dashboard-grid">
+                <aside class="cm-dashboard-sidebar">
+                  <div class="cm-card">
+                    <div class="cm-card-head">
+                      <h2><i data-lucide="list"></i> قائمة البراندات</h2>
+                    </div>
+                    <div class="cm-search-box">
+                      <i data-lucide="search"></i>
+                      <input type="text" id="brand-search" placeholder="ابحث عن براند..." />
+                    </div>
+                    <div id="brand-list" class="cm-admin-brand-list"></div>
+                  </div>
+                </aside>
+
+                <div class="cm-dashboard-content">
+                  <form id="brand-form" class="cm-card cm-brand-details-card">
+                    <div class="cm-card-head">
+                      <h2><i data-lucide="edit-3"></i> تفاصيل البراند</h2>
+                      <button class="cm-btn cm-btn-outline cm-btn-sm" type="button" id="brand-reset">
+                        <i data-lucide="plus"></i> <span>براند جديد</span>
+                      </button>
+                    </div>
+
+                    <input type="hidden" id="brand-id" />
+
+                    <div class="cm-form-row">
+                      <div class="cm-form-group">
+                        <label for="brand-name">اسم البراند</label>
+                        <input id="brand-name" required placeholder="مثلاً: شركة الفلاح" />
+                      </div>
+                    </div>
+
+                    <div class="cm-form-row">
+                      <div class="cm-form-group">
+                        <label for="brand-market">القطاع</label>
+                        <select id="brand-market" required>
+                          <option value="saudi">القطاع السعودي</option>
+                          <option value="egypt">القطاع المصري</option>
+                        </select>
+                      </div>
+                      <div class="cm-form-group">
+                        <label for="brand-egypt-category">التصنيف (للقطاع المصري)</label>
+                        <select id="brand-egypt-category">
+                          <option value="restaurants">مطاعم</option>
+                          <option value="cafes">كافيهات</option>
+                          <option value="medical">ميديكل</option>
+                          <option value="other">مشاريع أخرى</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="cm-form-row">
+                      <div class="cm-form-group">
+                        <label for="brand-cover-url">صورة الغلاف (رابط)</label>
+                        <input id="brand-cover-url" placeholder="https://... أو مسار محلي" />
+                      </div>
+                      <div class="cm-form-group">
+                        <label for="brand-cover-upload">أو ارفع صورة غلاف</label>
+                        <input id="brand-cover-upload" type="file" accept="image/*" class="cm-file-input" />
+                      </div>
+                    </div>
+                    <div class="cm-cover-preview-wrap hidden" id="brand-cover-preview-wrap">
+                      <img id="brand-cover-preview" alt="غلاف البراند" />
+                      <button type="button" class="cm-btn cm-btn-outline cm-btn-sm" id="brand-cover-clear">إزالة الغلاف</button>
+                    </div>
+
+                    <div class="cm-form-footer">
+                      <button class="cm-btn cm-btn-danger cm-btn-outline cm-btn-sm hidden" type="button" id="brand-delete">
+                        <i data-lucide="trash-2"></i> <span>حذف البراند</span>
+                      </button>
+                      <button class="cm-btn cm-btn-primary" type="submit">
+                        <i data-lucide="save"></i> <span>حفظ البراند</span>
+                      </button>
+                    </div>
+                  </form>
+
+                  <div class="cm-card cm-media-card">
+                    <div class="cm-card-head">
+                      <h2><i data-lucide="images"></i> التصاميم والقاطعات</h2>
+                    </div>
+
+                    <div class="cm-media-upload-zone">
+                      <div class="cm-media-inputs">
+                        <div class="cm-form-group">
+                          <label for="media-type">النوع</label>
+                          <select id="media-type">
+                            <option value="design">تصميم (صورة)</option>
+                            <option value="video">قاطعة / فيديو</option>
+                          </select>
+                        </div>
+                        <div class="cm-form-group">
+                          <label for="media-title">العنوان الظاهر (اختياري)</label>
+                          <input id="media-title" placeholder="مثلاً: قاطعة رمضان 1" />
+                        </div>
+                        <div class="cm-form-group">
+                          <label for="media-file">رابط الملف (اختياري)</label>
+                          <input id="media-file" placeholder="https://..." />
+                        </div>
+                        <div class="cm-form-group">
+                          <label for="media-upload">أو ارفع ملف جديد</label>
+                          <input id="media-upload" type="file" accept="image/*,video/*" class="cm-file-input" multiple />
+                        </div>
+                      </div>
+                      <button class="cm-btn cm-btn-secondary cm-btn-block" type="button" id="add-media">
+                        <i data-lucide="upload-cloud"></i> <span>إضافة / رفع</span>
+                      </button>
+                    </div>
+
+                    <div class="cm-admin-upload-progress hidden" id="upload-progress">
+                      <div class="cm-progress-info">
+                        <span id="upload-progress-title">جاري الرفع...</span>
+                        <span id="upload-progress-text">0/0 MB</span>
+                      </div>
+                      <div class="cm-progress-track">
+                        <div class="cm-progress-bar" id="upload-progress-fill"></div>
+                      </div>
+                      <button class="cm-btn cm-btn-danger cm-btn-sm" id="cancel-upload" type="button">إلغاء</button>
+                    </div>
+
+                    <div class="cm-media-list-wrap">
+                      <h3>الوسائط الحالية — اسحب أو استخدم الأسهم للترتيب</h3>
+                      <ul id="media-list" class="cm-media-grid"></ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Hero -->
+            <div class="cm-view" id="view-hero">
+              <div class="cm-view-header">
+                <h2>الصفحة الرئيسية</h2>
+                <p>النصوص، الأرقام، والفيديو التعريفي</p>
+              </div>
+              <form id="hero-form" class="cm-card cm-settings-card">
+                <div class="cm-card-head"><h2><i data-lucide="sparkles"></i> الهيرو</h2></div>
+                <div class="cm-form-row">
+                  <div class="cm-form-group">
+                    <label for="hero-badge">الشارة</label>
+                    <input id="hero-badge" />
+                  </div>
+                  <div class="cm-form-group">
+                    <label for="hero-highlight">العنوان المميز</label>
+                    <input id="hero-highlight" />
+                  </div>
+                </div>
+                <div class="cm-form-group">
+                  <label for="hero-subtitle">الوصف</label>
+                  <textarea id="hero-subtitle" rows="3"></textarea>
+                </div>
+                <div class="cm-form-row">
+                  <div class="cm-form-group">
+                    <label for="hero-cta-primary">زر أساسي</label>
+                    <input id="hero-cta-primary" />
+                  </div>
+                  <div class="cm-form-group">
+                    <label for="hero-cta-secondary">زر ثانوي</label>
+                    <input id="hero-cta-secondary" />
+                  </div>
+                </div>
+                <div class="cm-form-row cm-metrics-row">
+                  <div class="cm-form-group">
+                    <label>رقم 1</label>
+                    <input id="metric1-number" placeholder="+50" />
+                    <input id="metric1-label" placeholder="علامة تجارية" />
+                  </div>
+                  <div class="cm-form-group">
+                    <label>رقم 2</label>
+                    <input id="metric2-number" placeholder="+200" />
+                    <input id="metric2-label" placeholder="حملة" />
+                  </div>
+                  <div class="cm-form-group">
+                    <label>رقم 3</label>
+                    <input id="metric3-number" placeholder="360°" />
+                    <input id="metric3-label" placeholder="تسويق" />
+                  </div>
+                </div>
+
+                <div class="cm-card-head cm-card-head-inline">
+                  <h2><i data-lucide="video"></i> الفيديو التعريفي (Video.Core)</h2>
+                </div>
+                <div class="cm-form-row">
+                  <div class="cm-form-group">
+                    <label for="intro-video-label">نص الزر</label>
+                    <input id="intro-video-label" placeholder="Video.Core" />
+                  </div>
+                  <div class="cm-form-group">
+                    <label for="intro-video-url">رابط / مسار الفيديو</label>
+                    <input id="intro-video-url" placeholder="فيديو  الشركة  .mp4" />
+                  </div>
+                </div>
+                <div class="cm-form-group">
+                  <label for="intro-video-upload">أو ارفع فيديو تعريفي جديد</label>
+                  <input id="intro-video-upload" type="file" accept="video/*" class="cm-file-input" />
+                </div>
+
+                <div class="cm-form-footer">
+                  <button class="cm-btn cm-btn-primary" type="submit">
+                    <i data-lucide="save"></i> <span>حفظ الصفحة الرئيسية</span>
+                  </button>
+                </div>
+              </form>
+            </div>
+
+            <!-- About -->
+            <div class="cm-view" id="view-about">
+              <div class="cm-view-header">
+                <h2>من نحن</h2>
+                <p>النصوص والفلسفتنا ومن نعمل معه</p>
+              </div>
+              <form id="about-form" class="cm-card cm-settings-card">
+                <div class="cm-form-group">
+                  <label for="about-title">العنوان</label>
+                  <input id="about-title" />
+                </div>
+                <div class="cm-form-group">
+                  <label for="about-text">النص الرئيسي</label>
+                  <textarea id="about-text" rows="4"></textarea>
+                </div>
+                <div class="cm-form-group">
+                  <label for="about-pills">النقاط السريعة (كل سطر نقطة)</label>
+                  <textarea id="about-pills" rows="4"></textarea>
+                </div>
+                <div class="cm-form-row">
+                  <div class="cm-form-group">
+                    <label for="about-philosophy-title">عنوان الفلسفة</label>
+                    <input id="about-philosophy-title" />
+                  </div>
+                  <div class="cm-form-group">
+                    <label for="about-who-title">عنوان من نعمل معه</label>
+                    <input id="about-who-title" />
+                  </div>
+                </div>
+                <div class="cm-form-row">
+                  <div class="cm-form-group">
+                    <label for="about-philosophy-text">نص الفلسفة</label>
+                    <textarea id="about-philosophy-text" rows="3"></textarea>
+                  </div>
+                  <div class="cm-form-group">
+                    <label for="about-who-text">نص من نعمل معه</label>
+                    <textarea id="about-who-text" rows="3"></textarea>
+                  </div>
+                </div>
+                <div class="cm-form-group">
+                  <label for="portfolio-title">عنوان قسم الأعمال</label>
+                  <input id="portfolio-title" />
+                </div>
+                <div class="cm-form-group">
+                  <label for="portfolio-subtitle">وصف قسم الأعمال</label>
+                  <textarea id="portfolio-subtitle" rows="2"></textarea>
+                </div>
+                <div class="cm-form-footer">
+                  <button class="cm-btn cm-btn-primary" type="submit">
+                    <i data-lucide="save"></i> <span>حفظ قسم من نحن</span>
+                  </button>
+                </div>
+              </form>
+            </div>
+
+            <!-- Services -->
+            <div class="cm-view" id="view-services">
+              <div class="cm-view-header">
+                <h2>الخدمات</h2>
+                <p>عدّل العناوين والأوصاف ونقاط كل خدمة</p>
+              </div>
+              <form id="services-form" class="cm-card cm-settings-card">
+                <div class="cm-form-group">
+                  <label for="services-title">عنوان القسم</label>
+                  <input id="services-title" />
+                </div>
+                <div class="cm-form-group">
+                  <label for="services-subtitle">وصف القسم</label>
+                  <textarea id="services-subtitle" rows="2"></textarea>
+                </div>
+                <div id="services-editor" class="cm-services-editor"></div>
+                <div class="cm-form-footer">
+                  <button class="cm-btn cm-btn-outline" type="button" id="add-service">
+                    <i data-lucide="plus"></i> <span>إضافة خدمة</span>
+                  </button>
+                  <button class="cm-btn cm-btn-primary" type="submit">
+                    <i data-lucide="save"></i> <span>حفظ الخدمات</span>
+                  </button>
+                </div>
+              </form>
+            </div>
+
+            <!-- Contact -->
+            <div class="cm-view" id="view-contact">
+              <div class="cm-view-header">
+                <h2>التواصل والإعدادات</h2>
+                <p>البريد، واتساب، وروابط السوشيال</p>
+              </div>
+              <form id="contact-form-settings" class="cm-card cm-settings-card">
+                <div class="cm-form-group">
+                  <label for="contact-title">عنوان القسم</label>
+                  <input id="contact-title" />
+                </div>
+                <div class="cm-form-group">
+                  <label for="contact-text">الوصف</label>
+                  <textarea id="contact-text" rows="3"></textarea>
+                </div>
+                <div class="cm-form-row">
+                  <div class="cm-form-group">
+                    <label for="contact-email">البريد الإلكتروني</label>
+                    <input id="contact-email" type="email" />
+                  </div>
+                  <div class="cm-form-group">
+                    <label for="contact-whatsapp-display">رقم واتساب (للعرض)</label>
+                    <input id="contact-whatsapp-display" dir="ltr" placeholder="01019132369" />
+                  </div>
+                </div>
+                <div class="cm-form-row">
+                  <div class="cm-form-group">
+                    <label for="contact-whatsapp-e164">رقم واتساب الدولي (بدون +)</label>
+                    <input id="contact-whatsapp-e164" dir="ltr" placeholder="201019132369" />
+                  </div>
+                  <div class="cm-form-group">
+                    <label for="contact-facebook">رابط فيسبوك</label>
+                    <input id="contact-facebook" dir="ltr" />
+                  </div>
+                </div>
+                <div class="cm-form-footer">
+                  <button class="cm-btn cm-btn-primary" type="submit">
+                    <i data-lucide="save"></i> <span>حفظ إعدادات التواصل</span>
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div id="toast-container" class="cm-toast-container"></div>
+    <div id="sidebar-overlay" class="cm-sidebar-overlay"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js"></script>
+    <script src="admin.js"></script>
+    <script>
+      lucide.createIcons();
+    </script>
+  </body>
+</html>

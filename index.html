@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Core Media | حلول تسويقية متكاملة</title>
+    <meta
+      name="description"
+      content="Core Media - حلول تسويقية متكاملة: الاستراتيجية التسويقية، صناعة المحتوى، الهوية البصرية، تخطيط الحملات، التصميم والفيديو، وشراء الإعلانات."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <!-- Preloader / Splash Screen -->
+    <div class="cm-preloader" id="preloader">
+      <div class="cm-preloader-content">
+        <img src="الوجو.png" alt="Core Media Logo" class="cm-preloader-logo" id="preloader-logo" />
+        <div class="cm-preloader-text">
+          <h1 class="cm-preloader-name" id="preloader-name"></h1>
+          <p class="cm-preloader-tagline" id="preloader-tagline"></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="cm-scroll-progress"></div>
+    <header class="cm-header" id="top">
+      <div class="cm-container cm-header-inner">
+        <div class="cm-logo">
+          <img src="الوجو.png" alt="Core Media Logo" class="cm-logo-mark" />
+          <div class="cm-logo-text">
+            <span class="cm-logo-name">Core Media</span>
+            <span class="cm-logo-tagline">استوديو تسويق متكامل</span>
+          </div>
+        </div>
+        <nav class="cm-nav">
+          <a href="#home">الرئيسية</a>
+          <a href="#about">من نحن</a>
+          <a href="#services">الخدمات</a>
+          <a href="#portfolio">أعمالنا</a>
+          <a href="#contact">تواصل معنا</a>
+        </nav>
+        <a href="#contact" class="cm-btn cm-btn-outline">احجز استشارة</a>
+        <button class="cm-nav-toggle" aria-label="تبديل القائمة">
+          <span></span><span></span>
+        </button>
+      </div>
+    </header>
+
+    <main>
+      <!-- Hero / Homepage -->
+      <section class="cm-hero" id="home">
+        <div class="cm-container cm-hero-grid">
+          <div class="cm-hero-text" data-aos="fade-left">
+            <div class="cm-badge" data-aos="fade-down" data-aos-delay="200" data-cm="hero-badge">تسويق • محتوى • إعلام</div>
+            <h1 data-aos="fade-up" data-aos-delay="400">
+              Core Media
+              <span class="cm-highlight-row">
+                <span class="cm-highlight" data-cm="hero-highlight">تجربة تسويق متكاملة</span>
+                <button
+                  type="button"
+                  class="cm-tag cm-hero-video-trigger"
+                  id="cm-intro-video-trigger"
+                  data-file="فيديو  الشركة  .mp4"
+                >
+                  Video.Core
+                </button>
+              </span>
+            </h1>
+            <p data-aos="fade-up" data-aos-delay="600" data-cm="hero-subtitle">
+              نساعد العلامات التجارية والشركات الناشئة وصناع المحتوى على بناء
+              منظومات تسويقية قوية، من الاستراتيجية وصناعة المحتوى إلى شراء
+              الإعلانات والإنتاج الإبداعي.
+            </p>
+            <div class="cm-hero-actions" data-aos="fade-up" data-aos-delay="800">
+              <a href="#contact" class="cm-btn" data-cm="hero-cta-primary">احجز مكالمة استراتيجية</a>
+              <a href="#portfolio" class="cm-link" data-cm="hero-cta-secondary">شاهد أعمالنا</a>
+            </div>
+            <div class="cm-hero-metrics" data-aos="fade-up" data-aos-delay="1000">
+              <div>
+                <span class="cm-metric-number" data-cm="metric-0-number">+50</span>
+                <span class="cm-metric-label" data-cm="metric-0-label">علامة تجارية</span>
+              </div>
+              <div>
+                <span class="cm-metric-number" data-cm="metric-1-number">+200</span>
+                <span class="cm-metric-label" data-cm="metric-1-label">حملة</span>
+              </div>
+              <div>
+                <span class="cm-metric-number" data-cm="metric-2-number">360°</span>
+                <span class="cm-metric-label" data-cm="metric-2-label">تسويق</span>
+              </div>
+            </div>
+          </div>
+          <div class="cm-hero-visual" data-aos="fade-right" data-aos-delay="400">
+            <div class="cm-hero-card cm-hero-card-main">
+              <h3>Core Media Campaign Hub</h3>
+              <p>استراتيجية • محتوى • تصميم • إعلام</p>
+              <div class="cm-hero-tags">
+                <span>الاستراتيجية التسويقية</span>
+                <span>صناعة المحتوى</span>
+                <span>شراء الإعلانات</span>
+                <span>الهوية البصرية</span>
+              </div>
+            </div>
+            <div class="cm-hero-card cm-hero-card-secondary">
+              <p>“شريك إبداعي يفهم العلامة التجارية والأرقام معًا.”</p>
+              <span class="cm-hero-card-client">شريك نجاح</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Who We Are -->
+      <section class="cm-section" id="about">
+        <div class="cm-container cm-two-col">
+          <div data-aos="fade-left">
+            <h2 class="cm-gradient-text" data-cm="about-title">من نحن</h2>
+            <p data-cm="about-text">
+              Core Media هو استوديو تسويق متكامل يجمع الاستراتيجية والإبداع
+              والإعلام في مكان واحد. نتعاون مع العلامات التجارية والشركات
+              الناشئة والأعمال المعتمدة على المحتوى لتصميم حملات تؤثر في الناس
+              وتحقق نتائج ملموسة.
+            </p>
+            <div class="cm-pill-grid" data-cm="about-pills">
+              <span data-aos="zoom-in" data-aos-delay="100">استراتيجية مبنية على البيانات</span>
+              <span data-aos="zoom-in" data-aos-delay="200">محتوى يقوده السرد</span>
+              <span data-aos="zoom-in" data-aos-delay="300">هوية بصرية قوية</span>
+              <span data-aos="zoom-in" data-aos-delay="400">إعلام قائم على الأداء</span>
+            </div>
+          </div>
+          <div class="cm-about-panel" data-aos="fade-right">
+            <div class="cm-about-row">
+              <div data-aos="fade-up" data-aos-delay="200">
+                <h3 class="cm-gradient-text" data-cm="about-philosophy-title">فلسفتنا</h3>
+                <p data-cm="about-philosophy-text">
+                  كل علامة تجارية لديها قصة أساسية، ومهمتنا تحويلها إلى صور
+                  ورسائل وإعلام لا يمكن لجمهورك تجاهله.
+                </p>
+              </div>
+              <div data-aos="fade-up" data-aos-delay="400">
+                <h3 class="cm-gradient-text" data-cm="about-who-title">من نعمل معه</h3>
+                <p data-cm="about-who-text">
+                  علامات تجارية راسخة، شركات ناشئة طموحة، وصناع محتوى وأعمال
+                  تبحث عن تسويق متكامل وليس منشورات عشوائية.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Services -->
+      <section class="cm-section cm-section-muted" id="services">
+        <div class="cm-container">
+          <div class="cm-section-head" data-aos="fade-up">
+            <h2 class="cm-gradient-text" data-cm="services-title">الخدمات</h2>
+            <p data-cm="services-subtitle">
+              باقة تسويقية كاملة تحت سقف واحد: استراتيجية ومحتوى وتصميم وإعلام
+              يعملون بتناغم.
+            </p>
+          </div>
+          <div class="cm-services-grid" data-cm="services-grid">
+            <article class="cm-card" data-aos="fade-up" data-aos-delay="100">
+              <h3 class="cm-gradient-text">الاستراتيجية التسويقية</h3>
+              <p>
+                أبحاث، وتموضع، وخطط تسويق متكاملة مصممة حسب علامتك التجارية
+                وجمهورك وأهدافك.
+              </p>
+              <ul>
+                <li>أبحاث السوق والجمهور</li>
+                <li>تموضع العلامة التجارية</li>
+                <li>استراتيجية الإطلاق والحملات</li>
+              </ul>
+            </article>
+
+            <article class="cm-card" data-aos="fade-up" data-aos-delay="200">
+              <h3 class="cm-gradient-text">صناعة المحتوى</h3>
+              <p>
+                محتوى يعكس صوت علامتك التجارية ويتحدث بلغة جمهورك عبر مختلف
+                المنصات.
+              </p>
+              <ul>
+                <li>محتوى السوشيال والرقمي</li>
+                <li>كتابة السكربتات والنصوص</li>
+                <li>محتوى تحريري وطويل</li>
+              </ul>
+            </article>
+
+            <article class="cm-card" data-aos="fade-up" data-aos-delay="300">
+              <h3 class="cm-gradient-text">الهوية البصرية</h3>
+              <p>
+                أنظمة بصرية متسقة ولافتة تجعل علامتك التجارية معروفة من أول
+                نظرة.
+              </p>
+              <ul>
+                <li>تصميم الشعار ونظام الهوية</li>
+                <li>دليل استخدام العلامة</li>
+                <li>حِزم السوشيال والحملات</li>
+              </ul>
+            </article>
+
+            <article class="cm-card" data-aos="fade-up" data-aos-delay="400">
+              <h3 class="cm-gradient-text">تخطيط الحملات</h3>
+              <p>
+                من الفكرة الكبرى إلى جدول تنفيذ تفصيلي على القنوات الرقمية
+                والتقليدية.
+              </p>
+              <ul>
+                <li>تحديد القنوات والميزانيات</li>
+                <li>إدارة وتنفيذ الحملات</li>
+                <li>تقارير الأداء والتحسين</li>
+              </ul>
+            </article>
+
+            <article class="cm-card" data-aos="fade-up" data-aos-delay="500">
+              <h3 class="cm-gradient-text">التصميم والفيديو</h3>
+              <p>
+                إنتاج مرئي يخطف الأنظار، من الفيديوهات القصيرة إلى التصاميم
+                الإعلانية عالية الجودة.
+              </p>
+              <ul>
+                <li>مونتاج وتحرير الفيديو</li>
+                <li>الموشن جرافيكس</li>
+                <li>تصوير المنتجات والخدمات</li>
+              </ul>
+            </article>
+
+            <article class="cm-card" data-aos="fade-up" data-aos-delay="600">
+              <h3 class="cm-gradient-text">شراء الإعلانات</h3>
+              <p>
+                إدارة ميزانياتك الإعلانية بذكاء لضمان الوصول لأفضل جمهور بأقل
+                تكلفة.
+              </p>
+              <ul>
+                <li>إعلانات ميتا (فيسبوك وإنستجرام)</li>
+                <li>إعلانات جوجل ويوتيوب</li>
+                <li>إعلانات تيك توك وسناب شات</li>
+              </ul>
+            </article>
+          </div>
+          <div class="cm-section-footer" data-aos="fade-up" style="text-align: center; margin-top: 3rem;">
+            <a href="#portfolio" class="cm-btn">استكشف معرض أعمالنا بالكامل</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Portfolio Section -->
+      <section class="cm-section" id="portfolio">
+        <div class="cm-container">
+          <div class="cm-section-head" data-aos="fade-up">
+            <h2 class="cm-gradient-text" data-cm="portfolio-title">أعمالنا</h2>
+            <p data-cm="portfolio-subtitle">
+              نماذج من شراكات النجاح التي بنيناها مع علامات تجارية في مختلف
+              القطاعات.
+            </p>
+          </div>
+
+          <div class="cm-portfolio-filter-block" data-aos="fade-up">
+            <span class="cm-portfolio-filter-label">السوق</span>
+            <div class="cm-portfolio-filters" aria-label="تصفية الأعمال حسب السوق">
+              <button type="button" class="cm-filter-btn active" data-market="all">الكل</button>
+              <button type="button" class="cm-filter-btn" data-market="saudi">القطاع السعودي</button>
+              <button type="button" class="cm-filter-btn" data-market="egypt">القطاع المصري</button>
+            </div>
+          </div>
+
+          <div id="portfolio-groups" data-aos="fade-up">
+            <!-- قطاع سعودي -->
+            <div class="cm-portfolio-market" data-market="saudi">
+            <div class="cm-portfolio-group">
+              <div class="cm-portfolio-group-head">
+                <h3 class="cm-portfolio-group-title cm-gradient-text">القطاع السعودي</h3>
+              </div>
+              <div class="cm-portfolio-grid">
+                <article class="cm-portfolio-card" data-category="design" data-market="saudi">
+                  <div class="cm-portfolio-thumb placeholder-video">
+                    <span>Teaandmore</span>
+                  </div>
+                  <div class="cm-portfolio-info">
+                    <h3 class="cm-gradient-text">Teaandmore</h3>
+                    <div class="cm-portfolio-tags">
+                      <div class="cm-portfolio-tags-row cm-portfolio-tags-designs">
+                        <span class="cm-tag" data-file="Teaandmore/شاي 1.jpg">تصميم 1</span>
+                        <span class="cm-tag" data-file="Teaandmore/شاي 2.jpg">تصميم 2</span>
+                        <span class="cm-tag" data-file="Teaandmore/شاي 3.jpg">تصميم 3</span>
+                        <span class="cm-tag" data-file="Teaandmore/شاي 4.jpg">تصميم 4</span>
+                      </div>
+                    </div>
+                  </div>
+                </article>
+                <article class="cm-portfolio-card" data-category="design" data-market="saudi">
+                  <div class="cm-portfolio-thumb placeholder-video">
+                    <span>Zawitzad</span>
+                  </div>
+                  <div class="cm-portfolio-info">
+                    <h3 class="cm-gradient-text">Zawitzad</h3>
+                    <div class="cm-portfolio-tags">
+                      <div class="cm-portfolio-tags-row cm-portfolio-tags-designs">
+                        <span class="cm-tag" data-file="Zawitzad/ذاد 1.jpg">تصميم 1</span>
+                        <span class="cm-tag" data-file="Zawitzad/ذاد 2.jpg">تصميم 2</span>
+                        <span class="cm-tag" data-file="Zawitzad/ذاد 3.png">تصميم 3</span>
+                        <span class="cm-tag" data-file="Zawitzad/ذاد 4.jpg">تصميم 4</span>
+                      </div>
+                    </div>
+                  </div>
+                </article>
+                <article class="cm-portfolio-card" data-category="design video" data-market="saudi">
+                  <div class="cm-portfolio-thumb placeholder-video">
+                    <span>Nkht.balh</span>
+                  </div>
+                  <div class="cm-portfolio-info">
+                    <h3 class="cm-gradient-text">Nkht.balh</h3>
+                    <div class="cm-portfolio-tags">
+                      <div class="cm-portfolio-tags-row cm-portfolio-tags-designs">
+                        <span class="cm-tag" data-file="Nkht.balh/نكهة بلح 1.jpg">تصميم 1</span>
+                        <span class="cm-tag" data-file="Nkht.balh/نكهة بلح 2.jpg">تصميم 2</span>
+                        <span class="cm-tag" data-file="Nkht.balh/نكهة بلح 3.jpg">تصميم 3</span>
+                        <span class="cm-tag" data-file="Nkht.balh/نكهة بلح 4.jpg">تصميم 4</span>
+                        <span class="cm-tag" data-file="Nkht.balh/اول--عرض.png">تصميم 5</span>
+                        <span class="cm-tag" data-file="Nkht.balh/تاني--عرض.png">تصميم 6</span>
+                        <span class="cm-tag" data-file="Nkht.balh/العرض--الثالث.png">تصميم 7</span>
+                      </div>
+                      <div class="cm-portfolio-tags-row cm-portfolio-tags-videos">
+                        <span class="cm-tag" data-file="Nkht.balh/مولح  نكهة بلح  .mp4">فيديو 1</span>
+                        <span class="cm-tag" data-file="Nkht.balh/نكهة بلح  نهائي  .mp4">فيديو 2</span>
+                      </div>
+                    </div>
+                  </div>
+                </article>
+              </div>
+            </div>
+            </div>
+
+            <!-- قطاع مصري -->
+            <div class="cm-portfolio-market" data-market="egypt">
+              <div class="cm-portfolio-group-head">
+                <h3 class="cm-portfolio-group-title cm-gradient-text">القطاع المصري</h3>
+              </div>
+              <div
+                class="cm-portfolio-filter-block cm-portfolio-sector-block cm-portfolio-egypt-subfilter-block"
+              >
+                <span class="cm-portfolio-filter-label">التصنيف</span>
+                <div class="cm-portfolio-filters" aria-label="تصفية القطاع المصري">
+                  <button
+                    type="button"
+                    class="cm-filter-btn cm-egypt-cat-btn active"
+                    data-egypt-cat="all"
+                  >
+                    الكل
+                  </button>
+                  <button type="button" class="cm-filter-btn cm-egypt-cat-btn" data-egypt-cat="restaurants">
+                    مطاعم
+                  </button>
+                  <button type="button" class="cm-filter-btn cm-egypt-cat-btn" data-egypt-cat="cafes">
+                    كافيهات
+                  </button>
+                  <button type="button" class="cm-filter-btn cm-egypt-cat-btn" data-egypt-cat="medical">
+                    ميديكل
+                  </button>
+                  <button type="button" class="cm-filter-btn cm-egypt-cat-btn" data-egypt-cat="other">
+                    مشاريع أخرى
+                  </button>
+                </div>
+              </div>
+              <div class="cm-portfolio-market-body">
+            <!-- مطاعم -->
+            <div class="cm-portfolio-group" data-egypt-cat="restaurants">
+              <div class="cm-portfolio-group-head">
+                <h3 class="cm-portfolio-group-title cm-gradient-text">مطاعم</h3>
+              </div>
+              <div class="cm-portfolio-grid">
+                <article class="cm-portfolio-card" data-category="design video" data-market="egypt">
+                  <div class="cm-portfolio-thumb placeholder-video">
+                    <span>افندينا</span>
+                  </div>
+                  <div class="cm-portfolio-info">
+                    <h3 class="cm-gradient-text">افندينا</h3>
+                    <div class="cm-portfolio-tags">
+                      <div class="cm-portfolio-tags-row cm-portfolio-tags-designs">
+                        <span class="cm-tag" data-file="افندينا/افندينا.png">تصميم 1</span>
+                      </div>
+                      <div class="cm-portfolio-tags-row cm-portfolio-tags-videos">
+                        <span class="cm-tag" data-file="افندينا/YouCut_20260221_010705741.mp4">فيديو 1</span>
+                        <span class="cm-tag" data-file="افندينا/YouCut_20260420_023003316.mp4">فيديو 2</span>
+                      </div>
+                    </div>
+                  </div>
+                </article>
+                <article class="cm-portfolio-card" data-category="design video" data-market="egypt">
+                  <div class="cm-portfolio-thumb placeholder-video">
+                    <span>بنت السلطان</span>
+                  </div>
+                  <div class="cm-portfolio-info">
+                    <h3 class="cm-gradient-text">بنت السلطان</h3>
+                    <div class="cm-portfolio-tags">
+                      <div class="cm-portfolio-tags-row cm-portfolio-tags-designs">
+                        <span class="cm-tag" data-file="بنت السلطان/عرض.png">تصميم 1</span>
+                      </div>
+                      <div class="cm-portfolio-tags-row cm-portfolio-tags-videos">
+                        <span class="cm-tag" data-file="بنت السلطان/بنت السلطان.mp4">فيديو 1</span>
+                        <span class="cm-tag" data-file="بنت السلطان/بنت  السلطان  شركة.mp4">فيديو 2</span>
+                        <span class="cm-tag" data-file="بنت السلطان/YouCut_20260420_023306260.mp4">فيديو 3</span>
+                      </div>
+                    </div>
+                  </div>
+                </article>
+                <article class="cm-portfolio-card" data-category="design video" data-market="egypt">
+                  <div class="cm-portfolio-thumb placeholder-video">
+                    <span>دهب للمشويات</span>
+                  </div>
+                  <div class="cm-portfolio-info">
+                    <h3 class="cm-gradient-text">دهب للمشويات</h3>
+                    <div class="cm-portfolio-tags">
+                      <div class="cm-portfolio-tags-row cm-portfolio-tags-designs">
+                        <span class="cm-tag" data-file="دهب للمشويات/Untitled-1-Recovered.png">تصميم 1</span>
+                        <span class="cm-tag" data-file="دهب للمشويات/رمضان.png">تصميم 2</span>
+                      </div>
+                      <div class="cm-portfolio-tags-row cm-portfolio-tags-videos">
+                        <span class="cm-tag" data-file="دهب للمشويات/0126 (1).mp4">فيديو 1</span>
+                        <span class="cm-tag" data-file="دهب للمشويات/YouCut_20260420_022713726.mp4">فيديو 2</span>
+                      </div>
+                    </div>
+                  </div>
+                </article>
+              </div>
+            </div>
+
+            <!-- كافيهات -->
+            <div class="cm-portfolio-group" data-egypt-cat="cafes">
+              <div class="cm-portfolio-group-head">
+                <h3 class="cm-portfolio-group-title cm-gradient-text">كافيهات</h3>
+              </div>
+              <div class="cm-portfolio-grid">
+                <article class="cm-portfolio-card" data-category="design video" data-market="egypt">
+                  <div class="cm-portfolio-thumb placeholder-video">
+                    <span>Arkid</span>
+                  </div>
+                  <div class="cm-portfolio-info">
+                    <h3 class="cm-gradient-text">Arkid</h3>
+                    <div class="cm-portfolio-tags">
+                      <div class="cm-portfolio-tags-row cm-portfolio-tags-designs">
+                        <span class="cm-tag" data-file="Arkid/تصميم--1--اركيد.png">تصميم 1</span>
+                        <span class="cm-tag" data-file="Arkid/تصميم--2.png">تصميم 2</span>
+                        <span class="cm-tag" data-file="Arkid/اركيد (1).png">تصميم 3</span>
+                        <span class="cm-tag" data-file="Arkid/اركيد  -0=.png">تصميم 4</span>
+                        <span class="cm-tag" data-file="Arkid/2-اطفال.png">تصميم 5</span>
+                      </div>
+                      <div class="cm-portfolio-tags-row cm-portfolio-tags-videos">
+                        <span class="cm-tag" data-file="Arkid/YouCut_20260420_022858326.mp4">فيديو 1</span>
+                        <span class="cm-tag" data-file="Arkid/اركيد  بارستا  .mp4">فيديو 2</span>
+                        <span class="cm-tag" data-file="Arkid/اركيد -=-=.mp4">فيديو 3</span>
+                      </div>
+                    </div>
+                  </div>
+                </article>
+                <article class="cm-portfolio-card" data-category="design video" data-market="egypt">
+                  <div class="cm-portfolio-thumb placeholder-video">
+                    <span>Smoothie</span>
+                  </div>
+                  <div class="cm-portfolio-info">
+                    <h3 class="cm-gradient-text">Smoothie</h3>
+                    <div class="cm-portfolio-tags">
+                      <div class="cm-portfolio-tags-row cm-portfolio-tags-designs">
+                        <span class="cm-tag" data-file="Smoothie/سوشيال.png">تصميم 1</span>
+                        <span class="cm-tag" data-file="Smoothie/جرين-اسموزي (1).png">تصميم 2</span>
+                        <span class="cm-tag" data-file="Smoothie/جحج.png">تصميم 3</span>
+                      </div>
+                      <div class="cm-portfolio-tags-row cm-portfolio-tags-videos">
+                        <span class="cm-tag" data-file="Smoothie/YouCut_20260420_023107562.mp4">فيديو 1</span>
+                        <span class="cm-tag" data-file="Smoothie/اسموزي  تعريفي  .mp4">فيديو 2</span>
+                        <span class="cm-tag" data-file="Smoothie/الجابري 1(2).mp4">فيديو 3</span>
+                        <span class="cm-tag" data-file="Smoothie/نهائي  اسموزي  .mp4">فيديو 4</span>
+                      </div>
+                    </div>
+                  </div>
+                </article>
+              </div>
+            </div>
+
+            <!-- ميديكل -->
+            <div class="cm-portfolio-group" data-egypt-cat="medical">
+              <div class="cm-portfolio-group-head">
+                <h3 class="cm-portfolio-group-title cm-gradient-text">ميديكل</h3>
+              </div>
+              <div class="cm-portfolio-grid">
+                <article class="cm-portfolio-card" data-category="design" data-market="egypt">
+                  <div class="cm-portfolio-thumb placeholder-video">
+                    <span>clinic</span>
+                  </div>
+                  <div class="cm-portfolio-info">
+                    <h3 class="cm-gradient-text">clinic</h3>
+                    <div class="cm-portfolio-tags">
+                      <div class="cm-portfolio-tags-row cm-portfolio-tags-designs">
+                        <span class="cm-tag" data-file="Clinic/3.png">تصميم 1</span>
+                        <span class="cm-tag" data-file="Clinic/4.png">تصميم 2</span>
+                      </div>
+                    </div>
+                  </div>
+                </article>
+                <article class="cm-portfolio-card" data-category="video" data-market="egypt">
+                  <div class="cm-portfolio-thumb placeholder-video">
+                    <span>medical</span>
+                  </div>
+                  <div class="cm-portfolio-info">
+                    <h3 class="cm-gradient-text">medical</h3>
+                    <div class="cm-portfolio-tags">
+                      <div class="cm-portfolio-tags-row cm-portfolio-tags-videos">
+                        <span class="cm-tag" data-file="Medical/WhatsApp Video 2026-02-19 at 2.34.18 PM.mp4">فيديو 1</span>
+                        <span class="cm-tag" data-file="Medical/WhatsApp Video 2026-02-19 at 2.34.18 PM (1).mp4">فيديو 2</span>
+                        <span class="cm-tag" data-file="Medical/WhatsApp Video 2026-02-19 at 2.34.18 PM (2).mp4">فيديو 3</span>
+                        <span class="cm-tag" data-file="Medical/WhatsApp Video 2026-02-19 at 2.34.18 PM (3).mp4">فيديو 4</span>
+                        <span class="cm-tag" data-file="Medical/WhatsApp Video 2026-02-19 at 2.34.18 PM (4).mp4">فيديو 5</span>
+                      </div>
+                    </div>
+                  </div>
+                </article>
+                <article class="cm-portfolio-card" data-category="design" data-market="egypt">
+                  <div class="cm-portfolio-thumb placeholder-video">
+                    <span>Plasma Lab</span>
+                  </div>
+                  <div class="cm-portfolio-info">
+                    <h3 class="cm-gradient-text">Plasma Lab</h3>
+                    <div class="cm-portfolio-tags">
+                      <div class="cm-portfolio-tags-row cm-portfolio-tags-designs">
+                        <span class="cm-tag" data-file="Plasma Lab/8.png">تصميم 1</span>
+                        <span class="cm-tag" data-file="Plasma Lab/9.png">تصميم 2</span>
+                      </div>
+                    </div>
+                  </div>
+                </article>
+              </div>
+            </div>
+
+            <!-- مشاريع أخرى -->
+            <div class="cm-portfolio-group" data-egypt-cat="other">
+              <div class="cm-portfolio-group-head">
+                <h3 class="cm-portfolio-group-title cm-gradient-text">مشاريع أخرى</h3>
+              </div>
+              <div class="cm-portfolio-grid">
+                <article class="cm-portfolio-card" data-category="design video" data-market="egypt">
+                  <div class="cm-portfolio-thumb placeholder-video">
+                    <span>NAAMA</span>
+                  </div>
+                  <div class="cm-portfolio-info">
+                    <h3 class="cm-gradient-text">NAAMA</h3>
+                    <div class="cm-portfolio-tags">
+                      <div class="cm-portfolio-tags-row cm-portfolio-tags-designs">
+                        <span class="cm-tag" data-file="NAAMA/11.png">تصميم 1</span>
+                        <span class="cm-tag" data-file="NAAMA/12.png">تصميم 2</span>
+                        <span class="cm-tag" data-file="NAAMA/2.png">تصميم 3</span>
+                        <span class="cm-tag" data-file="NAAMA/3.png">تصميم 4</span>
+                        <span class="cm-tag" data-file="NAAMA/4.png">تصميم 5</span>
+                        <span class="cm-tag" data-file="NAAMA/Untitled-1.png">تصميم 6</span>
+                        <span class="cm-tag" data-file="NAAMA/Untitled-2.png">تصميم 7</span>
+                        <span class="cm-tag" data-file="NAAMA/بلية.png">تصميم 8</span>
+                        <span class="cm-tag" data-file="NAAMA/بلية--1.png">تصميم 9</span>
+                        <span class="cm-tag" data-file="NAAMA/زززز.png">تصميم 10</span>
+                      </div>
+                      <div class="cm-portfolio-tags-row cm-portfolio-tags-videos">
+                        <span class="cm-tag" data-file="NAAMA/0409 (2).mp4">فيديو 1</span>
+                        <span class="cm-tag" data-file="NAAMA/VID-20260420-WA0000.mp4">فيديو 2</span>
+                        <span class="cm-tag" data-file="NAAMA/VID-20260420-WA0001.mp4">فيديو 3</span>
+                      </div>
+                    </div>
+                  </div>
+                </article>
+                <article class="cm-portfolio-card" data-category="design video" data-market="egypt">
+                  <div class="cm-portfolio-thumb placeholder-video">
+                    <span>بيت الملكة</span>
+                  </div>
+                  <div class="cm-portfolio-info">
+                    <h3 class="cm-gradient-text">بيت الملكة</h3>
+                    <div class="cm-portfolio-tags">
+                      <div class="cm-portfolio-tags-row cm-portfolio-tags-designs">
+                        <span class="cm-tag" data-file="بيت الملكة/12.png">تصميم 1</span>
+                        <span class="cm-tag" data-file="بيت الملكة/اول--تصميم-نهائي.png">تصميم 2</span>
+                        <span class="cm-tag" data-file="بيت الملكة/الرابع.png">تصميم 3</span>
+                      </div>
+                      <div class="cm-portfolio-tags-row cm-portfolio-tags-videos">
+                        <span class="cm-tag" data-file="بيت الملكة/الفيديو  الاول  .mp4">فيديو 1</span>
+                        <span class="cm-tag" data-file="بيت الملكة/YouCut_20260420_023356763.mp4">فيديو 2</span>
+                        <span class="cm-tag" data-file="بيت الملكة/YouCut_20260420_023708651.mp4">فيديو 3</span>
+                      </div>
+                    </div>
+                  </div>
+                </article>
+              </div>
+            </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- Contact Section -->
+      <section class="cm-section cm-section-muted" id="contact">
+        <div class="cm-container cm-two-col">
+          <div data-aos="fade-left">
+            <h2 class="cm-gradient-text" data-cm="contact-title">لنبدأ رحلتك التسويقية</h2>
+            <p data-cm="contact-text">
+              نحن هنا لمساعدتك في بناء حضور رقمي قوي ومؤثر. تواصل معنا لمناقشة
+              مشروعك القادم.
+            </p>
+            <div class="cm-contact-info">
+              <div class="cm-contact-item" data-aos="fade-up" data-aos-delay="100">
+                <span class="cm-contact-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+                  </svg>
+                </span>
+                <div>
+                  <h4>البريد الإلكتروني</h4>
+                  <p data-cm="contact-email">core.media.333@gmail.com</p>
+                </div>
+              </div>
+              <div class="cm-contact-item" data-aos="fade-up" data-aos-delay="200">
+                <span class="cm-contact-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.067 2.877 1.215 3.076.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                  </svg>
+                </span>
+                <div>
+                  <h4>واتساب</h4>
+                  <p dir="ltr" data-cm="contact-whatsapp">01019132369</p>
+                </div>
+              </div>
+              <div class="cm-contact-social-btns" data-aos="fade-up" data-aos-delay="300">
+                <a href="https://www.facebook.com/share/1bM3zcFksr/" target="_blank" class="cm-btn" data-cm="contact-facebook">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="margin-left: 8px;">
+                    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                  </svg>
+                  فيسبوك
+                </a>
+                <a href="https://wa.me/201019132369" target="_blank" class="cm-btn" data-cm="contact-whatsapp-btn">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="margin-left: 8px;">
+                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.067 2.877 1.215 3.076.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                  </svg>
+                  واتساب
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="cm-contact-form-wrapper" data-aos="fade-right">
+            <form class="cm-contact-form" id="contactForm">
+              <div class="cm-form-group">
+                <label for="name">الاسم</label>
+                <input type="text" id="name" name="name" required placeholder="اسم الكريم" />
+              </div>
+              <div class="cm-form-group">
+                <label for="brand">البراند / الشركة</label>
+                <input type="text" id="brand" name="brand" placeholder="اسم البراند أو الشركة" />
+              </div>
+              <div class="cm-form-group">
+                <label for="message">رسالتك</label>
+                <textarea id="message" name="message" rows="4" required placeholder="كيف يمكننا مساعدتك؟"></textarea>
+              </div>
+              <button type="submit" class="cm-btn cm-btn-full">إرسال الرسالة</button>
+            </form>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="cm-footer" data-aos="fade-up">
+      <div class="cm-container cm-footer-inner">
+        <span>© <span id="year"></span> Core Media. جميع الحقوق محفوظة.</span>
+        <div class="cm-footer-links">
+          <a href="#top" class="cm-link">العودة للأعلى</a>
+        </div>
+      </div>
+    </footer>
+
+    <button class="cm-back-to-top" aria-label="العودة للأعلى">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="m18 15-6-6-6 6"/>
+      </svg>
+    </button>
+
+    <div class="cm-lightbox" id="cm-lightbox" aria-hidden="true">
+      <div class="cm-lightbox-backdrop"></div>
+      <div class="cm-lightbox-content">
+        <button class="cm-lightbox-close" aria-label="إغلاق">&times;</button>
+        <div class="cm-lightbox-body">
+          <!-- Replace this placeholder with embedded video/image for each project if needed -->
+          <h3 class="cm-lightbox-title">عنوان المشروع</h3>
+          <p class="cm-lightbox-text">
+            يمكنك هنا عرض تفاصيل أكثر عن المشروع أو تشغيل فيديو أو عرض عناصر
+            بصرية إضافية.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
