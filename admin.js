@@ -456,6 +456,45 @@ document.addEventListener("DOMContentLoaded", () => {
     appCard.classList.toggle("hidden", !authed);
   };
 
+  const prepareUploadFile = async (file, preferVideo) => {
+    const looksVideo =
+      preferVideo ||
+      String(file?.type || "").startsWith("video/") ||
+      isVideoPath(file?.name);
+    if (!looksVideo) return file;
+
+    for (let i = 0; i < 50 && typeof window.cmEnsureH264Video !== "function"; i += 1) {
+      await new Promise((r) => setTimeout(r, 100));
+    }
+    if (typeof window.cmEnsureH264Video !== "function") {
+      showToast("محرك تحويل الفيديو لسه مش جاهز. حدّث الصفحة وحاول تاني.", "info");
+      return file;
+    }
+
+    uploadProgressEl?.classList.remove("hidden");
+    if (uploadProgressFillEl) uploadProgressFillEl.style.width = "0%";
+    if (uploadProgressTextEl) uploadProgressTextEl.textContent = "تحويل...";
+    try {
+      return await window.cmEnsureH264Video(file, {
+        onStatus: (msg) => {
+          if (uploadProgressTitleEl) uploadProgressTitleEl.textContent = msg;
+        },
+        onProgress: (ratio) => {
+          const pct = Math.round((ratio || 0) * 100);
+          if (uploadProgressFillEl) uploadProgressFillEl.style.width = `${pct}%`;
+          if (uploadProgressTextEl) uploadProgressTextEl.textContent = `${pct}%`;
+        },
+      });
+    } catch (err) {
+      console.warn("Video convert failed, uploading original:", err);
+      showToast(
+        "تعذر التحويل التلقائي. هيترفع الأصل — لو المشكلة فضلت، ارفع من اللاب بعد التحويل.",
+        "info"
+      );
+      return file;
+    }
+  };
+
   const uploadToStorage = async (file, folder = "site") => {
     if (!supabase) throw new Error("Supabase not configured");
     if (!file) throw new Error("No file selected");
@@ -880,13 +919,18 @@ document.addEventListener("DOMContentLoaded", () => {
         uploadProgressEl?.classList.remove("hidden");
         cancelUploadBtn?.classList.remove("hidden");
         for (let i = 0; i < files.length; i += 1) {
-          const file = files[i];
+          const original = files[i];
+          const preferVideo = selectedType === "video" || isVideoPath(original.name);
+          if (uploadProgressTitleEl) {
+            uploadProgressTitleEl.textContent = `تحضير الملف ${i + 1} من ${files.length}...`;
+          }
+          const file = await prepareUploadFile(original, preferVideo);
           if (uploadProgressTitleEl) {
             uploadProgressTitleEl.textContent = `جاري رفع الملف ${i + 1} من ${files.length}...`;
           }
           const { publicUrl } = await uploadToStorage(file, brand.id);
           if (!publicUrl) continue;
-          const type = selectedType === "video" || isVideoPath(file.name) ? "video" : "design";
+          const type = preferVideo || isVideoPath(file.name) ? "video" : "design";
           const title = files.length === 1 ? customTitle : "";
           pushItem(publicUrl, type, title);
         }
@@ -1181,9 +1225,10 @@ document.addEventListener("DOMContentLoaded", () => {
     e.preventDefault();
     try {
       let introUrl = document.getElementById("intro-video-url").value.trim();
-      const file = introVideoUpload?.files?.[0] || null;
-      if (file) {
+      const fileRaw = introVideoUpload?.files?.[0] || null;
+      if (fileRaw) {
         uploadProgressEl?.classList.remove("hidden");
+        const file = await prepareUploadFile(fileRaw, true);
         const { publicUrl } = await uploadToStorage(file, "intro");
         introUrl = publicUrl || introUrl;
         document.getElementById("intro-video-url").value = introUrl;

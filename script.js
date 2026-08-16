@@ -591,7 +591,7 @@ document.addEventListener("DOMContentLoaded", () => {
     'preload="auto" playsinline webkit-playsinline controls controlslist="nodownload noplaybackrate" disablepictureinpicture disableremoteplayback';
 
   const videoFallbackHtml =
-    '<p class="cm-lightbox-video-fallback">الصوت شغال بس الصورة مش ظاهرة؟ غالبًا الفيديو بصيغة الموبايل (HEVC). حوّله إلى MP4 بجودة H.264 وأعد رفعه من لوحة الإدارة.</p>';
+    '<p class="cm-lightbox-video-fallback">الصوت شغال والصورة مش ظاهرة — غالبًا الملف نفسه بصيغة HEVC (حتى لو اترفح من اللاب). من لوحة الإدارة: احذف القاطعة وارفعها تاني واستنى رسالة التحويل لـ H.264.</p>';
 
   const buildVideoHtml = (src, extraAttrs = "") =>
     `<div class="cm-lightbox-media-frame cm-lightbox-media-frame-video">
@@ -623,12 +623,17 @@ document.addEventListener("DOMContentLoaded", () => {
       };
 
       const checkTrack = () => {
-        // Desktop Chrome often plays audio-only for HEVC; videoWidth stays 0.
-        if (video.readyState >= 2 && (!video.videoWidth || !video.videoHeight)) {
-          showFallback();
-        } else {
-          applySize();
-        }
+        // Desktop often plays audio-only for HEVC; videoWidth stays 0.
+        // Wait a tick so late metadata isn't treated as failure.
+        window.setTimeout(() => {
+          if (!video.isConnected) return;
+          if (video.readyState >= 2 && (!video.videoWidth || !video.videoHeight)) {
+            showFallback();
+          } else if (video.videoWidth > 0) {
+            applySize();
+            if (fallback) fallback.classList.remove("is-visible");
+          }
+        }, 400);
       };
 
       video.addEventListener("loadedmetadata", applySize);
