@@ -1122,3 +1122,21 @@
     width: 110px;
   }
 }
+
+/* Dashboard editor for visitor categories and existing-project membership */
+.cm-admin-pad {padding-inline:1.5rem!important;}
+.cm-category-assign {margin-top:24px;overflow:hidden;}
+.cm-category-assign-count {padding:7px 1.5rem 11px;color:var(--text-muted);font-size:.88rem;font-weight:700;}
+.cm-category-project-checklist {padding:0 1.5rem 1rem;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;max-height:425px;overflow:auto;}
+.cm-category-project-item {display:flex;align-items:center;gap:12px;padding:12px 13px;border:1px solid var(--border);border-radius:12px;background:#f8fbff;cursor:pointer;min-width:0;transition:border-color .2s,background .2s;}
+.cm-category-project-item:has(input:checked) {border-color:rgba(228,145,31,.65);background:#fff8ee;}
+.cm-category-project-item input[type="checkbox"] {width:19px;height:19px;flex-shrink:0;accent-color:#e4911f;cursor:pointer;}
+.cm-category-project-detail {min-width:0;display:flex;flex:1;flex-direction:column;gap:4px;}
+.cm-category-project-detail strong {color:var(--text-main);font-size:.89rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.cm-category-project-detail small {color:var(--text-muted);font-size:.73rem;line-height:1.5;}
+.cm-project-media-count {white-space:nowrap;color:var(--secondary);font-size:.75rem;font-weight:700;}
+.cm-category-actions {display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;}
+.cm-admin-page .cm-service-editor-item [data-field="description"] {min-height:70px;}
+.cm-admin-page .cm-service-editor-item select {max-width:100%;}
+.cm-admin-page .cm-service-editor-item input[type="file"] {max-width:100%;}
+@media(max-width:800px) {.cm-category-project-checklist {grid-template-columns:1fr;}.cm-category-actions>* {flex:1 1 190px;}.cm-admin-pad{padding-inline:1rem!important;}}

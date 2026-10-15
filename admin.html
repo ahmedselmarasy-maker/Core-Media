@@ -76,7 +76,7 @@
             </button>
             <button class="cm-nav-item" data-view="sectors" type="button">
               <i data-lucide="folder-tree"></i>
-              <span>القطاعات والتصنيفات</span>
+              <span>إدارة الأقسام والمشاريع</span>
             </button>
             <button class="cm-nav-item" data-view="hero" type="button">
               <i data-lucide="sparkles"></i>
@@ -168,7 +168,7 @@
                 </button>
                 <button type="button" class="cm-quick-link" data-goto="sectors">
                   <i data-lucide="folder-tree"></i>
-                  <span>القطاعات والتصنيفات</span>
+                  <span>إدارة الأقسام والمشاريع</span>
                 </button>
                 <button type="button" class="cm-quick-link" data-goto="hero">
                   <i data-lucide="sparkles"></i>
@@ -355,10 +355,26 @@
                 </div>
 
                 <div class="cm-card-head cm-card-head-inline">
+                  <h2><i data-lucide="layout-grid"></i> شاشة اختيار الأقسام</h2>
+                </div>
+                <div class="cm-form-row">
+                  <div class="cm-form-group"><label for="guide-eyebrow">النص الصغير فوق العنوان</label><input id="guide-eyebrow" placeholder="BEYOND CONTENT" /></div>
+                  <div class="cm-form-group"><label for="guide-heading">عنوان الشاشة</label><input id="guide-heading" placeholder="اختار مجالك،" /></div>
+                </div>
+                <div class="cm-form-row">
+                  <div class="cm-form-group"><label for="guide-highlight">الجزء المميز من العنوان</label><input id="guide-highlight" placeholder="واكتشف شغلنا فيه." /></div>
+                  <div class="cm-form-group"><label for="guide-links-label">النص فوق روابط الرئيسية ومن نحن والتواصل</label><input id="guide-links-label" /></div>
+                </div>
+                <div class="cm-form-group"><label for="guide-description">وصف شاشة الاختيار</label><textarea id="guide-description" rows="3"></textarea></div>
+                <div class="cm-form-row">
+                  <div class="cm-form-group"><label for="guide-accent">لون الأيقونات والعناصر المميزة</label><input id="guide-accent" type="color" value="#e4911f" /></div>
+                  <div class="cm-form-group"><label for="guide-background">خلفية صفحة اختيار الأقسام</label><input id="guide-background" type="color" value="#061523" /></div>
+                </div>
+                <div class="cm-card-head cm-card-head-inline">
                   <h2><i data-lucide="tags"></i> أقسام الأنشطة المتاحة للزائر</h2>
                 </div>
                 <p class="cm-admin-note" style="padding: 0 1.25rem; margin-top: 0.75rem;">
-                  غيّر الاسم الظاهر، رتّب التصنيفات، أو أضف تصنيفًا جديدًا. حذف قسم ينقل المشاريع التابعة له إلى قسم آخر. الأقسام هنا هي الخيارات التي يراها زائر الموقع.
+                  تقدر تغير الاسم والوصف والأيقونة وصورة القسم وترتيبه وإظهاره أو إخفاءه. حفظ الأقسام لا يحذف ملفات المشاريع.
                 </p>
                 <div id="categories-editor" class="cm-services-editor"></div>
                 <div class="cm-form-footer">
@@ -370,6 +386,21 @@
                   </button>
                 </div>
               </form>
+
+              <section class="cm-card cm-settings-card cm-category-assign" aria-labelledby="category-assign-title">
+                <div class="cm-card-head"><h2 id="category-assign-title"><i data-lucide="folder-check"></i> إضافة المشاريع القديمة إلى الأقسام</h2></div>
+                <p class="cm-admin-note cm-admin-pad">اختار القسم، وبعدها حدد المشاريع القديمة اللي عايزها تظهر داخله. المشروع ممكن يظهر في أكتر من قسم من غير ما تنسخ صوره أو فيديوهاته.</p>
+                <div class="cm-form-row cm-admin-pad">
+                  <div class="cm-form-group"><label for="assign-category">القسم المطلوب</label><select id="assign-category"></select></div>
+                  <div class="cm-form-group"><label for="assign-search">ابحث عن مشروع قديم</label><input id="assign-search" placeholder="اسم البراند أو المشروع..." /></div>
+                </div>
+                <div class="cm-category-assign-count" id="assign-status" aria-live="polite"></div>
+                <div class="cm-category-project-checklist" id="category-project-checklist"></div>
+                <div class="cm-form-footer cm-category-actions">
+                  <button class="cm-btn cm-btn-outline" type="button" id="import-legacy-brands"><i data-lucide="archive-restore"></i> استيراد المشاريع القديمة الناقصة</button>
+                  <button class="cm-btn cm-btn-primary" type="button" id="save-category-projects"><i data-lucide="save"></i> حفظ مشاريع القسم</button>
+                </div>
+              </section>
             </div>
 
             <!-- Hero -->
@@ -403,6 +434,11 @@
                     <label for="hero-cta-secondary">زر ثانوي</label>
                     <input id="hero-cta-secondary" />
                   </div>
+                </div>
+                <div class="cm-card-head cm-card-head-inline"><h2><i data-lucide="quote"></i> رسالة الكارت في الرئيسية</h2></div>
+                <div class="cm-form-row">
+                  <div class="cm-form-group"><label for="hero-quote">العبارة الرئيسية</label><input id="hero-quote" /></div>
+                  <div class="cm-form-group"><label for="hero-quote-caption">العبارة أسفلها</label><input id="hero-quote-caption" /></div>
                 </div>
                 <div class="cm-form-row cm-metrics-row">
                   <div class="cm-form-group">
@@ -585,7 +621,7 @@
     <script type="module" src="admin-video-convert.js"></script>
     <script src="admin.js"></script>
     <script>
-      lucide.createIcons();
+      if (window.lucide) window.lucide.createIcons();
     </script>
   </body>
 </html>

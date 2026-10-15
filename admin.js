@@ -25,6 +25,8 @@ document.addEventListener("DOMContentLoaded", () => {
       ],
       introVideoUrl: "فيديو  الشركة  .mp4",
       introVideoLabel: "Video.Core",
+      quote: "“بنحوّل أفكارك لمحتوى يلفت النظر ويسيب أثر.”",
+      quoteCaption: "إبداع في كل تفصيلة.. ونتائج تصنع الفرق.",
     },
     about: {
       title: "من نحن",
@@ -95,12 +97,22 @@ document.addEventListener("DOMContentLoaded", () => {
         { id: "saudi", label: "القطاع السعودي" },
         { id: "egypt", label: "القطاع المصري" },
       ],
+      guide: {
+        eyebrow: "BEYOND CONTENT",
+        heading: "اختار مجالك،",
+        highlight: "واكتشف شغلنا فيه.",
+        description: "كل مجال ليه قصته. اختار القسم المناسب لنشاطك وشوف أعمال Core Media المصممة لقطاعك.",
+        linksLabel: "أو تعرّف علينا أكثر",
+        accentColor: "#e4911f",
+        backgroundColor: "#061523",
+      },
+      projectCategories: {},
       egyptCategories: [
-        { id: "restaurants", label: "مطاعم" },
-        { id: "cafes", label: "كافيهات" },
-        { id: "medical", label: "ميديكل" },
-        { id: "education", label: "تعليم ومدرسين" },
-        { id: "other", label: "مشاريع أخرى" },
+        { id: "restaurants", label: "مطاعم", icon: "restaurants" },
+        { id: "cafes", label: "كافيهات", icon: "cafes" },
+        { id: "medical", label: "ميديكل", icon: "medical" },
+        { id: "education", label: "تعليم ومدرسين", icon: "education" },
+        { id: "other", label: "مشاريع أخرى", icon: "other" },
       ],
     },
   };
@@ -171,6 +183,20 @@ document.addEventListener("DOMContentLoaded", () => {
   const addServiceBtn = document.getElementById("add-service");
   const addCategoryBtn = document.getElementById("add-category");
   const introVideoUpload = document.getElementById("intro-video-upload");
+  const assignCategorySelect = document.getElementById("assign-category");
+  const assignSearchInput = document.getElementById("assign-search");
+  const projectChecklist = document.getElementById("category-project-checklist");
+  const assignStatus = document.getElementById("assign-status");
+  const saveCategoryProjectsBtn = document.getElementById("save-category-projects");
+  const importLegacyBrandsBtn = document.getElementById("import-legacy-brands");
+
+  const CATEGORY_ICONS = [
+    ["restaurants", "مطاعم"], ["cafes", "كافيهات"], ["medical", "ميديكال"],
+    ["education", "تعليم"], ["other", "نجوم / عام"], ["beauty", "تجميل"],
+    ["retail", "متاجر"], ["realestate", "عقارات"], ["fitness", "رياضة"],
+    ["tech", "تقنية"], ["cars", "سيارات"], ["law", "قانون"],
+    ["events", "فعاليات"], ["hotel", "فنادق"],
+  ];
 
   let data = [];
   let site = structuredClone(DEFAULT_SITE);
@@ -569,7 +595,11 @@ document.addEventListener("DOMContentLoaded", () => {
     if (egyptCategories.map((c) => c.id).join(",") === "restaurants,cafes,medical,other") {
       egyptCategories.splice(3, 0, { id: "education", label: "تعليم ومدرسين" });
     }
-    return { markets, egyptCategories };
+    return { ...sectors, markets, egyptCategories,
+      projectCategories: sectors.projectCategories && typeof sectors.projectCategories === "object" && !Array.isArray(sectors.projectCategories)
+        ? sectors.projectCategories : {},
+      guide: { ...DEFAULT_SITE.sectors.guide, ...(sectors.guide || {}) },
+    };
   };
 
   const marketLabel = (marketId) => {
@@ -612,8 +642,18 @@ document.addEventListener("DOMContentLoaded", () => {
     brandEgyptCategoryInput.disabled = false;
   };
 
+  const assignedCategoriesFor = (brand) => {
+    const saved = getSectors().projectCategories;
+    // The map is the source of truth for new multi-category assignments.
+    if (Object.prototype.hasOwnProperty.call(saved, brand.id) && Array.isArray(saved[brand.id])) {
+      return saved[brand.id];
+    }
+    return [brand.egyptCategory || "other"];
+  };
+
   const marketText = (brand) => {
-    return `${marketLabel(brand.market)} - ${categoryLabel(brand.egyptCategory || "other")}`;
+    const labels = assignedCategoriesFor(brand).map(categoryLabel).join("، ") || "بدون قسم";
+    return `${marketLabel(brand.market)} - ${labels}`;
   };
 
   const mediaLabel = (m, i) => {
@@ -865,6 +905,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         if (current) {
+          const previousCategory = current.egyptCategory || "other";
           current.name = payload.name;
           current.market = payload.market;
           current.egyptCategory = payload.egyptCategory;
@@ -872,6 +913,15 @@ document.addEventListener("DOMContentLoaded", () => {
           current.media = Array.isArray(current.media) ? current.media : [];
           const saved = await upsertBrand(current);
           data = sortBrands(data.map((b) => (b.id === saved.id ? saved : b)));
+          // Changing a project's main section in the brand form is a deliberate
+          // move to this section; clear any older multi-category overrides.
+          if (previousCategory !== payload.egyptCategory) {
+            const overrides = { ...getSectors().projectCategories };
+            overrides[saved.id] = [payload.egyptCategory];
+            site.sectors = { ...getSectors(), projectCategories: overrides };
+            await saveSiteToDb(site);
+            renderCategoryProjectChecklist();
+          }
         } else {
           const saved = await upsertBrand({
             id: null,
@@ -885,6 +935,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         renderBrandList();
         renderMediaList();
+        renderCategoryProjectChecklist();
         updateDashboardStats();
         showToast("تم حفظ البراند بنجاح", "success");
       } catch (err) {
@@ -977,6 +1028,13 @@ document.addEventListener("DOMContentLoaded", () => {
       await assertIsAdmin();
       await deleteBrand(brand.id);
       data = data.filter((b) => b.id !== brand.id);
+      const overrides = { ...getSectors().projectCategories };
+      if (Object.prototype.hasOwnProperty.call(overrides, brand.id)) {
+        delete overrides[brand.id];
+        site.sectors = { ...getSectors(), projectCategories: overrides };
+        await saveSiteToDb(site);
+      }
+      renderCategoryProjectChecklist();
       showToast("تم حذف البراند بنجاح", "success");
       clearForm();
       renderBrandList();
@@ -1000,6 +1058,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     document.getElementById("intro-video-label").value = h.introVideoLabel || "";
     document.getElementById("intro-video-url").value = h.introVideoUrl || "";
+    document.getElementById("hero-quote").value = h.quote ?? DEFAULT_SITE.hero.quote;
+    document.getElementById("hero-quote-caption").value = h.quoteCaption ?? DEFAULT_SITE.hero.quoteCaption;
 
     const a = site.about || {};
     document.getElementById("about-title").value = a.title || "";
@@ -1021,8 +1081,17 @@ document.addEventListener("DOMContentLoaded", () => {
       markets.find((m) => m.id === "saudi")?.label || "القطاع السعودي";
     document.getElementById("market-egypt-label").value =
       markets.find((m) => m.id === "egypt")?.label || "القطاع المصري";
+    const guide = getSectors().guide;
+    document.getElementById("guide-eyebrow").value = guide.eyebrow || "";
+    document.getElementById("guide-heading").value = guide.heading || "";
+    document.getElementById("guide-highlight").value = guide.highlight || "";
+    document.getElementById("guide-description").value = guide.description || "";
+    document.getElementById("guide-links-label").value = guide.linksLabel || "";
+    document.getElementById("guide-accent").value = /^#[0-9a-f]{6}$/i.test(guide.accentColor) ? guide.accentColor : "#e4911f";
+    document.getElementById("guide-background").value = /^#[0-9a-f]{6}$/i.test(guide.backgroundColor) ? guide.backgroundColor : "#061523";
     renderCategoriesEditor();
     populateBrandSelects();
+    renderCategoryAssignmentSelect();
 
     const c = site.contact || {};
     document.getElementById("contact-title").value = c.title || "";
@@ -1054,10 +1123,26 @@ document.addEventListener("DOMContentLoaded", () => {
           <label>الاسم الظاهر</label>
           <input data-field="label" value="${escAttr(item.label || "")}" placeholder="مثلاً: مطاعم" />
         </div>
-        <div class="cm-form-group">
-          <label>المعرّف الداخلي</label>
-          <input data-field="id" value="${escAttr(item.id || "")}" readonly />
+        <div class="cm-form-row">
+          <div class="cm-form-group">
+            <label>الأيقونة</label>
+            <select data-field="icon">${CATEGORY_ICONS.map(([id,label]) => `<option value="${id}" ${(item.icon || item.id) === id ? "selected" : ""}>${label}</option>`).join("")}</select>
+          </div>
+          <div class="cm-form-group">
+            <label>الظهور للزوار</label>
+            <select data-field="visible"><option value="yes" ${item.visible !== false ? "selected" : ""}>ظاهر</option><option value="no" ${item.visible === false ? "selected" : ""}>مخفي</option></select>
+          </div>
         </div>
+        <div class="cm-form-group">
+          <label>وصف القسم عند فتحه</label>
+          <textarea data-field="description" rows="2" placeholder="نبذة مخصصة تظهر أعلى مشاريع القسم">${escAttr(item.description || "")}</textarea>
+        </div>
+        <div class="cm-form-row">
+          <div class="cm-form-group"><label>جملة صغيرة على كارت القسم</label><input data-field="tagline" value="${escAttr(item.tagline || "")}" placeholder="استكشف مشاريعنا" /></div>
+          <div class="cm-form-group"><label>صورة القسم (رابط أو مسار)</label><input data-field="coverUrl" value="${escAttr(item.coverUrl || "")}" placeholder="https://..." /></div>
+        </div>
+        <div class="cm-form-group"><label>أو ارفع صورة للقسم</label><input type="file" accept="image/png,image/jpeg,image/webp" data-category-cover-upload /></div>
+        <div class="cm-form-group"><label>المعرّف الداخلي (ثابت)</label><input data-field="id" value="${escAttr(item.id || "")}" readonly /></div>
       </div>`
       )
       .join("");
@@ -1080,7 +1165,13 @@ document.addEventListener("DOMContentLoaded", () => {
           }
         });
         list.splice(idx, 1);
-        site.sectors = { ...getSectors(), egyptCategories: list };
+        const projectCategories = { ...getSectors().projectCategories };
+        Object.keys(projectCategories).forEach((brandId) => {
+          if (Array.isArray(projectCategories[brandId])) {
+            projectCategories[brandId] = projectCategories[brandId].filter((id) => id !== removed.id);
+          }
+        });
+        site.sectors = { ...getSectors(), egyptCategories: list, projectCategories };
         renderCategoriesEditor();
         populateBrandSelects();
       });
@@ -1110,7 +1201,14 @@ document.addEventListener("DOMContentLoaded", () => {
       const label = el.querySelector('[data-field="label"]')?.value?.trim() || "";
       const id = el.querySelector('[data-field="id"]')?.value?.trim() || makeCategoryId(label);
       if (!label) return;
-      items.push({ id, label });
+      items.push({
+        id, label,
+        icon: el.querySelector('[data-field="icon"]')?.value || "other",
+        visible: el.querySelector('[data-field="visible"]')?.value !== "no",
+        description: el.querySelector('[data-field="description"]')?.value?.trim() || "",
+        tagline: el.querySelector('[data-field="tagline"]')?.value?.trim() || "",
+        coverUrl: el.querySelector('[data-field="coverUrl"]')?.value?.trim() || "",
+      });
     });
     return items.length ? items : DEFAULT_SITE.sectors.egyptCategories;
   };
@@ -1184,6 +1282,111 @@ document.addEventListener("DOMContentLoaded", () => {
     renderCategoriesEditor();
   });
 
+  // Category memberships live in cm_site_settings (JSON), so one existing project
+  // may appear in several visitor sections without duplicating media or changing SQL.
+  const renderCategoryAssignmentSelect = () => {
+    if (!assignCategorySelect) return;
+    const current = assignCategorySelect.value;
+    const cats = getSectors().egyptCategories;
+    assignCategorySelect.innerHTML = cats
+      .map((cat) => `<option value="${escAttr(cat.id)}">${escAttr(cat.label)}</option>`)
+      .join("");
+    if (cats.some((cat) => cat.id === current)) assignCategorySelect.value = current;
+    renderCategoryProjectChecklist();
+  };
+
+  const renderCategoryProjectChecklist = () => {
+    if (!projectChecklist || !assignCategorySelect) return;
+    const catId = assignCategorySelect.value;
+    const brands = [...data].sort((a, b) => String(a.name).localeCompare(String(b.name), "ar"));
+    projectChecklist.innerHTML = brands.length
+      ? brands.map((brand) => {
+          const isChecked = assignedCategoriesFor(brand).includes(catId);
+          const selectedLabels = assignedCategoriesFor(brand).map(categoryLabel).join("، ") || "بدون قسم";
+          return `<label class="cm-category-project-item" data-search="${escAttr((brand.name + ' ' + marketText(brand)).toLowerCase())}">
+            <input type="checkbox" data-project-id="${escAttr(brand.id)}" ${isChecked ? "checked" : ""} />
+            <span class="cm-category-project-detail"><strong>${escAttr(brand.name)}</strong><small>${escAttr(marketLabel(brand.market))} · ${escAttr(selectedLabels)}</small></span>
+            <span class="cm-project-media-count">${(brand.media || []).length} ملف</span>
+          </label>`;
+        }).join("")
+      : `<p class="cm-admin-note cm-admin-pad">لا توجد مشاريع محفوظة بعد. اضغط «استيراد المشاريع القديمة الناقصة» لو عندك مشاريع داخل النسخة القديمة.</p>`;
+    filterAssignmentList();
+  };
+
+  const filterAssignmentList = () => {
+    const term = (assignSearchInput?.value || "").toLowerCase().trim();
+    let visibleCount = 0;
+    projectChecklist?.querySelectorAll(".cm-category-project-item").forEach((item) => {
+      const matches = !term || (item.dataset.search || "").includes(term);
+      item.classList.toggle("hidden", !matches);
+      if (matches) visibleCount++;
+    });
+    const totalSelected = projectChecklist?.querySelectorAll('input[data-project-id]:checked').length || 0;
+    if (assignStatus) assignStatus.textContent = `المشاريع المحددة داخل القسم: ${totalSelected} — نتائج البحث: ${visibleCount} من ${data.length}`;
+  };
+  assignCategorySelect?.addEventListener("change", renderCategoryProjectChecklist);
+  assignSearchInput?.addEventListener("input", filterAssignmentList);
+  projectChecklist?.addEventListener("change", filterAssignmentList);
+
+  saveCategoryProjectsBtn?.addEventListener("click", async () => {
+    try {
+      await assertIsAdmin();
+      const categoryId = assignCategorySelect?.value;
+      if (!getSectors().egyptCategories.some((cat) => cat.id === categoryId)) throw new Error("اختر قسمًا صحيحًا أولاً");
+      const assignments = { ...getSectors().projectCategories };
+      // Apply the complete checkbox state (including rows hidden by search):
+      // checking adds membership; unchecking removes only this section.
+      projectChecklist.querySelectorAll('input[data-project-id]').forEach((input) => {
+        const brand = data.find((item) => item.id === input.getAttribute("data-project-id"));
+        if (!brand) return;
+        const current = assignedCategoriesFor(brand).filter((id) => id !== categoryId);
+        if (input.checked) current.push(categoryId);
+        assignments[brand.id] = [...new Set(current)];
+      });
+      site.sectors = { ...getSectors(), projectCategories: assignments };
+      await persistSite("تم حفظ مشاريع القسم. هتظهر للزوار من غير إعادة رفع الملفات.");
+      renderCategoryProjectChecklist();
+      renderBrandList();
+    } catch (error) {
+      showToast(error?.message || "تعذر حفظ المشاريع داخل القسم", "error");
+    }
+  });
+
+  // Import only missing legacy HTML projects. Avoid duplicates by market/name;
+  // existing DB projects (including their media) are never overwritten.
+  importLegacyBrandsBtn?.addEventListener("click", async () => {
+    try {
+      await assertIsAdmin();
+      const legacy = await parseBrandsFromIndexHtml();
+      if (!legacy.length) throw new Error("لم يتم العثور على مشاريع قديمة داخل index.html");
+      const key = (item) => `${String(item.market).toLowerCase()}|${String(item.name).trim().toLocaleLowerCase()}`;
+      const existing = new Set(data.map(key));
+      const missing = legacy.filter((item) => !existing.has(key(item)));
+      if (!missing.length) return showToast("كل المشاريع القديمة موجودة بالفعل، مفيش حاجة محتاجة استيراد.", "info");
+      if (!window.confirm(`هتستورد ${missing.length} مشروع قديم ناقص بملفاته الموجودة بالفعل. متابعة؟`)) return;
+      importLegacyBrandsBtn.disabled = true;
+      let imported = 0;
+      try {
+        for (const brand of missing) {
+          const saved = await upsertBrand(brand);
+          data.push(saved);
+          existing.add(key(saved));
+          imported++;
+        }
+      } finally {
+        importLegacyBrandsBtn.disabled = false;
+      }
+      data = sortBrands(data);
+      renderBrandList();
+      updateDashboardStats();
+      renderCategoryProjectChecklist();
+      showToast(`تم استيراد ${imported} مشروع قديم. اختار أقسامهم واحفظ.`, "success");
+    } catch (error) {
+      importLegacyBrandsBtn.disabled = false;
+      showToast(error?.message || "تعذر استيراد المشاريع", "error");
+    }
+  });
+
   const persistSite = async (message = "تم حفظ المحتوى") => {
     await assertIsAdmin();
     await saveSiteToDb(site);
@@ -1198,7 +1401,28 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("market-saudi-label")?.value?.trim() || "القطاع السعودي";
       const egyptLabel =
         document.getElementById("market-egypt-label")?.value?.trim() || "القطاع المصري";
+      // Upload new cover images before persisting the corresponding category metadata.
+      const categoryRows = [...categoriesEditor.querySelectorAll(".cm-service-editor-item")];
+      for (let i = 0; i < categoryRows.length; i += 1) {
+        const file = categoryRows[i].querySelector("[data-category-cover-upload]")?.files?.[0];
+        if (file && egyptCategories[i]) {
+          if (!file.type.startsWith("image/")) throw new Error("اختار صورة للقسم، مش فيديو");
+          const { publicUrl } = await uploadToStorage(file, `category-${egyptCategories[i].id}`);
+          egyptCategories[i].coverUrl = publicUrl || egyptCategories[i].coverUrl;
+        }
+      }
+      const guide = {
+        eyebrow: document.getElementById("guide-eyebrow").value.trim(),
+        heading: document.getElementById("guide-heading").value.trim(),
+        highlight: document.getElementById("guide-highlight").value.trim(),
+        description: document.getElementById("guide-description").value.trim(),
+        linksLabel: document.getElementById("guide-links-label").value.trim(),
+        accentColor: document.getElementById("guide-accent").value,
+        backgroundColor: document.getElementById("guide-background").value,
+      };
       site.sectors = {
+        ...getSectors(),
+        guide,
         markets: [
           { id: "saudi", label: saudiLabel },
           { id: "egypt", label: egyptLabel },
@@ -1218,7 +1442,9 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       }
 
-      await persistSite("تم حفظ القطاعات والتصنيفات");
+      await persistSite("تم حفظ تصميم الأقسام ونصوصها وصورها");
+      renderCategoriesEditor();
+      renderCategoryAssignmentSelect();
       populateBrandSelects();
       renderBrandList();
       updateDashboardStats();
@@ -1254,6 +1480,8 @@ document.addEventListener("DOMContentLoaded", () => {
         })),
         introVideoUrl: introUrl,
         introVideoLabel: document.getElementById("intro-video-label").value.trim(),
+        quote: document.getElementById("hero-quote").value.trim(),
+        quoteCaption: document.getElementById("hero-quote-caption").value.trim(),
       };
       await persistSite("تم حفظ الصفحة الرئيسية");
     } catch (err) {

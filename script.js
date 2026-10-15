@@ -178,6 +178,7 @@ document.addEventListener("DOMContentLoaded", () => {
     { id: "egypt", label: "القطاع المصري" },
   ];
   let EGYPT_CATEGORIES = [...DEFAULT_EGYPT_CATEGORIES];
+  let projectCategories = {}; // Saved multi-category memberships keyed by existing project ID.
   let MARKET_LABELS = {
     saudi: "القطاع السعودي",
     egypt: "القطاع المصري",
@@ -254,6 +255,8 @@ document.addEventListener("DOMContentLoaded", () => {
     setText('[data-cm="hero-subtitle"]', hero.subtitle);
     setText('[data-cm="hero-cta-primary"]', hero.ctaPrimary);
     setText('[data-cm="hero-cta-secondary"]', hero.ctaSecondary);
+    setText('[data-cm="hero-quote"]', hero.quote);
+    setText('[data-cm="hero-quote-caption"]', hero.quoteCaption);
     if (Array.isArray(hero.metrics)) {
       hero.metrics.forEach((metric, i) => {
         setText(`[data-cm="metric-${i}-number"]`, metric.number);
@@ -289,9 +292,31 @@ document.addEventListener("DOMContentLoaded", () => {
     setText('[data-cm="portfolio-subtitle"]', content.portfolio?.subtitle);
 
     const sectors = content.sectors || {};
+    const guide = sectors.guide || {};
+    setText('[data-cm="guide-eyebrow"]', guide.eyebrow);
+    setText('[data-cm="guide-heading"]', guide.heading);
+    setText('[data-cm="guide-highlight"]', guide.highlight);
+    setText('[data-cm="guide-description"]', guide.description);
+    setText('[data-cm="guide-links-label"]', guide.linksLabel);
+    if (/^#[0-9a-f]{6}$/i.test(guide.accentColor || "")) {
+      document.documentElement.style.setProperty("--cm-guide-accent", guide.accentColor);
+    }
+    if (/^#[0-9a-f]{6}$/i.test(guide.backgroundColor || "")) {
+      document.documentElement.style.setProperty("--cm-guide-bg", guide.backgroundColor);
+    }
+    projectCategories = sectors.projectCategories && typeof sectors.projectCategories === "object" && !Array.isArray(sectors.projectCategories)
+      ? sectors.projectCategories : {};
     if (Array.isArray(sectors.egyptCategories) && sectors.egyptCategories.length) {
       EGYPT_CATEGORIES = sectors.egyptCategories
-        .map((c) => ({ id: String(c.id || "").trim(), label: String(c.label || "").trim() }))
+        .map((c) => ({
+          id: String(c.id || "").trim(),
+          label: String(c.label || "").trim(),
+          icon: String(c.icon || c.id || "other"),
+          visible: c.visible !== false,
+          description: String(c.description || ""),
+          tagline: String(c.tagline || ""),
+          coverUrl: String(c.coverUrl || ""),
+        }))
         .filter((c) => c.id && c.label);
     } else {
       EGYPT_CATEGORIES = [...DEFAULT_EGYPT_CATEGORIES];
@@ -510,8 +535,30 @@ document.addEventListener("DOMContentLoaded", () => {
     cafes: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9h14v5a7 7 0 0 1-14 0V9ZM17 10h2a3 3 0 0 1 0 6h-3M3 21h16M8 3v3m4-3v3"/></svg>',
     education: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m2 9 10-5 10 5-10 5-10-5Zm4 3v5c4 3 8 3 12 0v-5M22 9v7"/></svg>',
     other: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4L12 2ZM19 18l.8 1.2L21 20l-1.2.8L19 22l-.8-1.2L17 20l1.2-.8L19 18Z"/></svg>',
+    beauty: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 9 9l-6 3 6 3 3 6 3-6 6-3-6-3-3-6Z"/></svg>',
+    retail: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10h16l-1 11H5L4 10Zm0 0 2-7h12l2 7M9 10V7m6 3V7"/></svg>',
+    realestate: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 11 9-8 9 8v10H3V11Zm6 10v-7h6v7"/></svg>',
+    fitness: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8v8M2 9v6m6-9v12m8-12v12m3-10v8m3-7v6M8 12h8"/></svg>',
+    tech: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 9h6v6H9V9Zm3-8v3m0 16v3M1 12h3m16 0h3"/></svg>',
+    cars: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 16-1-5 3-6h10l3 6-1 5H5Zm-1-5h16M7 16v3m10-3v3M7 14h.01M17 14h.01"/></svg>',
+    law: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18M5 6h14M4 6l-3 6h6L4 6Zm16 0-3 6h6l-3-6ZM6 21h12"/></svg>',
+    events: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 2v6m10-6v6M3 11h18m-10 4 1 2 3 .3-2 2 .5 3-2.5-1.5L8 22l.5-3-2-2 3-.3 1.5-2Z"/></svg>',
+    hotel: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 21V6h18v15M8 6V3h8v3M2 21h20M8 10h2m4 0h2m-8 4h2m4 0h2m-6 7v-4h4v4"/></svg>',
   };
   const categoryArrow = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14 6-6 6 6 6"/></svg>';
+  const categoryIconFor = (category) => categoryIcons[category?.icon] || categoryIcons[category?.id] || categoryIcons.other;
+  const safeImageUrl = (url) => {
+    const value = String(url || "").trim();
+    if (!value || /[\x00-\x1f]/.test(value) || /^(javascript|data|vbscript):/i.test(value)) return "";
+    return /^(https?:\/\/|\/|[\w.\u0600-\u06ff#%-])/i.test(value) ? value : "";
+  };
+  const brandInCategory = (brand, categoryId) => {
+    if (Object.prototype.hasOwnProperty.call(projectCategories, brand.id) && Array.isArray(projectCategories[brand.id])) {
+      return projectCategories[brand.id].includes(categoryId);
+    }
+    return categoryIdFor(brand) === categoryId;
+  };
+  const visibleCategories = () => EGYPT_CATEGORIES.filter((item) => item.visible !== false);
   const gridEl = document.getElementById("category-grid");
   const screenEl = document.getElementById("category-screen");
   const backButton = document.getElementById("back-to-guide");
@@ -521,12 +568,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const renderCategoryGuide = () => {
     if (!gridEl) return;
-    gridEl.innerHTML = EGYPT_CATEGORIES.map((category, index) => {
-      const count = portfolioData.filter((brand) => categoryIdFor(brand) === category.id).length;
-      return `<button type="button" class="cm-category-choice" data-select-category="${escAttr(category.id)}" style="--choice-index:${index}">
-        <span class="cm-category-choice-top"><span class="cm-category-choice-icon">${categoryIcons[category.id] || categoryIcons.other}</span><span class="cm-category-choice-num">0${index + 1}</span></span>
+    gridEl.innerHTML = visibleCategories().map((category, index) => {
+      const count = portfolioData.filter((brand) => brandInCategory(brand, category.id)).length;
+      const cover = safeImageUrl(category.coverUrl);
+      return `<button type="button" class="cm-category-choice ${cover ? "cm-category-has-cover" : ""}" data-select-category="${escAttr(category.id)}" style="--choice-index:${index}">
+        ${cover ? `<img class="cm-category-choice-cover" src="${escAttr(cover)}" alt="" loading="lazy" />` : ""}
+        <span class="cm-category-choice-top"><span class="cm-category-choice-icon">${categoryIconFor(category)}</span><span class="cm-category-choice-num">${String(index+1).padStart(2, "0")}</span></span>
         <span class="cm-category-choice-name">${escAttr(category.label)}</span>
-        <span class="cm-category-choice-bottom"><span>${count ? `${count} مشروع` : "استكشف القسم"}</span><span class="cm-category-choice-arrow">${categoryArrow}</span></span>
+        <span class="cm-category-choice-bottom"><span>${escAttr(category.tagline || (count ? `${count} مشروع` : "استكشف القسم"))}</span><span class="cm-category-choice-arrow">${categoryArrow}</span></span>
       </button>`;
     }).join("");
   };
@@ -534,12 +583,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const renderSelectedCategory = (category) => {
     const groupsRoot = document.getElementById("portfolio-groups");
     if (!groupsRoot) return;
-    const brands = portfolioData.filter((brand) => categoryIdFor(brand) === category.id);
+    const brands = portfolioData.filter((brand) => brandInCategory(brand, category.id));
     groupsRoot.innerHTML = brands.length
       ? `<div class="cm-category-projects-grid">${brands.map(buildCardHtml).join("")}</div>`
-      : `<div class="cm-category-empty"><span class="cm-category-empty-icon">${categoryIcons[category.id] || categoryIcons.other}</span><h3>بنجهز أعمال القسم ده</h3><p>لسه مفيش مشاريع معروضة هنا. تقدر ترجع وتستكشف قسم تاني.</p><button type="button" class="cm-empty-back" id="category-empty-back">اختار قسم تاني</button></div>`;
+      : `<div class="cm-category-empty"><span class="cm-category-empty-icon">${categoryIconFor(category)}</span><h3>بنجهز أعمال القسم ده</h3><p>لسه مفيش مشاريع معروضة هنا. تقدر ترجع وتستكشف قسم تاني.</p><button type="button" class="cm-empty-back" id="category-empty-back">اختار قسم تاني</button></div>`;
     setText('[data-cm="portfolio-title"]', `أعمال ${category.label}`);
-    setText('[data-cm="portfolio-subtitle"]', `نماذج من شغل Core Media في مجال ${category.label}، مختارة علشان تشوف التفاصيل اللي تهمك.`);
+    setText('[data-cm="portfolio-subtitle"]', category.description || `نماذج من شغل Core Media في مجال ${category.label}، مختارة علشان تشوف التفاصيل اللي تهمك.`);
     if (resultsBar) resultsBar.textContent = brands.length ? `${brands.length} مشروع في هذا القسم` : "";
     if (window.AOS) window.AOS.refresh();
   };
@@ -591,7 +640,7 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   const showCategory = (id, changeHistory = true) => {
-    const category = EGYPT_CATEGORIES.find((item) => item.id === id);
+    const category = visibleCategories().find((item) => item.id === id);
     if (!category) return showCategoryGuide(changeHistory);
     activeCategory = category.id;
     renderSelectedCategory(category);
@@ -615,7 +664,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const url = new URL(window.location.href);
     const category = url.searchParams.get("category");
     const view = url.searchParams.get("view");
-    if (category && EGYPT_CATEGORIES.some((item) => item.id === category)) showCategory(category, false);
+    if (category && visibleCategories().some((item) => item.id === category)) showCategory(category, false);
     else if (informationalViews.has(view)) showInfoPage(view, false);
     else showCategoryGuide(false);
   };
