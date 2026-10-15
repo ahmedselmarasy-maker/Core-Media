@@ -19,7 +19,7 @@
       <section class="cm-admin-card cm-login-card" id="admin-login-card">
         <div class="cm-login-header">
           <div class="cm-admin-logo">
-            <img src="الوجو.png" alt="Core Media Logo" />
+            <img src="core-logo.webp" alt="Core Media Logo" />
           </div>
           <h1 class="cm-gradient-text">لوحة تحكم Core Media</h1>
           <p>تحكم كامل في البراندات والقاطعات ومحتوى الموقع</p>
@@ -60,7 +60,7 @@
         <aside class="cm-app-sidebar">
           <div class="cm-sidebar-header">
             <div class="cm-admin-logo-small">
-              <img src="الوجو.png" alt="Logo" />
+              <img src="core-logo.webp" alt="Logo" />
             </div>
             <span class="cm-sidebar-brand-name">Core Media</span>
           </div>
@@ -133,7 +133,7 @@
 
               <div class="cm-stats-grid">
                 <div class="cm-stat-card">
-                  <div class="cm-stat-icon" style="background: rgba(99, 102, 241, 0.1); color: var(--secondary);">
+                  <div class="cm-stat-icon" style="background: rgba(9, 162, 235, 0.12); color: var(--secondary);">
                     <i data-lucide="briefcase"></i>
                   </div>
                   <div class="cm-stat-info">
@@ -142,7 +142,7 @@
                   </div>
                 </div>
                 <div class="cm-stat-card">
-                  <div class="cm-stat-icon" style="background: rgba(34, 197, 94, 0.1); color: var(--success);">
+                  <div class="cm-stat-icon" style="background: rgba(238, 171, 62, 0.14); color: var(--success);">
                     <i data-lucide="image"></i>
                   </div>
                   <div class="cm-stat-info">
@@ -151,7 +151,7 @@
                   </div>
                 </div>
                 <div class="cm-stat-card">
-                  <div class="cm-stat-icon" style="background: rgba(249, 115, 22, 0.1); color: #f97316;">
+                  <div class="cm-stat-icon" style="background: rgba(5, 26, 44, 0.08); color: var(--primary);">
                     <i data-lucide="clapperboard"></i>
                   </div>
                   <div class="cm-stat-info">
@@ -241,11 +241,12 @@
                         </select>
                       </div>
                       <div class="cm-form-group">
-                        <label for="brand-egypt-category">التصنيف الفرعي (للقطاع المصري)</label>
+                        <label for="brand-egypt-category">قسم النشاط (يظهر للعميل عند الاختيار)</label>
                         <select id="brand-egypt-category">
                           <option value="restaurants">مطاعم</option>
                           <option value="cafes">كافيهات</option>
                           <option value="medical">ميديكل</option>
+                          <option value="education">تعليم ومدرسين</option>
                           <option value="other">مشاريع أخرى</option>
                         </select>
                       </div>
@@ -335,8 +336,8 @@
             <!-- Sectors -->
             <div class="cm-view" id="view-sectors">
               <div class="cm-view-header">
-                <h2>القطاعات والتصنيفات</h2>
-                <p>غيّر أسماء الأسواق، وأضف/عدّل/احذف تصنيفات القطاع المصري</p>
+                <h2>الأقسام والتصنيفات</h2>
+                <p>أضف أو عدّل أقسام الأنشطة التي تظهر في صفحة اختيار القسم. تنطبق على جميع المشاريع في كل الأسواق.</p>
               </div>
               <form id="sectors-form" class="cm-card cm-settings-card">
                 <div class="cm-card-head">
@@ -354,10 +355,10 @@
                 </div>
 
                 <div class="cm-card-head cm-card-head-inline">
-                  <h2><i data-lucide="tags"></i> تصنيفات القطاع المصري</h2>
+                  <h2><i data-lucide="tags"></i> أقسام الأنشطة المتاحة للزائر</h2>
                 </div>
                 <p class="cm-admin-note" style="padding: 0 1.25rem; margin-top: 0.75rem;">
-                  غيّر الاسم الظاهر، رتّب التصنيفات، أو أضف تصنيفًا جديدًا. حذف تصنيف ينقل البراندات التابعة له لأول تصنيف متاح.
+                  غيّر الاسم الظاهر، رتّب التصنيفات، أو أضف تصنيفًا جديدًا. حذف قسم ينقل المشاريع التابعة له إلى قسم آخر. الأقسام هنا هي الخيارات التي يراها زائر الموقع.
                 </p>
                 <div id="categories-editor" class="cm-services-editor"></div>
                 <div class="cm-form-footer">

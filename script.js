@@ -70,13 +70,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Type "استوديو تسويق متكامل"
     await new Promise((r) => setTimeout(r, 200));
-    await typeWriter("استوديو تسويق متكامل", preloaderTagline, 50);
+    await typeWriter("MEDIA & PRODUCTION", preloaderTagline, 55);
 
     // Wait and then hide preloader
     await new Promise((r) => setTimeout(r, 1000));
     
-    // Physical move to header logo position
-    const headerLogo = document.querySelector(".cm-logo-mark");
+    // Fly toward the brand logo on the full-screen category guide (not the old home page).
+    const headerLogo = document.querySelector(".cm-gateway-logo-img") || document.querySelector(".cm-logo-mark");
     if (headerLogo) {
       const headerRect = headerLogo.getBoundingClientRect();
       const preloaderRect = preloaderLogo.getBoundingClientRect();
@@ -170,6 +170,7 @@ document.addEventListener("DOMContentLoaded", () => {
     { id: "restaurants", label: "مطاعم" },
     { id: "cafes", label: "كافيهات" },
     { id: "medical", label: "ميديكل" },
+    { id: "education", label: "تعليم ومدرسين" },
     { id: "other", label: "مشاريع أخرى" },
   ];
   const DEFAULT_MARKETS = [
@@ -207,7 +208,9 @@ document.addEventListener("DOMContentLoaded", () => {
     String(s || "")
       .replace(/&/g, "&amp;")
       .replace(/"/g, "&quot;")
-      .replace(/</g, "&lt;");
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/'/g, "&#39;");
 
   const makeId = (name, i) =>
     `brand-${String(name || "item")
@@ -293,6 +296,10 @@ document.addEventListener("DOMContentLoaded", () => {
     } else {
       EGYPT_CATEGORIES = [...DEFAULT_EGYPT_CATEGORIES];
     }
+    // Upgrade older default sets to show the Education category without overriding customized lists.
+    if (EGYPT_CATEGORIES.map((c) => c.id).join(",") === "restaurants,cafes,medical,other") {
+      EGYPT_CATEGORIES.splice(3, 0, { id: "education", label: "تعليم ومدرسين" });
+    }
     if (Array.isArray(sectors.markets) && sectors.markets.length) {
       sectors.markets.forEach((m) => {
         if (m?.id && m?.label) MARKET_LABELS[m.id] = m.label;
@@ -371,7 +378,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const market = card.getAttribute("data-market") || "egypt";
       const name = card.querySelector(".cm-portfolio-info h3")?.textContent?.trim() || `Brand ${index + 1}`;
       const group = card.closest(".cm-portfolio-group");
-      const egyptCategory = market === "egypt" ? group?.getAttribute("data-egypt-cat") || "other" : null;
+      const egyptCategory = market === "egypt" ? group?.getAttribute("data-egypt-cat") || "other" : "other";
       const media = Array.from(card.querySelectorAll(".cm-tag"))
         .map((tag) => {
           const file = tag.getAttribute("data-file") || "";
@@ -401,7 +408,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     } catch (_) {}
     const initial = parseInitialPortfolioData();
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(initial));
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(initial)); } catch (_) {}
     return initial;
   };
 
@@ -458,102 +465,163 @@ document.addEventListener("DOMContentLoaded", () => {
     </article>`;
   };
 
-  const renderPortfolio = (data) => {
+  // The portfolio is a dedicated category experience, never an "all projects" page.
+  // "egyptCategory" is kept as the existing Supabase column name to avoid a DB migration;
+  // it now represents the business category for BOTH Egyptian and Saudi brands.
+  const categoryIdFor = (brand) => {
+    const id = brand.egyptCategory || "other";
+    return EGYPT_CATEGORIES.some((category) => category.id === id) ? id : "other";
+  };
+  const categoryIcons = {
+    medical: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3v5a6 6 0 0 0 12 0V3M6 3H4m14 0h2M12 14v2a4 4 0 0 0 8 0v-1"/><circle cx="20" cy="13" r="2"/></svg>',
+    restaurants: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 3v8a3 3 0 0 0 6 0V3M7 3v18M17 21V3c-3 2-4 6-4 10h4"/></svg>',
+    cafes: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9h14v5a7 7 0 0 1-14 0V9ZM17 10h2a3 3 0 0 1 0 6h-3M3 21h16M8 3v3m4-3v3"/></svg>',
+    education: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m2 9 10-5 10 5-10 5-10-5Zm4 3v5c4 3 8 3 12 0v-5M22 9v7"/></svg>',
+    other: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4L12 2ZM19 18l.8 1.2L21 20l-1.2.8L19 22l-.8-1.2L17 20l1.2-.8L19 18Z"/></svg>',
+  };
+  const categoryArrow = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14 6-6 6 6 6"/></svg>';
+  const gridEl = document.getElementById("category-grid");
+  const screenEl = document.getElementById("category-screen");
+  const backButton = document.getElementById("back-to-guide");
+  const resultsBar = document.getElementById("category-results-bar");
+  let portfolioData = [];
+  let activeCategory = null;
+
+  const renderCategoryGuide = () => {
+    if (!gridEl) return;
+    gridEl.innerHTML = EGYPT_CATEGORIES.map((category, index) => {
+      const count = portfolioData.filter((brand) => categoryIdFor(brand) === category.id).length;
+      return `<button type="button" class="cm-category-choice" data-select-category="${escAttr(category.id)}" style="--choice-index:${index}">
+        <span class="cm-category-choice-top"><span class="cm-category-choice-icon">${categoryIcons[category.id] || categoryIcons.other}</span><span class="cm-category-choice-num">0${index + 1}</span></span>
+        <span class="cm-category-choice-name">${escAttr(category.label)}</span>
+        <span class="cm-category-choice-bottom"><span>${count ? `${count} مشروع` : "استكشف القسم"}</span><span class="cm-category-choice-arrow">${categoryArrow}</span></span>
+      </button>`;
+    }).join("");
+  };
+
+  const renderSelectedCategory = (category) => {
     const groupsRoot = document.getElementById("portfolio-groups");
     if (!groupsRoot) return;
-    const saudiBrands = data.filter((b) => b.market === "saudi");
-    const egyptBrands = data.filter((b) => b.market === "egypt");
-    const egyptGroupsHtml = EGYPT_CATEGORIES.map((cat) => {
-      const knownIds = new Set(EGYPT_CATEGORIES.map((c) => c.id));
-      const fallbackId = EGYPT_CATEGORIES[EGYPT_CATEGORIES.length - 1]?.id || "other";
-      const list = egyptBrands.filter((b) => {
-        let id = b.egyptCategory || fallbackId;
-        if (!knownIds.has(id)) id = fallbackId;
-        return id === cat.id;
-      });
-      const cards = list.map(buildCardHtml).join("");
-      return `<div class="cm-portfolio-group" data-egypt-cat="${escAttr(cat.id)}" data-aos="fade-up">
-        <div class="cm-portfolio-group-head">
-          <h3 class="cm-portfolio-group-title cm-gradient-text">${escAttr(cat.label)}</h3>
-        </div>
-        <div class="cm-portfolio-grid">${cards}</div>
-      </div>`;
-    }).join("");
+    const brands = portfolioData.filter((brand) => categoryIdFor(brand) === category.id);
+    groupsRoot.innerHTML = brands.length
+      ? `<div class="cm-category-projects-grid">${brands.map(buildCardHtml).join("")}</div>`
+      : `<div class="cm-category-empty"><span class="cm-category-empty-icon">${categoryIcons[category.id] || categoryIcons.other}</span><h3>بنجهز أعمال القسم ده</h3><p>لسه مفيش مشاريع معروضة هنا. تقدر ترجع وتستكشف قسم تاني.</p><button type="button" class="cm-empty-back" id="category-empty-back">اختار قسم تاني</button></div>`;
+    setText('[data-cm="portfolio-title"]', `أعمال ${category.label}`);
+    setText('[data-cm="portfolio-subtitle"]', `نماذج من شغل Core Media في مجال ${category.label}، مختارة علشان تشوف التفاصيل اللي تهمك.`);
+    if (resultsBar) resultsBar.textContent = brands.length ? `${brands.length} مشروع في هذا القسم` : "";
+    if (window.AOS) window.AOS.refresh();
+  };
 
-    groupsRoot.innerHTML = `
-      <div class="cm-portfolio-market" data-market="saudi" data-aos="fade-up">
-        <div class="cm-portfolio-group">
-          <div class="cm-portfolio-group-head">
-            <h3 class="cm-portfolio-group-title cm-gradient-text">${escAttr(MARKET_LABELS.saudi || "القطاع السعودي")}</h3>
-          </div>
-          <div class="cm-portfolio-grid">${saudiBrands.map(buildCardHtml).join("")}</div>
-        </div>
-      </div>
-      <div class="cm-portfolio-market" data-market="egypt" data-aos="fade-up">
-        <div class="cm-portfolio-group-head">
-          <h3 class="cm-portfolio-group-title cm-gradient-text">${escAttr(MARKET_LABELS.egypt || "القطاع المصري")}</h3>
-        </div>
-        <div class="cm-portfolio-filter-block cm-portfolio-sector-block cm-portfolio-egypt-subfilter-block">
-          <span class="cm-portfolio-filter-label">التصنيف</span>
-          <div class="cm-portfolio-filters" aria-label="تصفية القطاع المصري">
-            <button type="button" class="cm-filter-btn cm-egypt-cat-btn active" data-egypt-cat="all">الكل</button>
-            ${EGYPT_CATEGORIES.map(
-              (cat) =>
-                `<button type="button" class="cm-filter-btn cm-egypt-cat-btn" data-egypt-cat="${escAttr(cat.id)}">${escAttr(cat.label)}</button>`
-            ).join("")}
-          </div>
-        </div>
-        <div class="cm-portfolio-market-body">${egyptGroupsHtml}</div>
-      </div>
-    `;
-
-    // Refresh AOS after dynamic content is added
-    if (window.AOS) {
-      AOS.refresh();
+  // Single-view navigation: a business portfolio OR a dedicated company page.
+  // We keep all existing CMS-managed sections, but only show the requested view.
+  const informationalViews = new Set(["home", "about", "contact"]);
+  const pageTitles = {
+    guide: "اختيار القسم",
+    home: "الرئيسية",
+    about: "من نحن",
+    contact: "تواصل معنا",
+  };
+  const setUrl = (view, id, changeHistory) => {
+    if (!changeHistory) return;
+    const url = new URL(window.location.href);
+    url.searchParams.delete("category");
+    url.searchParams.delete("view");
+    if (view === "category") url.searchParams.set("category", id);
+    else if (view !== "guide") url.searchParams.set("view", view);
+    const newUrl = `${url.pathname}${url.search}`;
+    if (`${window.location.pathname}${window.location.search}` !== newUrl) {
+      // Some browsers restrict history changes when previewing via file://.
+      // Navigation must still work locally even when pushState is blocked.
+      try { window.history.pushState({ view, category: id || null }, "", newUrl); } catch (_) {}
     }
   };
-
-  const applyEgyptCategoryFilter = () => {
-    const egyptMarket = document.querySelector('.cm-portfolio-market[data-market="egypt"]');
-    if (!egyptMarket) return;
-    const catBtn = document.querySelector(".cm-egypt-cat-btn.active");
-    const cat = catBtn?.getAttribute("data-egypt-cat") || "all";
-    egyptMarket
-      .querySelectorAll(".cm-portfolio-market-body > .cm-portfolio-group")
-      .forEach((group) => {
-        const groupCat = group.getAttribute("data-egypt-cat");
-        const show = cat === "all" || cat === groupCat;
-        group.style.display = show ? "" : "none";
-      });
+  const setCurrentView = (view) => {
+    document.body.classList.remove("cm-gateway-mode", "cm-category-mode", "cm-page-mode");
+    document.body.removeAttribute("data-current-view");
+    if (view === "guide") document.body.classList.add("cm-gateway-mode");
+    else if (view === "category") document.body.classList.add("cm-category-mode");
+    else {
+      document.body.classList.add("cm-page-mode");
+      document.body.setAttribute("data-current-view", view);
+    }
+    if (view === "guide") screenEl?.removeAttribute("aria-hidden");
+    else screenEl?.setAttribute("aria-hidden", "true");
+    document.querySelector(".cm-nav")?.classList.remove("is-open");
+    document.querySelectorAll(".cm-nav [data-cm-view]").forEach((link) => {
+      const selected = link.getAttribute("data-cm-view") === view;
+      if (selected) link.setAttribute("aria-current", "page");
+      else link.removeAttribute("aria-current");
+    });
+    const label = view === "category" ? `أعمال ${EGYPT_CATEGORIES.find((entry) => entry.id === activeCategory)?.label || "القسم"}` : pageTitles[view];
+    document.title = `${label || "Core Media"} | Core Media & Production`;
+    window.scrollTo(0, 0);
+    if (window.AOS) requestAnimationFrame(() => window.AOS.refresh());
   };
 
-  const applyPortfolioFilters = () => {
-    const market =
-      document.querySelector(".cm-portfolio-filters [data-market].active")?.getAttribute("data-market") ||
-      "all";
-    document.querySelectorAll(".cm-portfolio-market").forEach((marketBlock) => {
-      const blockMarket = marketBlock.getAttribute("data-market") || "";
-      marketBlock.style.display = market === "all" || market === blockMarket ? "" : "none";
-    });
-    applyEgyptCategoryFilter();
+  const showCategory = (id, changeHistory = true) => {
+    const category = EGYPT_CATEGORIES.find((item) => item.id === id);
+    if (!category) return showCategoryGuide(changeHistory);
+    activeCategory = category.id;
+    renderSelectedCategory(category);
+    setCurrentView("category");
+    setUrl("category", category.id, changeHistory);
   };
 
-  const bindFilterEvents = () => {
-    document.querySelectorAll(".cm-portfolio-filters [data-market]").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        document.querySelectorAll(".cm-portfolio-filters [data-market]").forEach((b) => b.classList.remove("active"));
-        btn.classList.add("active");
-        applyPortfolioFilters();
-      });
-    });
-    document.addEventListener("click", (e) => {
-      const btn = e.target.closest(".cm-egypt-cat-btn");
-      if (!btn) return;
-      document.querySelectorAll(".cm-egypt-cat-btn").forEach((b) => b.classList.remove("active"));
-      btn.classList.add("active");
-      applyEgyptCategoryFilter();
-    });
+  const showCategoryGuide = (changeHistory = true) => {
+    activeCategory = null;
+    setCurrentView("guide");
+    setUrl("guide", null, changeHistory);
   };
+
+  const showInfoPage = (view, changeHistory = true) => {
+    if (!informationalViews.has(view)) return showCategoryGuide(changeHistory);
+    setCurrentView(view);
+    setUrl(view, null, changeHistory);
+  };
+
+  const restoreViewFromUrl = () => {
+    const url = new URL(window.location.href);
+    const category = url.searchParams.get("category");
+    const view = url.searchParams.get("view");
+    if (category && EGYPT_CATEGORIES.some((item) => item.id === category)) showCategory(category, false);
+    else if (informationalViews.has(view)) showInfoPage(view, false);
+    else showCategoryGuide(false);
+  };
+
+  gridEl?.addEventListener("click", (event) => {
+    const choice = event.target.closest("[data-select-category]");
+    if (choice) showCategory(choice.getAttribute("data-select-category"));
+  });
+  backButton?.addEventListener("click", () => showCategoryGuide());
+  document.getElementById("portfolio-groups")?.addEventListener("click", (event) => {
+    if (event.target.closest("#category-empty-back")) showCategoryGuide();
+  });
+  document.addEventListener("click", (event) => {
+    const routeLink = event.target.closest("a[data-cm-view]");
+    if (routeLink) {
+      event.preventDefault();
+      const view = routeLink.getAttribute("data-cm-view");
+      if (view === "guide") showCategoryGuide();
+      else if (view === "category" && activeCategory) showCategory(activeCategory);
+      else showInfoPage(view);
+      return;
+    }
+    // Legacy CTA anchors still route to a single page instead of jumping to hidden content.
+    const hashLink = event.target.closest('a[href^="#"]');
+    if (!hashLink) return;
+    const hash = hashLink.getAttribute("href");
+    if (["#home", "#about", "#contact", "#portfolio", "#services"].includes(hash)) {
+      event.preventDefault();
+      if (hash === "#portfolio") {
+        if (activeCategory) showCategory(activeCategory);
+        else showCategoryGuide();
+      } else {
+        showInfoPage(hash === "#services" ? "home" : hash.substring(1));
+        if (hash === "#services") requestAnimationFrame(() => document.getElementById("services")?.scrollIntoView());
+      }
+    }
+  });
+  window.addEventListener("popstate", restoreViewFromUrl);
 
   const contactForm = document.getElementById("contactForm");
   if (contactForm) {
@@ -801,24 +869,33 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   (async () => {
-    const siteContent = await loadSiteContent();
-    if (siteContent) applySiteContent(siteContent);
+    try {
+      const siteContent = await loadSiteContent();
+      if (siteContent) applySiteContent(siteContent);
 
-    let data = null;
-    if (supabase) {
-      try {
-        data = await loadPortfolioDataFromSupabase();
-      } catch (_) {
-        data = null;
+      let data = null;
+      if (supabase) {
+        try {
+          data = await loadPortfolioDataFromSupabase();
+        } catch (_) {
+          data = null;
+        }
       }
+      if (!Array.isArray(data) || !data.length) data = loadPortfolioData();
+      portfolioData = sortBrands(Array.isArray(data) ? data : []);
+      try { savePortfolioData(portfolioData); } catch (_) {}
+      renderCategoryGuide();
+      // Clear the old static portfolio, which is only used for initial data migration.
+      document.getElementById("portfolio-groups")?.replaceChildren();
+      // Keep the logo intro first, then honor category/info direct links.
+      preloaderPromise.then(restoreViewFromUrl);
+    } catch (error) {
+      console.warn("Unable to load categories", error);
+      portfolioData = [];
+      renderCategoryGuide();
+      document.getElementById("portfolio-groups")?.replaceChildren();
+      preloaderPromise.then(restoreViewFromUrl);
     }
-    if (!Array.isArray(data) || !data.length) {
-      data = loadPortfolioData();
-      savePortfolioData(data);
-    }
-    renderPortfolio(data);
-    bindFilterEvents();
-    applyPortfolioFilters();
   })();
 
 });

@@ -16,12 +16,13 @@
     />
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="gateway.css" />
   </head>
-  <body>
+  <body class="cm-gateway-mode">
     <!-- Preloader / Splash Screen -->
     <div class="cm-preloader" id="preloader">
       <div class="cm-preloader-content">
-        <img src="الوجو.png" alt="Core Media Logo" class="cm-preloader-logo" id="preloader-logo" />
+        <img src="core-logo.webp" alt="Core Media Logo" class="cm-preloader-logo" id="preloader-logo" />
         <div class="cm-preloader-text">
           <h1 class="cm-preloader-name" id="preloader-name"></h1>
           <p class="cm-preloader-tagline" id="preloader-tagline"></p>
@@ -29,24 +30,61 @@
       </div>
     </div>
 
+    <!-- Full-screen category guide: the only view shown after the logo animation. -->
+    <section class="cm-category-screen" id="category-screen" aria-labelledby="category-guide-title">
+      <div class="cm-category-ambient cm-category-ambient-blue" aria-hidden="true"></div>
+      <div class="cm-category-ambient cm-category-ambient-gold" aria-hidden="true"></div>
+      <div class="cm-category-shell">
+        <div class="cm-category-brand">
+          <img class="cm-gateway-logo-img" src="core-logo.webp" alt="Core Media & Production" />
+        </div>
+        <div class="cm-category-intro">
+          <span class="cm-category-overline"><span class="cm-category-overline-dot"></span> BEYOND CONTENT</span>
+          <h1 id="category-guide-title">اختار مجالك، <span>واكتشف شغلنا فيه.</span></h1>
+          <p>كل مجال ليه قصته. اختار القسم المناسب لنشاطك وشوف أعمال Core Media المصممة لقطاعك.</p>
+        </div>
+        <div class="cm-category-grid" id="category-grid" aria-label="اختيار مجال النشاط">
+          <p class="cm-category-loading" role="status">جاري تجهيز الأقسام...</p>
+        </div>
+        <nav class="cm-guide-links" aria-label="صفحات Core Media">
+          <span class="cm-guide-links-label">أو تعرّف علينا أكثر</span>
+          <div class="cm-guide-links-list">
+            <a href="?view=home" data-cm-view="home" class="cm-guide-link">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></svg>
+              <span>الصفحة الرئيسية</span>
+            </a>
+            <a href="?view=about" data-cm-view="about" class="cm-guide-link">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6m0-10h.01"/></svg>
+              <span>من نحن</span>
+            </a>
+            <a href="?view=contact" data-cm-view="contact" class="cm-guide-link">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5c-1.6 0-3.1-.44-4.4-1.2L3 20l1.35-4.5a8.5 8.5 0 1 1 16.65-4z"/><path d="M8 10h8m-8 4h5"/></svg>
+              <span>تواصل معنا</span>
+            </a>
+          </div>
+        </nav>
+        <div class="cm-category-bottom"><span>CORE MEDIA & PRODUCTION</span><span class="cm-category-bottom-line"></span><span>YOUR STORY, OUR VISION</span></div>
+      </div>
+    </section>
+
     <div class="cm-scroll-progress"></div>
     <header class="cm-header" id="top">
       <div class="cm-container cm-header-inner">
         <div class="cm-logo">
-          <img src="الوجو.png" alt="Core Media Logo" class="cm-logo-mark" />
+          <img src="core-logo.webp" alt="Core Media Logo" class="cm-logo-mark" />
           <div class="cm-logo-text">
             <span class="cm-logo-name">Core Media</span>
-            <span class="cm-logo-tagline">استوديو تسويق متكامل</span>
+            <span class="cm-logo-tagline">Media &amp; Production</span>
           </div>
         </div>
-        <nav class="cm-nav">
-          <a href="#home">الرئيسية</a>
-          <a href="#about">من نحن</a>
-          <a href="#services">الخدمات</a>
-          <a href="#portfolio">أعمالنا</a>
-          <a href="#contact">تواصل معنا</a>
+        <button type="button" class="cm-back-to-guide" id="back-to-guide" aria-label="العودة لاختيار الأقسام"><span aria-hidden="true">↩</span> اختيار قسم</button>
+        <nav class="cm-nav" aria-label="التنقل بين صفحات الموقع">
+          <a href="?view=home" data-cm-view="home">الرئيسية</a>
+          <a href="?view=about" data-cm-view="about">من نحن</a>
+          <a href="?view=guide" data-cm-view="guide">الأقسام</a>
+          <a href="?view=contact" data-cm-view="contact">تواصل معنا</a>
         </nav>
-        <a href="#contact" class="cm-btn cm-btn-outline">احجز استشارة</a>
+        <a href="?view=contact" data-cm-view="contact" class="cm-btn cm-btn-outline">احجز استشارة</a>
         <button class="cm-nav-toggle" aria-label="تبديل القائمة">
           <span></span><span></span>
         </button>
@@ -99,6 +137,9 @@
           </div>
           <div class="cm-hero-visual" data-aos="fade-right" data-aos-delay="400">
             <div class="cm-hero-card cm-hero-card-main">
+              <div class="cm-hero-cover-frame">
+                <img src="core-brand-cover.jpg" alt="Core Media brand cover" class="cm-hero-cover-image" />
+              </div>
               <h3>Core Media Campaign Hub</h3>
               <p>استراتيجية • محتوى • تصميم • إعلام</p>
               <div class="cm-hero-tags">
@@ -109,8 +150,8 @@
               </div>
             </div>
             <div class="cm-hero-card cm-hero-card-secondary">
-              <p>“شريك إبداعي يفهم العلامة التجارية والأرقام معًا.”</p>
-              <span class="cm-hero-card-client">شريك نجاح</span>
+              <p>“Beyond Content — Media & Production”</p>
+              <span class="cm-hero-card-client">هوية جديدة أكثر قوة</span>
             </div>
           </div>
         </div>
@@ -270,6 +311,7 @@
             </div>
           </div>
 
+          <div class="cm-category-results-bar" id="category-results-bar" aria-live="polite"></div>
           <div id="portfolio-groups" data-aos="fade-up">
             <!-- قطاع سعودي -->
             <div class="cm-portfolio-market" data-market="saudi">

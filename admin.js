@@ -99,6 +99,7 @@ document.addEventListener("DOMContentLoaded", () => {
         { id: "restaurants", label: "مطاعم" },
         { id: "cafes", label: "كافيهات" },
         { id: "medical", label: "ميديكل" },
+        { id: "education", label: "تعليم ومدرسين" },
         { id: "other", label: "مشاريع أخرى" },
       ],
     },
@@ -293,10 +294,8 @@ document.addEventListener("DOMContentLoaded", () => {
       id: isUuid(brand.id) ? brand.id : undefined,
       name: brand.name,
       market: brand.market,
-      egypt_category:
-        brand.market === "egypt"
-          ? brand.egyptCategory || getSectors().egyptCategories[0]?.id || "other"
-          : null,
+      // Legacy database field name; now stores business category for every market.
+      egypt_category: brand.egyptCategory || "other",
       media: Array.isArray(brand.media) ? brand.media.map(normalizeMediaItem) : [],
       sort_order: typeof brand.sortOrder === "number" ? brand.sortOrder : 0,
       updated_at: new Date().toISOString(),
@@ -369,7 +368,7 @@ document.addEventListener("DOMContentLoaded", () => {
         id: item.id || null,
         name: item.name || `Brand ${i + 1}`,
         market: item.market === "saudi" ? "saudi" : "egypt",
-        egyptCategory: item.market === "egypt" ? item.egyptCategory || "other" : null,
+        egyptCategory: item.egyptCategory || "other",
         media: Array.isArray(item.media) ? item.media : [],
         coverUrl: item.coverUrl || "",
         sortOrder: typeof item.sortOrder === "number" ? item.sortOrder : i,
@@ -390,7 +389,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const market = card.getAttribute("data-market") === "saudi" ? "saudi" : "egypt";
       const name = card.querySelector(".cm-portfolio-info h3")?.textContent?.trim() || `Brand ${index + 1}`;
       const group = card.closest(".cm-portfolio-group");
-      const egyptCategory = market === "egypt" ? group?.getAttribute("data-egypt-cat") || "other" : null;
+      const egyptCategory = market === "egypt" ? group?.getAttribute("data-egypt-cat") || "other" : "other";
       const media = Array.from(card.querySelectorAll(".cm-tag"))
         .map((tag) => {
           const file = (tag.getAttribute("data-file") || "").trim();
@@ -564,8 +563,12 @@ document.addEventListener("DOMContentLoaded", () => {
       : DEFAULT_SITE.sectors.markets;
     const egyptCategories =
       Array.isArray(sectors.egyptCategories) && sectors.egyptCategories.length
-        ? sectors.egyptCategories
-        : DEFAULT_SITE.sectors.egyptCategories;
+        ? [...sectors.egyptCategories]
+        : [...DEFAULT_SITE.sectors.egyptCategories];
+    // Upgrade only the original four default categories, preserving custom category lists.
+    if (egyptCategories.map((c) => c.id).join(",") === "restaurants,cafes,medical,other") {
+      egyptCategories.splice(3, 0, { id: "education", label: "تعليم ومدرسين" });
+    }
     return { markets, egyptCategories };
   };
 
@@ -606,12 +609,11 @@ document.addEventListener("DOMContentLoaded", () => {
     if (egyptCategories.some((c) => c.id === currentCat)) brandEgyptCategoryInput.value = currentCat;
     else brandEgyptCategoryInput.value = egyptCategories[0]?.id || "other";
 
-    brandEgyptCategoryInput.disabled = brandMarketInput.value !== "egypt";
+    brandEgyptCategoryInput.disabled = false;
   };
 
   const marketText = (brand) => {
-    if (brand.market === "saudi") return marketLabel("saudi");
-    return `${marketLabel("egypt")} - ${categoryLabel(brand.egyptCategory || "other")}`;
+    return `${marketLabel(brand.market)} - ${categoryLabel(brand.egyptCategory || "other")}`;
   };
 
   const mediaLabel = (m, i) => {
@@ -635,7 +637,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const clearForm = () => {
     brandIdInput.value = "";
     brandForm.reset();
-    brandEgyptCategoryInput.disabled = brandMarketInput.value !== "egypt";
+    brandEgyptCategoryInput.disabled = false;
     mediaListEl.innerHTML = "";
     mediaFileInput.value = "";
     mediaTitleInput.value = "";
@@ -776,7 +778,7 @@ document.addEventListener("DOMContentLoaded", () => {
     brandNameInput.value = brand.name || "";
     brandMarketInput.value = brand.market || "egypt";
     brandEgyptCategoryInput.value = brand.egyptCategory || "other";
-    brandEgyptCategoryInput.disabled = brandMarketInput.value !== "egypt";
+    brandEgyptCategoryInput.disabled = false;
     brandCoverUrlInput.value = brand.coverUrl || "";
     updateCoverPreview(brand.coverUrl || "");
     brandDeleteBtn?.classList.remove("hidden");
@@ -828,7 +830,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   brandMarketInput.addEventListener("change", () => {
-    brandEgyptCategoryInput.disabled = brandMarketInput.value !== "egypt";
+    brandEgyptCategoryInput.disabled = false;
   });
 
   brandCoverUrlInput?.addEventListener("input", () => updateCoverPreview(brandCoverUrlInput.value));
@@ -845,7 +847,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const payload = {
       name,
       market: brandMarketInput.value,
-      egyptCategory: brandMarketInput.value === "egypt" ? brandEgyptCategoryInput.value : null,
+      egyptCategory: brandEgyptCategoryInput.value || "other",
       coverUrl: (brandCoverUrlInput.value || "").trim(),
     };
     const current = selectedBrand();
@@ -1072,8 +1074,9 @@ document.addEventListener("DOMContentLoaded", () => {
         const fallback = list.find((_, i) => i !== idx)?.id;
         if (!window.confirm(`حذف تصنيف "${removed.label}"؟ البراندات التابعة هتتنقل لتصنيف آخر.`)) return;
         data.forEach((brand) => {
-          if (brand.market === "egypt" && brand.egyptCategory === removed.id) {
+          if (brand.egyptCategory === removed.id) {
             brand.egyptCategory = fallback;
+            brand._categoryNeedsSync = true;
           }
         });
         list.splice(idx, 1);
@@ -1205,10 +1208,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Persist remapped brand categories if any were moved during delete
       for (const brand of data) {
-        if (brand.market !== "egypt") continue;
         if (!egyptCategories.some((c) => c.id === brand.egyptCategory)) {
           brand.egyptCategory = egyptCategories[0]?.id || "other";
+          brand._categoryNeedsSync = true;
+        }
+        if (brand._categoryNeedsSync) {
           await upsertBrand(brand);
+          delete brand._categoryNeedsSync;
         }
       }
 
