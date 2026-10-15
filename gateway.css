@@ -26,7 +26,7 @@ body.cm-gateway-mode .cm-lightbox {display:none !important;}
 .cm-category-choice {font:inherit;color:inherit;appearance:none;cursor:pointer;text-align:right;display:flex;flex-direction:column;justify-content:space-between;gap:27px;padding:22px;min-height:205px;border-radius:22px;border:1px solid rgba(101,158,195,.25);background:linear-gradient(145deg,rgba(15,54,84,.77),rgba(5,23,40,.88));box-shadow:0 16px 35px rgba(0,0,0,.13);transition:transform .25s ease,border-color .25s ease,background .25s ease,box-shadow .25s ease;animation:cmChoiceIn .45s both;animation-delay:calc(var(--choice-index)*75ms);}
 .cm-category-choice:hover,.cm-category-choice:focus-visible {transform:translateY(-8px);border-color:#f1b454;background:linear-gradient(145deg,rgba(21,80,119,.92),rgba(8,34,56,.96));box-shadow:0 20px 45px rgba(9,162,235,.15);outline:none;}
 .cm-category-choice-top,.cm-category-choice-bottom {display:flex;align-items:center;justify-content:space-between;gap:12px;}
-.cm-category-choice-icon {width:52px;height:52px;display:grid;place-items:center;color:#39bbff;background:rgba(9,162,235,.09);border:1px solid rgba(9,162,235,.18);border-radius:15px;}
+.cm-category-choice-icon {width:52px;height:52px;display:grid;place-items:center;color:#e4911f;background:rgba(228,145,31,.12);border:1px solid rgba(228,145,31,.32);border-radius:15px;}
 .cm-category-choice-icon svg,.cm-category-empty-icon svg {width:28px;height:28px;fill:none;stroke:currentColor;stroke-width:1.65;stroke-linecap:round;stroke-linejoin:round;}
 .cm-category-choice-num {color:#587e9d;font:700 13px/1 "Poppins",sans-serif;direction:ltr;}
 .cm-category-choice-name {color:#fff;font-size:clamp(1.18rem,1.7vw,1.45rem);font-weight:800;}
@@ -55,7 +55,7 @@ body.cm-category-mode .cm-category-results-bar:not(:empty) {display:block;}
 .cm-category-projects-grid {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px;}
 .cm-category-projects-grid .cm-portfolio-card {margin:0;min-width:0;box-shadow:0 16px 35px rgba(6,26,44,.08);border:1px solid #d9e5f1;}
 .cm-category-empty {margin:35px auto 0;max-width:610px;border:1px solid #d9e5f1;border-radius:28px;padding:42px 28px;text-align:center;background:#fff;box-shadow:0 18px 40px rgba(6,26,44,.07);}
-.cm-category-empty-icon {display:grid;place-items:center;width:76px;height:76px;margin:0 auto 12px;border-radius:24px;background:#e7f5ff;color:#09a2eb;}
+.cm-category-empty-icon {display:grid;place-items:center;width:76px;height:76px;margin:0 auto 12px;border-radius:24px;background:rgba(228,145,31,.12);color:#e4911f;}
 .cm-category-empty-icon svg {width:35px;height:35px;}
 .cm-category-empty h3 {margin:5px 0;color:#061a2c;font-size:1.55rem;}
 .cm-category-empty p {color:#61778a;line-height:1.9;}
@@ -87,7 +87,7 @@ body.cm-category-mode .cm-portfolio-thumb.placeholder-video > span {position:rel
 .cm-guide-links-label {display:block;color:#a5c3d9;font-size:0.86rem;font-weight:700;margin-bottom:15px;}
 .cm-guide-links-list {display:flex;align-items:stretch;justify-content:center;flex-wrap:wrap;gap:12px;}
 .cm-guide-link {display:inline-flex;align-items:center;justify-content:center;gap:10px;min-width:173px;padding:13px 21px;border-radius:15px;border:1px solid rgba(96,158,196,.35);background:linear-gradient(145deg,rgba(17,58,85,.93),rgba(6,30,50,.95));color:#eaf5ff;font-weight:700;font-size:.93rem;box-shadow:0 8px 23px rgba(0,0,0,.09);transition:transform .22s,border-color .22s,background .22s;}
-.cm-guide-link svg {width:22px;height:22px;fill:none;stroke:#eeb45f;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;}
+.cm-guide-link svg {width:22px;height:22px;fill:none;stroke:#e4911f;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;}
 .cm-guide-link:hover,.cm-guide-link:focus-visible {color:#fff;transform:translateY(-4px);border-color:#efb75c;background:linear-gradient(145deg,rgba(17,75,113,.98),rgba(8,33,55,.99));outline:none;}
 .cm-guide-link:focus-visible,.cm-back-to-guide:focus-visible,.cm-nav a:focus-visible {outline:3px solid #09a2eb;outline-offset:3px;}
 .cm-category-bottom {margin-top:15px;}
