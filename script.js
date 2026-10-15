@@ -399,17 +399,49 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   };
 
+  // Read the original HTML projects ONCE, before the visible portfolio is replaced.
+  // The original website still contains this catalog, so it is a reliable fallback
+  // for first-time visitors and browsers with an obsolete/empty localStorage cache.
+  const bundledPortfolioData = parseInitialPortfolioData();
+
+  const normalizeBrandName = (value) =>
+    String(value || "").normalize("NFKC").trim().replace(/\s+/g, " ").toLocaleLowerCase();
+
+  const bundledBrandsByName = new Map(
+    bundledPortfolioData.map((brand) => [normalizeBrandName(brand.name), brand])
+  );
+
+  const recoverLegacyCategories = (brands) => {
+    // Early versions assigned "other" to every project. Restore the known original
+    // Egyptian group *only* if this looks like an entirely uncategorized legacy set.
+    const allUncategorized = brands.length > 0 &&
+      brands.every((brand) => !brand.egyptCategory || brand.egyptCategory === "other");
+    return brands.map((brand) => {
+      const original = bundledBrandsByName.get(normalizeBrandName(brand.name));
+      const missingCategory = !brand.egyptCategory;
+      const isLegacyOther = allUncategorized && brand.egyptCategory === "other";
+      if (original?.market === "egypt" && original.egyptCategory !== "other" &&
+          (missingCategory || isLegacyOther)) {
+        return { ...brand, egyptCategory: original.egyptCategory };
+      }
+      return brand;
+    });
+  };
+
   const loadPortfolioData = () => {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (raw) {
         const parsed = JSON.parse(raw);
-        if (Array.isArray(parsed)) return parsed;
+        // An empty cache must NOT hide projects bundled in index.html.
+        if (Array.isArray(parsed) && parsed.some((brand) => brand?.name)) {
+          return recoverLegacyCategories(parsed);
+        }
       }
-    } catch (_) {}
-    const initial = parseInitialPortfolioData();
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(initial)); } catch (_) {}
-    return initial;
+    } catch (error) {
+      console.warn("Local portfolio cache unavailable, using bundled projects", error);
+    }
+    return bundledPortfolioData;
   };
 
   const savePortfolioData = (data) => {
@@ -881,17 +913,19 @@ document.addEventListener("DOMContentLoaded", () => {
           data = null;
         }
       }
-      if (!Array.isArray(data) || !data.length) data = loadPortfolioData();
-      portfolioData = sortBrands(Array.isArray(data) ? data : []);
+      // Database data takes priority when it is available. If it is empty or the
+      // public read fails, use the local cache or the original HTML portfolio.
+      if (!Array.isArray(data) || !data.some((brand) => brand?.name)) data = loadPortfolioData();
+      portfolioData = sortBrands(recoverLegacyCategories(Array.isArray(data) ? data : []));
       try { savePortfolioData(portfolioData); } catch (_) {}
       renderCategoryGuide();
-      // Clear the old static portfolio, which is only used for initial data migration.
+      // Clear the original static layout only AFTER its catalog has been saved.
       document.getElementById("portfolio-groups")?.replaceChildren();
       // Keep the logo intro first, then honor category/info direct links.
       preloaderPromise.then(restoreViewFromUrl);
     } catch (error) {
-      console.warn("Unable to load categories", error);
-      portfolioData = [];
+      console.warn("Unable to load categories; falling back to bundled projects", error);
+      portfolioData = sortBrands(bundledPortfolioData);
       renderCategoryGuide();
       document.getElementById("portfolio-groups")?.replaceChildren();
       preloaderPromise.then(restoreViewFromUrl);
