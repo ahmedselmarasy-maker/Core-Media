@@ -110,7 +110,7 @@ document.addEventListener("DOMContentLoaded", () => {
       egyptCategories: [
         { id: "restaurants", label: "مطاعم", enLabel: "Restaurants", icon: "restaurants" },
         { id: "cafes", label: "كافيهات", enLabel: "Cafés", icon: "cafes" },
-        { id: "medical", label: "ميديكل", enLabel: "Medical", icon: "medical" },
+        { id: "medical", label: "طبي", enLabel: "Medical", icon: "medical" },
         { id: "education", label: "تعليم ومدرسين", enLabel: "Education", icon: "education" },
         { id: "other", label: "مشاريع أخرى", enLabel: "Other Projects", icon: "other" },
       ],
@@ -191,7 +191,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const importLegacyBrandsBtn = document.getElementById("import-legacy-brands");
 
   const CATEGORY_ICONS = [
-    ["restaurants", "مطاعم"], ["cafes", "كافيهات"], ["medical", "ميديكال"],
+    ["restaurants", "مطاعم"], ["cafes", "كافيهات"], ["medical", "طبي"],
     ["education", "تعليم"], ["other", "نجوم / عام"], ["beauty", "تجميل"],
     ["retail", "متاجر"], ["realestate", "عقارات"], ["fitness", "رياضة"],
     ["tech", "تقنية"], ["cars", "سيارات"], ["law", "قانون"],
@@ -594,6 +594,8 @@ document.addEventListener("DOMContentLoaded", () => {
       Array.isArray(sectors.egyptCategories) && sectors.egyptCategories.length
         ? sectors.egyptCategories.map((item) => ({
             ...item,
+            label: (item.id === "medical" && ["ميديكل", "ميديكال"].includes(String(item.label || "").trim()))
+              ? "طبي" : item.label,
             enLabel: String(item.enLabel ?? defaultEnLabels[item.id] ?? ""),
           }))
         : DEFAULT_SITE.sectors.egyptCategories.map((item) => ({ ...item }));

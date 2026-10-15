@@ -36,6 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Preloader Logic
   const preloader = document.getElementById("preloader");
   const preloaderLogo = document.getElementById("preloader-logo");
+  const preloaderLogoStage = document.getElementById("preloader-logo-stage");
   const preloaderName = document.getElementById("preloader-name");
   const preloaderTagline = document.getElementById("preloader-tagline");
 
@@ -64,6 +65,11 @@ document.addEventListener("DOMContentLoaded", () => {
       preloaderLogo.classList.add("is-visible");
     }, 300);
 
+    // Animate the actual lens over the O once, after the logo fades in.
+    if (preloaderLogoStage) {
+      setTimeout(() => preloaderLogoStage.classList.add("is-shooting"), 630);
+    }
+
     // Type "Core Media"
     await new Promise((r) => setTimeout(r, 1000));
     await typeWriter("Core Media", preloaderName, 80);
@@ -79,7 +85,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const headerLogo = document.querySelector(".cm-gateway-logo-img") || document.querySelector(".cm-logo-mark");
     if (headerLogo) {
       const headerRect = headerLogo.getBoundingClientRect();
-      const preloaderRect = preloaderLogo.getBoundingClientRect();
+      const preloaderRect = (preloaderLogoStage || preloaderLogo).getBoundingClientRect();
       
       const deltaX = headerRect.left + headerRect.width / 2 - (preloaderRect.left + preloaderRect.width / 2);
       const deltaY = headerRect.top + headerRect.height / 2 - (preloaderRect.top + preloaderRect.height / 2);
@@ -90,8 +96,9 @@ document.addEventListener("DOMContentLoaded", () => {
       preloaderName.style.transition = "opacity 0.3s ease";
       preloaderTagline.style.transition = "opacity 0.3s ease";
       
-      preloaderLogo.style.transition = "all 0.8s cubic-bezier(0.77, 0, 0.175, 1)";
-      preloaderLogo.style.transform = `translate(${deltaX}px, ${deltaY}px) scale(${scale})`;
+      const flyingLogo = preloaderLogoStage || preloaderLogo;
+      flyingLogo.style.transition = "transform 0.8s cubic-bezier(0.77, 0, 0.175, 1)";
+      flyingLogo.style.transform = `translate(${deltaX}px, ${deltaY}px) scale(${scale})`;
     }
 
     preloader.style.backgroundColor = "transparent";
@@ -177,7 +184,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const DEFAULT_EGYPT_CATEGORIES = [
     { id: "restaurants", label: "مطاعم", enLabel: "Restaurants" },
     { id: "cafes", label: "كافيهات", enLabel: "Cafés" },
-    { id: "medical", label: "ميديكل", enLabel: "Medical" },
+    { id: "medical", label: "طبي", enLabel: "Medical" },
     { id: "education", label: "تعليم ومدرسين", enLabel: "Education" },
     { id: "other", label: "مشاريع أخرى", enLabel: "Other Projects" },
   ];
@@ -318,7 +325,8 @@ document.addEventListener("DOMContentLoaded", () => {
       EGYPT_CATEGORIES = sectors.egyptCategories
         .map((c) => ({
           id: String(c.id || "").trim(),
-          label: String(c.label || "").trim(),
+          label: (String(c.id || "").trim() === "medical" && ["ميديكل", "ميديكال"].includes(String(c.label || "").trim()))
+            ? "طبي" : String(c.label || "").trim(),
           // Old site settings have no enLabel; use safe defaults without changing the database.
           enLabel: String(c.enLabel ?? DEFAULT_EN_CATEGORY_LABELS[c.id] ?? "").trim(),
           icon: String(c.icon || c.id || "other"),
