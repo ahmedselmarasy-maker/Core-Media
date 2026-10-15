@@ -160,3 +160,23 @@ body.cm-page-mode .cm-nav a[aria-current="page"]::after {width:100%;}
 .cm-category-choice-arrow,.cm-category-overline,.cm-category-intro h1 span:not(.cm-guide-heading) {color:var(--cm-guide-accent);}
 .cm-category-intro h1 .cm-guide-heading {color:#fff;}
 .cm-guide-link svg {stroke:var(--cm-guide-accent);}
+
+
+/* ===== Fix: CMS projects invisible after choosing a business section =====
+   The portfolio grid is replaced dynamically, after AOS initializes.
+   AOS leaves the original parent and newly injected cards at opacity: 0,
+   making invisible cards clickable. Force visible in the category-only view.
+   This intentionally does not affect the guide, home, about, or contact pages.
+*/
+body.cm-category-mode #portfolio .cm-section-head[data-aos],
+body.cm-category-mode #portfolio #portfolio-groups[data-aos],
+body.cm-category-mode #portfolio #portfolio-groups .cm-portfolio-card[data-aos] {
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: none !important;
+}
+
+/* Keep the card hover motion, without depending on the AOS scroll state. */
+body.cm-category-mode #portfolio #portfolio-groups .cm-portfolio-card:hover {
+  transform: translateY(-8px) !important;
+}
