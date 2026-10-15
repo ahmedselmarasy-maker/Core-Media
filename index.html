@@ -23,11 +23,17 @@
     <div class="cm-preloader" id="preloader">
       <div class="cm-preloader-content">
         <div class="cm-preloader-logo-stage" id="preloader-logo-stage">
-          <img src="core-logo.webp" alt="Core Media Logo" class="cm-preloader-logo" id="preloader-logo" />
-          <span class="cm-preloader-lens" aria-hidden="true">
-            <span class="cm-preloader-lens-iris"></span>
-            <span class="cm-preloader-lens-flare"></span>
-          </span>
+          <!-- The original logo is split into the stationary typography/O and the moving camera. -->
+          <img src="core-logo-body.webp" alt="Core Media Logo" class="cm-preloader-logo" id="preloader-logo" width="2048" height="863" />
+          <div class="cm-lens-stage" aria-hidden="true">
+            <img class="cm-lens-glass" src="core-lens-glass.webp" alt="" width="390" height="390" />
+            <svg class="cm-lens-svg" viewBox="0 0 390 390" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+              <defs><clipPath id="cm-lens-iris-clip"><circle cx="195" cy="195" r="136" /></clipPath></defs>
+              <g clip-path="url(#cm-lens-iris-clip)" id="cm-lens-shutter-blades"></g>
+            </svg>
+            <img class="cm-lens-bezel" src="core-lens-bezel.webp" alt="" width="390" height="390" />
+            <div class="cm-lens-capture-glow"></div>
+          </div>
         </div>
         <div class="cm-preloader-text">
           <h1 class="cm-preloader-name" id="preloader-name"></h1>

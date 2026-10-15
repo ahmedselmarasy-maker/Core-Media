@@ -40,6 +40,61 @@ document.addEventListener("DOMContentLoaded", () => {
   const preloaderName = document.getElementById("preloader-name");
   const preloaderTagline = document.getElementById("preloader-tagline");
 
+  // A camera, not a decorative circle: the original glass and bezel are separate image layers.
+  // Only the shutter blades are generated in SVG, perfectly clipped inside the real lens rim.
+  const playCoreLensV3 = () => {
+    const blades = document.getElementById("cm-lens-shutter-blades");
+    const glass = document.querySelector(".cm-lens-glass");
+    const glow = document.querySelector(".cm-lens-capture-glow");
+    if (!blades || !glass || !glow) return;
+    const NS = "http://www.w3.org/2000/svg";
+    const leaves = Array.from({ length: 7 }, (_, i) => {
+      const path = document.createElementNS(NS, "path");
+      path.setAttribute("fill", ["#081019", "#0d1721", "#111d28", "#0a1420"][i % 4]);
+      path.setAttribute("stroke", "#344456");
+      path.setAttribute("stroke-width", "1.5");
+      path.setAttribute("stroke-linejoin", "round");
+      blades.appendChild(path);
+      return path;
+    });
+    const ease = (n) => { const t = Math.max(0, Math.min(1, n)); return t * t * (3 - 2 * t); };
+    const pt = (r, angle) => [195 + r * Math.cos(angle), 195 + r * Math.sin(angle)];
+    const xy = (p) => `${p[0].toFixed(2)} ${p[1].toFixed(2)}`;
+    // Exposed to local preview/test harnesses, no external libraries or image sprites required.
+    const render = (t) => {
+      let amount = 0;
+      if (t >= .31 && t < .75) amount = ease((t - .31) / .44);
+      else if (t >= .75 && t < .86) amount = 1;
+      else if (t >= .86 && t < 1.30) amount = 1 - ease((t - .86) / .44);
+      const radius = 140 - amount * 126;
+      const twist = amount * .25;
+      leaves.forEach((leaf, i) => {
+        const a = -Math.PI / 2 + (i * Math.PI * 2) / 7;
+        const b = -Math.PI / 2 + ((i + 1) * Math.PI * 2) / 7;
+        const p0 = pt(154, a);
+        const p1 = pt(154, b);
+        const q0 = pt(radius, a + twist);
+        const q1 = pt(radius, b + twist);
+        leaf.setAttribute("d", `M ${xy(p0)} L ${xy(p1)} L ${xy(q1)} L ${xy(q0)} Z`);
+      });
+      blades.style.opacity = amount < .001 ? "0" : "1";
+      const focus = Math.sin(Math.PI * ease(Math.min(1, t / .53)));
+      glass.style.transform = `rotate(${(2.2 * focus).toFixed(3)}deg) scale(${(1 + .043 * focus).toFixed(4)})`;
+      const flash = t >= 1.23 && t <= 1.58 ? Math.pow(Math.sin(Math.PI * (t - 1.23) / .35), 2) : 0;
+      glow.style.opacity = (flash * .85).toFixed(3);
+    };
+    window.__coreLensV3Frame = render;
+    let start;
+    const frame = (now) => {
+      if (start === undefined) start = now;
+      const t = Math.min(1.7, (now - start) / 1000);
+      render(t);
+      if (t < 1.7 && !document.getElementById("preloader")?.classList.contains("is-hidden")) requestAnimationFrame(frame);
+      else { render(1.7); delete window.__coreLensV3Frame; }
+    };
+    requestAnimationFrame(frame);
+  };
+
   const typeWriter = (text, element, speed = 100) => {
     return new Promise((resolve) => {
       let i = 0;
@@ -65,9 +120,9 @@ document.addEventListener("DOMContentLoaded", () => {
       preloaderLogo.classList.add("is-visible");
     }, 300);
 
-    // Animate the actual lens over the O once, after the logo fades in.
-    if (preloaderLogoStage) {
-      setTimeout(() => preloaderLogoStage.classList.add("is-shooting"), 630);
+    // True layered optical assembly: mechanical 7-leaf SVG shutter, optical focus and exposure flash.
+    if (preloaderLogoStage && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setTimeout(playCoreLensV3, 660);
     }
 
     // Type "Core Media"

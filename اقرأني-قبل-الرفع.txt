@@ -1,0 +1,22 @@
+Core Media — Lens Animation V3 (layered optical effect)
+
+الفكرة: لوجو الشركة الأصلي اتفصل بصريًا لثلاث طبقات فعلية:
+- جسم اللوجو (بدون الزجاج الداخلي للعدسة)
+- الزجاج الأصلي للعدسة، ويتحرك حركة تركيز خفيفة
+- إطار العدسة الأصلي ثابت
+وفوق الزجاج فقط ريش Shutter SVG متحركة، يليها ومضة خفيفة.
+
+الملفات المطلوبة في جذر GitHub بجوار index.html:
+index.html
+styles.css
+script.js
+core-logo-body.webp
+core-lens-glass.webp
+core-lens-bezel.webp
+
+لم يتم تغيير أي قسم أو مشروع أو لوحة تحكم أو إعداد Supabase.
+ملحوظة: لا ترفع ملف المعاينة MP4 على GitHub؛ ده للمشاهدة فقط.
+ارفع الملفات الستة ثم Commit directly to main، انتظر Vercel وحدث بـ Ctrl+Shift+R.
+
+إذا قررت إلغاء الأنيميشن، يمكن استرجاع الملفات الثلاثة الأصلية (index.html, styles.css, script.js)
+بدون حذف بيانات المستخدم أو المشاريع.
