@@ -180,3 +180,50 @@ body.cm-category-mode #portfolio #portfolio-groups .cm-portfolio-card[data-aos] 
 body.cm-category-mode #portfolio #portfolio-groups .cm-portfolio-card:hover {
   transform: translateY(-8px) !important;
 }
+
+
+/* ===== Bilingual category cards and clearer two-line headline ===== */
+.cm-category-intro #category-guide-title .cm-guide-heading,
+.cm-category-intro #category-guide-title [data-cm="guide-highlight"] {
+  display: block;
+  width: 100%;
+  text-align: center;
+}
+.cm-category-intro #category-guide-title .cm-guide-heading {
+  color: #ffffff;
+}
+.cm-category-intro #category-guide-title [data-cm="guide-highlight"] {
+  color: var(--cm-guide-accent, #e4911f);
+}
+.cm-category-choice-title {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 4px;
+  width: 100%;
+  min-width: 0;
+}
+.cm-category-choice-title .cm-category-choice-name {
+  display: block;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+.cm-category-choice-english {
+  display: block;
+  color: var(--cm-guide-accent, #e4911f);
+  font: 700 clamp(.76rem, 1.04vw, .94rem)/1.45 "Poppins", Arial, sans-serif;
+  letter-spacing: .025em;
+  text-align: right;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+.cm-guide-links .cm-guide-links-label {
+  color: var(--cm-guide-accent, #e4911f);
+}
+@media (max-width:710px) {
+  .cm-category-intro h1 { line-height: 1.28; }
+  .cm-category-intro #category-guide-title [data-cm="guide-highlight"] { margin-top: 3px; }
+  .cm-category-choice { gap: 15px; }
+  .cm-category-choice-english { font-size: .75rem; }
+}

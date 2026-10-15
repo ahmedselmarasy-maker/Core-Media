@@ -166,12 +166,20 @@ document.addEventListener("DOMContentLoaded", () => {
   let WHATSAPP_E164 = "201019132369";
   const BRAND_TABLE = "cm_brands";
   const SITE_TABLE = "cm_site_settings";
+  // English subtitles are configurable from the Admin Panel; defaults cover old saved categories.
+  const DEFAULT_EN_CATEGORY_LABELS = {
+    restaurants: "Restaurants",
+    cafes: "Cafés",
+    medical: "Medical",
+    education: "Education",
+    other: "Other Projects",
+  };
   const DEFAULT_EGYPT_CATEGORIES = [
-    { id: "restaurants", label: "مطاعم" },
-    { id: "cafes", label: "كافيهات" },
-    { id: "medical", label: "ميديكل" },
-    { id: "education", label: "تعليم ومدرسين" },
-    { id: "other", label: "مشاريع أخرى" },
+    { id: "restaurants", label: "مطاعم", enLabel: "Restaurants" },
+    { id: "cafes", label: "كافيهات", enLabel: "Cafés" },
+    { id: "medical", label: "ميديكل", enLabel: "Medical" },
+    { id: "education", label: "تعليم ومدرسين", enLabel: "Education" },
+    { id: "other", label: "مشاريع أخرى", enLabel: "Other Projects" },
   ];
   const DEFAULT_MARKETS = [
     { id: "saudi", label: "القطاع السعودي" },
@@ -311,6 +319,8 @@ document.addEventListener("DOMContentLoaded", () => {
         .map((c) => ({
           id: String(c.id || "").trim(),
           label: String(c.label || "").trim(),
+          // Old site settings have no enLabel; use safe defaults without changing the database.
+          enLabel: String(c.enLabel ?? DEFAULT_EN_CATEGORY_LABELS[c.id] ?? "").trim(),
           icon: String(c.icon || c.id || "other"),
           visible: c.visible !== false,
           description: String(c.description || ""),
@@ -323,7 +333,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     // Upgrade older default sets to show the Education category without overriding customized lists.
     if (EGYPT_CATEGORIES.map((c) => c.id).join(",") === "restaurants,cafes,medical,other") {
-      EGYPT_CATEGORIES.splice(3, 0, { id: "education", label: "تعليم ومدرسين" });
+      EGYPT_CATEGORIES.splice(3, 0, { id: "education", label: "تعليم ومدرسين", enLabel: "Education" });
     }
     if (Array.isArray(sectors.markets) && sectors.markets.length) {
       sectors.markets.forEach((m) => {
@@ -574,7 +584,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return `<button type="button" class="cm-category-choice ${cover ? "cm-category-has-cover" : ""}" data-select-category="${escAttr(category.id)}" style="--choice-index:${index}">
         ${cover ? `<img class="cm-category-choice-cover" src="${escAttr(cover)}" alt="" loading="lazy" />` : ""}
         <span class="cm-category-choice-top"><span class="cm-category-choice-icon">${categoryIconFor(category)}</span><span class="cm-category-choice-num">${String(index+1).padStart(2, "0")}</span></span>
-        <span class="cm-category-choice-name">${escAttr(category.label)}</span>
+        <span class="cm-category-choice-title"><span class="cm-category-choice-name" lang="ar">${escAttr(category.label)}</span>${category.enLabel ? `<span class="cm-category-choice-english" lang="en" dir="ltr">${escAttr(category.enLabel)}</span>` : ""}</span>
         <span class="cm-category-choice-bottom"><span>${escAttr(category.tagline || (count ? `${count} مشروع` : "استكشف القسم"))}</span><span class="cm-category-choice-arrow">${categoryArrow}</span></span>
       </button>`;
     }).join("");

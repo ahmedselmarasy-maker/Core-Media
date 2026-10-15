@@ -108,11 +108,11 @@ document.addEventListener("DOMContentLoaded", () => {
       },
       projectCategories: {},
       egyptCategories: [
-        { id: "restaurants", label: "مطاعم", icon: "restaurants" },
-        { id: "cafes", label: "كافيهات", icon: "cafes" },
-        { id: "medical", label: "ميديكل", icon: "medical" },
-        { id: "education", label: "تعليم ومدرسين", icon: "education" },
-        { id: "other", label: "مشاريع أخرى", icon: "other" },
+        { id: "restaurants", label: "مطاعم", enLabel: "Restaurants", icon: "restaurants" },
+        { id: "cafes", label: "كافيهات", enLabel: "Cafés", icon: "cafes" },
+        { id: "medical", label: "ميديكل", enLabel: "Medical", icon: "medical" },
+        { id: "education", label: "تعليم ومدرسين", enLabel: "Education", icon: "education" },
+        { id: "other", label: "مشاريع أخرى", enLabel: "Other Projects", icon: "other" },
       ],
     },
   };
@@ -587,13 +587,19 @@ document.addEventListener("DOMContentLoaded", () => {
     const markets = Array.isArray(sectors.markets) && sectors.markets.length
       ? sectors.markets
       : DEFAULT_SITE.sectors.markets;
+    const defaultEnLabels = Object.fromEntries(
+      DEFAULT_SITE.sectors.egyptCategories.map((item) => [item.id, item.enLabel])
+    );
     const egyptCategories =
       Array.isArray(sectors.egyptCategories) && sectors.egyptCategories.length
-        ? [...sectors.egyptCategories]
-        : [...DEFAULT_SITE.sectors.egyptCategories];
+        ? sectors.egyptCategories.map((item) => ({
+            ...item,
+            enLabel: String(item.enLabel ?? defaultEnLabels[item.id] ?? ""),
+          }))
+        : DEFAULT_SITE.sectors.egyptCategories.map((item) => ({ ...item }));
     // Upgrade only the original four default categories, preserving custom category lists.
     if (egyptCategories.map((c) => c.id).join(",") === "restaurants,cafes,medical,other") {
-      egyptCategories.splice(3, 0, { id: "education", label: "تعليم ومدرسين" });
+      egyptCategories.splice(3, 0, { id: "education", label: "تعليم ومدرسين", enLabel: "Education" });
     }
     return { ...sectors, markets, egyptCategories,
       projectCategories: sectors.projectCategories && typeof sectors.projectCategories === "object" && !Array.isArray(sectors.projectCategories)
@@ -1119,9 +1125,15 @@ document.addEventListener("DOMContentLoaded", () => {
             </button>
           </div>
         </div>
-        <div class="cm-form-group">
-          <label>الاسم الظاهر</label>
-          <input data-field="label" value="${escAttr(item.label || "")}" placeholder="مثلاً: مطاعم" />
+        <div class="cm-form-row">
+          <div class="cm-form-group">
+            <label>الاسم بالعربي</label>
+            <input data-field="label" value="${escAttr(item.label || "")}" placeholder="مثلاً: مطاعم" />
+          </div>
+          <div class="cm-form-group">
+            <label>الاسم بالإنجليزي (يظهر بالبرتقالي تحت العربي)</label>
+            <input data-field="enLabel" value="${escAttr(item.enLabel || "")}" placeholder="Restaurants" dir="ltr" lang="en" />
+          </div>
         </div>
         <div class="cm-form-row">
           <div class="cm-form-group">
@@ -1203,6 +1215,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!label) return;
       items.push({
         id, label,
+        enLabel: el.querySelector('[data-field="enLabel"]')?.value?.trim() || "",
         icon: el.querySelector('[data-field="icon"]')?.value || "other",
         visible: el.querySelector('[data-field="visible"]')?.value !== "no",
         description: el.querySelector('[data-field="description"]')?.value?.trim() || "",
