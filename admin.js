@@ -1,13 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
   const STORAGE_KEY = "cmPortfolioDataV2";
   const SITE_STORAGE_KEY = "cmSiteContentV1";
-  const BRAND_TABLE = "cm_brands";
-  const SITE_TABLE = "cm_site_settings";
-  const ADMIN_TABLE = "cm_admins";
-  const DEFAULT_BUCKET = "cm-portfolio";
-  const supabaseUrl = window.CM_SUPABASE_URL;
-  const supabaseAnonKey = window.CM_SUPABASE_ANON_KEY;
-  const bucketName = window.CM_SUPABASE_BUCKET || DEFAULT_BUCKET;
   const loginHintEl = document.getElementById("admin-login-hint");
 
   // Never resurrect the deleted, Git LFS-hosted default company video.
@@ -128,18 +121,15 @@ document.addEventListener("DOMContentLoaded", () => {
     },
   };
 
-  const hasSupabaseConfig =
-    supabaseUrl &&
-    supabaseAnonKey &&
-    !String(supabaseUrl).includes("PASTE_YOUR_SUPABASE_URL_HERE") &&
-    !String(supabaseAnonKey).includes("PASTE_YOUR_SUPABASE_ANON_KEY_HERE");
-
-  if (!hasSupabaseConfig && loginHintEl) {
-    loginHintEl.textContent =
-      "تنبيه: لم يتم إعداد Supabase بعد. افتح ملف supabase-config.js وضع Project URL + anon key.";
-  }
-
-  const supabase = hasSupabaseConfig ? window.supabase.createClient(supabaseUrl, supabaseAnonKey) : null;
+  // CMS saves to GitHub through secured Vercel functions. No Supabase client.
+  const fetchCmsApi = async (path, options = {}) => {
+    const response = await fetch(path, { credentials: "same-origin", cache: "no-store", ...options });
+    const result = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(result.error || `Request failed (${response.status})`);
+    return result;
+  };
+  let cmsSha = null;
+  if (loginHintEl) loginHintEl.textContent = "الإدارة محفوظة في GitHub عبر Vercel — بدون Supabase.";
 
   const loginCard = document.getElementById("admin-login-card");
   const appCard = document.getElementById("admin-app-card");
@@ -314,342 +304,85 @@ document.addEventListener("DOMContentLoaded", () => {
       return String(a.name || "").localeCompare(String(b.name || ""), "ar");
     });
 
-  const loadFromDb = async () => {
-    if (!supabase) return [];
-    const { data: rows, error } = await supabase.from(BRAND_TABLE).select("*").order("sort_order", { ascending: true });
-    if (error) throw error;
-    return sortBrands((rows || []).map(normalizeBrand));
-  };
-
+  // One atomic JSON document stores BOTH project changes and site settings.
+  // A GitHub blob SHA guards against overwriting newer edits from another admin session.
   const savePortfolioCache = (brands) => {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(sortBrands(Array.isArray(brands) ? brands : [])));
-    } catch (_) {}
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(sortBrands(Array.isArray(brands) ? brands : []))); } catch (_) {}
   };
-
+  const loadCms = async () => {
+    const result = await fetchCmsApi("/api/cms");
+    cmsSha = result.sha;
+    const doc = result.cms;
+    data = sortBrands((Array.isArray(doc?.brands) ? doc.brands : []).map(normalizeBrand));
+    site = deepMerge(structuredClone(DEFAULT_SITE), doc?.site && typeof doc.site === "object" ? doc.site : {});
+    savePortfolioCache(data);
+  };
+  const writeCms = async (brands = data, settings = site) => {
+    if (!cmsSha) throw new Error("البيانات غير جاهزة؛ سجّل دخولك مجددًا.");
+    const result = await fetchCmsApi("/api/cms", {
+      method: "PUT", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ sha: cmsSha, cms: { brands, site: settings } }),
+    });
+    cmsSha = result.sha;
+    savePortfolioCache(brands);
+    return result;
+  };
   const upsertBrand = async (brand) => {
-    if (!supabase) throw new Error("Supabase not configured");
-    const basePayload = {
-      id: isUuid(brand.id) ? brand.id : undefined,
-      name: brand.name,
-      market: brand.market,
-      // Legacy database field name; now stores business category for every market.
-      egypt_category: brand.egyptCategory || "other",
+    const saved = normalizeBrand({
+      id: brand.id || crypto.randomUUID(),
+      name: brand.name, market: brand.market, egypt_category: brand.egyptCategory || "other",
       media: Array.isArray(brand.media) ? brand.media.map(normalizeMediaItem) : [],
-      sort_order: typeof brand.sortOrder === "number" ? brand.sortOrder : 0,
-      updated_at: new Date().toISOString(),
-    };
-
-    let { data: row, error } = await supabase
-      .from(BRAND_TABLE)
-      .upsert({ ...basePayload, cover_url: brand.coverUrl || null })
-      .select("*")
-      .single();
-
-    // Older DBs without cover_url yet — save without it, then ask admin to migrate
-    if (error && /cover_url/i.test(String(error.message || ""))) {
-      ({ data: row, error } = await supabase.from(BRAND_TABLE).upsert(basePayload).select("*").single());
-      if (!error) {
-        showToast(
-          "تم الحفظ، لكن غلاف البراند يحتاج تشغيل supabase-migrate.sql في Supabase",
-          "info"
-        );
-      }
-    }
-
-    if (error) throw error;
-    const saved = normalizeBrand(row);
-    const current = Array.isArray(data) ? data : [];
-    const next = current.some((item) => item.id === saved.id)
-      ? current.map((item) => item.id === saved.id ? saved : item)
-      : [...current, saved];
-    savePortfolioCache(next);
+      cover_url: brand.coverUrl || "",
+      sort_order: Number.isFinite(brand.sortOrder) ? brand.sortOrder : 0,
+    });
+    const next = data.some((item) => item.id === saved.id)
+      ? data.map((item) => item.id === saved.id ? saved : item)
+      : [...data, saved];
+    await writeCms(sortBrands(next), site);
     return saved;
   };
-
-  const parseStorageObjectPath = (value) => {
-    try {
-      const candidate = new URL(String(value || ""));
-      const base = new URL(String(supabaseUrl || ""));
-      if (candidate.origin !== base.origin) return null;
-      const marker = "/storage/v1/object/";
-      const markerIndex = candidate.pathname.indexOf(marker);
-      if (markerIndex < 0) return null;
-      const parts = candidate.pathname.slice(markerIndex + marker.length).split("/");
-      const accessType = decodeURIComponent(parts.shift() || "");
-      if (!["public", "sign", "authenticated"].includes(accessType)) return null;
-      const bucket = decodeURIComponent(parts.shift() || "");
-      if (bucket !== bucketName || !parts.length) return null;
-      return parts.map((part) => decodeURIComponent(part)).join("/");
-    } catch (_) {
-      return null;
-    }
-  };
-
-  const collectStoragePaths = (value, output = new Set()) => {
-    if (typeof value === "string") {
-      const path = parseStorageObjectPath(value);
-      if (path) output.add(path);
-    } else if (Array.isArray(value)) {
-      value.forEach((item) => collectStoragePaths(item, output));
-    } else if (value && typeof value === "object") {
-      Object.values(value).forEach((item) => collectStoragePaths(item, output));
-    }
-    return output;
-  };
-
-  const getReferencedStoragePaths = async () => {
-    const [brandsResult, settingsResult] = await Promise.all([
-      supabase.from(BRAND_TABLE).select("media,cover_url"),
-      supabase.from(SITE_TABLE).select("content").eq("id", 1).maybeSingle(),
-    ]);
-    if (brandsResult.error) throw brandsResult.error;
-    if (settingsResult.error) throw settingsResult.error;
-    const referenced = new Set();
-    (brandsResult.data || []).forEach((row) => {
-      collectStoragePaths(row.media, referenced);
-      collectStoragePaths(row.cover_url, referenced);
-    });
-    if (settingsResult.data?.content) collectStoragePaths(settingsResult.data.content, referenced);
-    return referenced;
-  };
-
-  const listStorageObjectsRecursive = async (folder = "", output = []) => {
-    const limit = 100;
-    let offset = 0;
-    while (true) {
-      const { data: items, error } = await supabase.storage.from(bucketName).list(folder, {
-        limit,
-        offset,
-        sortBy: { column: "name", order: "asc" },
-      });
-      if (error) throw error;
-      const rows = Array.isArray(items) ? items : [];
-      for (const item of rows) {
-        const path = folder ? `${folder}/${item.name}` : item.name;
-        if (item.id == null && item.metadata == null) {
-          await listStorageObjectsRecursive(path, output);
-        } else {
-          output.push({ path, size: Number(item.metadata?.size || 0) });
-        }
-      }
-      if (rows.length < limit) break;
-      offset += rows.length;
-    }
-    return output;
-  };
-
-  const deleteStoragePaths = async (paths) => {
-    const unique = [...new Set(paths.filter(Boolean))];
-    let deletedCount = 0;
-    const errors = [];
-    for (let i = 0; i < unique.length; i += 50) {
-      const batch = unique.slice(i, i + 50);
-      const { error } = await supabase.storage.from(bucketName).remove(batch);
-      if (error) errors.push(error.message || String(error));
-      else deletedCount += batch.length;
-    }
-    return { deletedCount, failedCount: unique.length - deletedCount, errors };
-  };
-
-  const removeUnreferencedStorageObjects = async (candidateUrls) => {
-    const candidates = [...new Set((candidateUrls || []).map(parseStorageObjectPath).filter(Boolean))];
-    if (!candidates.length) return { deletedCount: 0, failedCount: 0, skippedCount: 0 };
-    let referenced;
-    try {
-      referenced = await getReferencedStoragePaths();
-    } catch (error) {
-      return { deletedCount: 0, failedCount: candidates.length, skippedCount: 0, error };
-    }
-    const unused = candidates.filter((path) => !referenced.has(path));
-    if (!unused.length) return { deletedCount: 0, failedCount: 0, skippedCount: candidates.length };
-    try {
-      const result = await deleteStoragePaths(unused);
-      return { ...result, skippedCount: candidates.length - unused.length };
-    } catch (error) {
-      return {
-        deletedCount: 0,
-        failedCount: unused.length,
-        skippedCount: candidates.length - unused.length,
-        error,
-      };
-    }
-  };
-
-  const findStorageOrphans = async () => {
-    const [referenced, objects] = await Promise.all([
-      getReferencedStoragePaths(),
-      listStorageObjectsRecursive(),
-    ]);
-    return objects.filter((item) => !referenced.has(item.path));
-  };
-
+  const removeUnreferencedStorageObjects = async () => ({ deletedCount: 0, failedCount: 0, skippedCount: 0 });
   const deleteBrand = async (id) => {
-    if (!supabase) throw new Error("Supabase not configured");
-    const brand = (Array.isArray(data) ? data : []).find((item) => item.id === id);
-    const candidates = [
-      ...(Array.isArray(brand?.media) ? brand.media.map((item) => item.file) : []),
-      brand?.coverUrl || "",
-    ];
-    const { data: deletedRows, error } = await supabase.from(BRAND_TABLE).delete().eq("id", id).select("id");
-    if (error) throw error;
-    if (!deletedRows?.length) throw new Error("لم تؤكد قاعدة البيانات حذف المشروع؛ لم يتم تغيير النسخة المحلية.");
-    const next = (Array.isArray(data) ? data : []).filter((item) => item.id !== id);
-    savePortfolioCache(next);
-    return removeUnreferencedStorageObjects(candidates);
+    const next = data.filter((item) => item.id !== id);
+    if (next.length === data.length) throw new Error("المشروع غير موجود.");
+    await writeCms(next, site);
+    // Media files are never deleted implicitly; they might be referenced by another project.
+    return { deletedCount: 0, failedCount: 0, skippedCount: 0 };
   };
-
-  const loadSiteFromDb = async () => {
-    if (!supabase) return null;
-    const { data: row, error } = await supabase.from(SITE_TABLE).select("content").eq("id", 1).maybeSingle();
-    if (error) throw error;
-    if (!row?.content || typeof row.content !== "object") return null;
-    return deepMerge(DEFAULT_SITE, row.content);
-  };
-
-  const saveSiteToDb = async (nextSite) => {
-    if (!supabase) throw new Error("Supabase not configured");
-    const payload = {
-      id: 1,
-      content: nextSite,
-      updated_at: new Date().toISOString(),
-    };
-    const { error } = await supabase.from(SITE_TABLE).upsert(payload);
-    if (error) throw error;
-    try {
-      localStorage.setItem(SITE_STORAGE_KEY, JSON.stringify(nextSite));
-    } catch (_) {}
-  };
-
+  const loadFromDb = async () => { await loadCms(); return data; };
+  const loadSiteFromDb = async () => site;
+  const saveSiteToDb = async (nextSite) => { await writeCms(data, nextSite); };
   const assertIsAdmin = async () => {
-    if (!supabase) throw new Error("Supabase not configured");
-    const { data: sessionRes } = await supabase.auth.getSession();
-    const user = sessionRes?.session?.user;
-    if (!user) throw new Error("Not authenticated");
-    const { data: adminRow, error } = await supabase
-      .from(ADMIN_TABLE)
-      .select("user_id")
-      .eq("user_id", user.id)
-      .maybeSingle();
-    if (error) throw error;
-    if (!adminRow) {
-      throw new Error("هذا المستخدم غير مُصرح له كأدمن. أضف user_id داخل جدول cm_admins في Supabase.");
-    }
-    return user;
+    const result = await fetchCmsApi("/api/auth");
+    if (!result.authenticated) throw new Error("يرجى تسجيل الدخول إلى لوحة التحكم.");
+    return result;
   };
-
   const ensureAuthUi = async () => {
     if (!(loginCard && appCard)) return;
-    if (!supabase) {
-      loginCard.classList.remove("hidden");
-      appCard.classList.add("hidden");
-      return;
-    }
-    const { data: sess } = await supabase.auth.getSession();
-    const authed = Boolean(sess?.session);
-    loginCard.classList.toggle("hidden", authed);
-    appCard.classList.toggle("hidden", !authed);
+    let authenticated = false;
+    try { authenticated = Boolean((await fetchCmsApi("/api/auth")).authenticated); } catch (_) {}
+    loginCard.classList.toggle("hidden", authenticated);
+    appCard.classList.toggle("hidden", !authenticated);
   };
-
-  const prepareUploadFile = async (file, preferVideo) => {
-    const looksVideo =
-      preferVideo ||
-      String(file?.type || "").startsWith("video/") ||
-      isVideoPath(file?.name);
-    if (!looksVideo) return file;
-
-    for (let i = 0; i < 50 && typeof window.cmEnsureH264Video !== "function"; i += 1) {
-      await new Promise((r) => setTimeout(r, 100));
-    }
-    if (typeof window.cmEnsureH264Video !== "function") {
-      showToast("محرك تحويل الفيديو لسه مش جاهز. حدّث الصفحة وحاول تاني.", "info");
-      return file;
-    }
-
-    uploadProgressEl?.classList.remove("hidden");
-    if (uploadProgressFillEl) uploadProgressFillEl.style.width = "0%";
-    if (uploadProgressTextEl) uploadProgressTextEl.textContent = "تحويل...";
-    try {
-      return await window.cmEnsureH264Video(file, {
-        onStatus: (msg) => {
-          if (uploadProgressTitleEl) uploadProgressTitleEl.textContent = msg;
-        },
-        onProgress: (ratio) => {
-          const pct = Math.round((ratio || 0) * 100);
-          if (uploadProgressFillEl) uploadProgressFillEl.style.width = `${pct}%`;
-          if (uploadProgressTextEl) uploadProgressTextEl.textContent = `${pct}%`;
-        },
-      });
-    } catch (err) {
-      console.warn("Video convert failed, uploading original:", err);
-      showToast(
-        "تعذر التحويل التلقائي. هيترفع الأصل — لو المشكلة فضلت، ارفع من اللاب بعد التحويل.",
-        "info"
-      );
-      return file;
-    }
+  const prepareUploadFile = async (file) => {
+    if (file && !String(file.type || "").startsWith("image/")) throw new Error("رفع الفيديوهات يكون على YouTube؛ ألصق الرابط في لوحة التحكم.");
+    return file;
   };
-
-  const uploadToStorage = async (file, folder = "site") => {
-    if (!supabase) throw new Error("Supabase not configured");
-    if (!file) throw new Error("No file selected");
-    const safeName = String(file.name || "file").replace(/[^\w.\-]+/g, "_");
-    const ext = safeName.includes(".") ? safeName.split(".").pop() : "";
-    const stamp = Date.now();
-    const objectPath = `${folder}/${stamp}${ext ? "." + ext : ""}-${safeName}`;
-
-    const { data: sess } = await supabase.auth.getSession();
-    const accessToken = sess?.session?.access_token;
-    if (!accessToken) throw new Error("Not authenticated");
-
-    const storageUrl = String(supabaseUrl || "").replace(/\/+$/, "");
-    const objectUrl = `${storageUrl}/storage/v1/object/${encodeURI(bucketName)}/${objectPath
-      .split("/")
-      .map(encodeURIComponent)
-      .join("/")}`;
-
-    await new Promise((resolve, reject) => {
-      const xhr = new XMLHttpRequest();
-      activeUploadXhr = xhr;
-      xhr.open("POST", objectUrl, true);
-      xhr.setRequestHeader("Authorization", `Bearer ${accessToken}`);
-      xhr.setRequestHeader("apikey", String(supabaseAnonKey || ""));
-      xhr.setRequestHeader("x-upsert", "false");
-      xhr.setRequestHeader("cache-control", "3600");
-      if (file.type) xhr.setRequestHeader("content-type", file.type);
-
-      xhr.upload.onprogress = (evt) => {
-        if (!evt.lengthComputable) return;
-        const total = evt.total || 0;
-        const loaded = evt.loaded || 0;
-        const pct = total ? Math.min(100, Math.max(0, (loaded / total) * 100)) : 0;
-        if (uploadProgressEl) uploadProgressEl.classList.remove("hidden");
-        if (uploadProgressTitleEl) uploadProgressTitleEl.textContent = "جاري رفع الملف...";
-        if (uploadProgressFillEl) uploadProgressFillEl.style.width = `${pct.toFixed(2)}%`;
-        if (uploadProgressTextEl) {
-          const mb = (n) => (n / (1024 * 1024)).toFixed(2);
-          uploadProgressTextEl.textContent = `${mb(loaded)} MB / ${mb(total)} MB`;
-        }
-      };
-      xhr.onload = () => {
-        if (xhr.status >= 200 && xhr.status < 300) return resolve();
-        let msg = `Upload failed (${xhr.status})`;
-        try {
-          const parsed = JSON.parse(xhr.responseText || "{}");
-          msg = parsed?.message || parsed?.error_description || parsed?.error || msg;
-        } catch (_) {}
-        reject(new Error(msg));
-      };
-      xhr.onerror = () => reject(new Error("Network error أثناء الرفع"));
-      xhr.onabort = () => reject(new Error("تم إلغاء الرفع"));
-      xhr.onloadend = () => {
-        activeUploadXhr = null;
-      };
-      xhr.send(file);
+  const uploadToStorage = async (file) => {
+    await assertIsAdmin();
+    if (!file || !["image/jpeg", "image/png", "image/webp"].includes(file.type)) throw new Error("مسموح رفع صور JPG وPNG وWebP فقط. الفيديوهات تُرفع إلى يوتيوب.");
+    if (file.size > 2_000_000) throw new Error("اضغط الصورة لتكون أقل من 2MB ثم حاول مرة أخرى.");
+    const base64 = await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(String(reader.result || "").split(",")[1] || "");
+      reader.onerror = () => reject(new Error("تعذرت قراءة الصورة."));
+      reader.readAsDataURL(file);
     });
-
-    const { data: pub } = supabase.storage.from(bucketName).getPublicUrl(objectPath);
-    return { objectPath, publicUrl: pub?.publicUrl || "" };
+    const result = await fetchCmsApi("/api/upload", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ mimeType: file.type, base64 }),
+    });
+    return { objectPath: result.url.slice(1), publicUrl: result.url };
   };
 
   const getSectors = () => {
@@ -892,7 +625,7 @@ document.addEventListener("DOMContentLoaded", () => {
         brand.media[i].type = "video";
         try {
           await persistBrandMedia(brand);
-          showToast("تم استبدال رابط الفيديو وحفظه. ملف Supabase القديم لم يُحذف؛ راجع زر تنظيف التخزين لاحقًا.", "success");
+          showToast("تم استبدال الفيديو برابط يوتيوب. الملفات القديمة لم تُحذف من التخزين.", "success");
         } catch (error) {
           brand.media = previousMedia;
           renderMediaList();
@@ -934,20 +667,13 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
       li.querySelector(".cm-delete-media")?.addEventListener("click", async () => {
-        if (!window.confirm("هل أنت متأكد من حذف العنصر من المشروع؟ لو لم يعد مستخدمًا في أي مكان، سنحاول حذف ملفه الفعلي من التخزين أيضًا.")) return;
+        if (!window.confirm("هل تريد حذف العنصر من المشروع؟ لن نحذف الملفات المستضافة خارجيًا.")) return;
         const previousMedia = brand.media.map((item) => ({ ...item }));
         const removedMedia = brand.media[i];
         brand.media.splice(i, 1);
         try {
           await persistBrandMedia(brand);
-          const cleanup = await removeUnreferencedStorageObjects([removedMedia?.file]);
-          if (cleanup.failedCount) {
-            showToast("تم حذف العنصر من المشروع، لكن تعذر حذف الملف من التخزين. جرّب فحص الملفات غير المستخدمة بعد عودة Storage للعمل.", "info");
-          } else {
-            showToast(cleanup.skippedCount
-              ? "تم حذف العنصر من المشروع. احتفظنا بالملف لأنه ما زال مستخدمًا في مكان آخر."
-              : "تم حذف العنصر من المشروع، وتم حذف ملف التخزين غير المستخدم إن كان موجودًا.", "success");
-          }
+          showToast("تم حذف العنصر من بيانات المشروع. الملف الأصلي لم يُحذف من استضافته.", "success");
         } catch (err) {
           brand.media = previousMedia;
           renderMediaList();
@@ -1199,9 +925,7 @@ document.addEventListener("DOMContentLoaded", () => {
         await saveSiteToDb(site);
       }
       renderCategoryProjectChecklist();
-      showToast(cleanup?.failedCount
-        ? "تم حذف البراند من الموقع، لكن تعذر حذف بعض الملفات من التخزين. استخدم فحص الملفات غير المستخدمة بعد عودة Storage للعمل."
-        : "تم حذف البراند والملفات غير المستخدمة المرتبطة به.", cleanup?.failedCount ? "info" : "success");
+      showToast("تم حذف المشروع من بيانات الموقع. الملفات الخارجية لم تُحذف.", "success");
       clearForm();
       renderBrandList();
       updateDashboardStats();
@@ -1689,56 +1413,14 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  cleanupStorageOrphansBtn?.addEventListener("click", async () => {
-    if (cleanupStorageOrphansBtn.disabled) return;
+  // Old Supabase cleanup is intentionally disabled during migration.
+  if (cleanupStorageOrphansBtn) {
     cleanupStorageOrphansBtn.disabled = true;
-    const originalHtml = cleanupStorageOrphansBtn.innerHTML;
-    cleanupStorageOrphansBtn.textContent = "جاري فحص التخزين...";
-    try {
-      await assertIsAdmin();
-      const orphans = await findStorageOrphans();
-      if (!orphans.length) {
-        showToast("لم يتم العثور على ملفات غير مستخدمة في Bucket ‏cm-portfolio.", "success");
-        return;
-      }
-      const totalBytes = orphans.reduce((sum, item) => sum + (item.size || 0), 0);
-      const totalMb = (totalBytes / (1024 * 1024)).toFixed(2);
-      const preview = orphans.slice(0, 8).map((item) => item.path).join("\n");
-      const more = orphans.length > 8 ? `\n... و${orphans.length - 8} ملفات أخرى` : "";
-      const confirmed = window.confirm(
-        `تم العثور على ${orphans.length} ملف غير مشار إليه في بيانات المشروعات أو إعدادات الموقع، بإجمالي ${totalMb} MB.\n\nأمثلة:\n${preview}${more}\n\nسيتم حذف هذه الملفات نهائيًا من Supabase Storage. هل تريد المتابعة؟`
-      );
-      if (!confirmed) return;
-      const result = await deleteStoragePaths(orphans.map((item) => item.path));
-      if (result.failedCount) {
-        showToast(`تم حذف ${result.deletedCount} ملفًا، وتعذر حذف ${result.failedCount}. ${result.errors[0] || ""}`, "info");
-      } else {
-        showToast(`تم حذف ${result.deletedCount} ملف غير مستخدم وتحرير نحو ${totalMb} MB.`, "success");
-      }
-    } catch (error) {
-      showToast(`تعذر فحص التخزين؛ لم يتم حذف أي ملف. ${error?.message || "قد تكون خدمة Storage ما زالت مقيدة بسبب تجاوز الحصة."}`, "error");
-    } finally {
-      cleanupStorageOrphansBtn.disabled = false;
-      cleanupStorageOrphansBtn.innerHTML = originalHtml;
-      if (window.lucide) window.lucide.createIcons();
-    }
-  });
+    cleanupStorageOrphansBtn.textContent = "تنظيف Supabase القديم منفصل عن لوحة الإدارة الجديدة";
+  }
 
   const bootstrapAdminData = async () => {
-    // A successful empty query is a valid state. Never repopulate deleted projects
-    // from localStorage or index.html, and never silently edit from a stale cache.
-    data = await loadFromDb();
-    savePortfolioCache(data);
-
-    const fromDb = await loadSiteFromDb();
-    if (fromDb) {
-      site = fromDb;
-    } else {
-      // Missing settings row: initialize clean defaults, not an old local snapshot.
-      site = structuredClone(DEFAULT_SITE);
-      await saveSiteToDb(site);
-    }
-
+    await loadCms();
     renderBrandList();
     updateDashboardStats();
     fillSiteForms();
@@ -1749,39 +1431,27 @@ document.addEventListener("DOMContentLoaded", () => {
     e.preventDefault();
     (async () => {
       try {
-        if (!supabase) {
-          window.alert("Supabase غير مُعد. حدّث supabase-config.js أولاً.");
-          return;
-        }
-        const email = document.getElementById("admin-email")?.value?.trim() || "";
+        const username = document.getElementById("admin-email")?.value?.trim() || "";
         const password = document.getElementById("admin-pass")?.value || "";
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
-        if (error) throw error;
+        await fetchCmsApi("/api/auth", {
+          method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username, password }),
+        });
         await ensureAuthUi();
-        await assertIsAdmin();
         await bootstrapAdminData();
-        showToast("مرحباً بك مجدداً!", "success");
-      } catch (err) {
-        showToast(err?.message || "تعذر تسجيل الدخول.", "error");
-      }
+        showToast("تم تسجيل الدخول بنجاح", "success");
+      } catch (err) { showToast(err?.message || "تعذر تسجيل الدخول.", "error"); }
     })();
   });
-
   logoutBtn.addEventListener("click", async () => {
-    try {
-      if (supabase) await supabase.auth.signOut();
-    } finally {
-      window.location.reload();
-    }
+    try { await fetchCmsApi("/api/auth", { method: "DELETE" }); }
+    finally { window.location.reload(); }
   });
-
   (async () => {
     await ensureAuthUi();
-    if (!supabase) return;
     try {
-      const { data: sess } = await supabase.auth.getSession();
-      if (!sess?.session) return;
-      await assertIsAdmin();
+      const authenticated = Boolean((await fetchCmsApi("/api/auth")).authenticated);
+      if (!authenticated) return;
       await bootstrapAdminData();
     } catch (err) {
       if (loginHintEl) loginHintEl.textContent = err?.message || "";
