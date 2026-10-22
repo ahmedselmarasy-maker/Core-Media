@@ -123,9 +123,28 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // CMS saves to GitHub through secured Vercel functions. No Supabase client.
   const fetchCmsApi = async (path, options = {}) => {
-    const response = await fetch(path, { credentials: "same-origin", cache: "no-store", ...options });
+    let response;
+    try {
+      response = await fetch(path, { credentials: "same-origin", cache: "no-store", ...options });
+    } catch (_) {
+      throw new Error("تعذر الاتصال بخدمة لوحة التحكم. افتح الموقع عبر رابط Vercel الأساسي وتحقق من الاتصال.");
+    }
     const result = await response.json().catch(() => ({}));
-    if (!response.ok) throw new Error(result.error || `Request failed (${response.status})`);
+    if (!response.ok) {
+      if (response.status === 404 && !result.error) {
+        throw new Error(`خدمة ${path} غير موجودة (404). تأكد أن ملفات api مرفوعة داخل مجلد api على فرع main ثم أعد النشر.`);
+      }
+      if (response.status === 503 && !result.error) {
+        throw new Error("خدمة الإدارة غير جاهزة (503). راجع Environment Variables في Vercel لبيئة Production.");
+      }
+      if (response.status >= 500 && !result.error) {
+        throw new Error(`خطأ من خادم لوحة التحكم (${response.status}). راجع Vercel Functions Logs.`);
+      }
+      throw new Error(result.error || `خطأ HTTP ${response.status} في ${path}`);
+    }
+    if (response.headers.get("content-type")?.includes("text/html") || !response.headers.get("content-type")?.includes("json")) {
+      throw new Error(`رد غير صحيح من ${path}: غالبًا تم توجيه API إلى صفحة الموقع. راجع مجلد api وإعدادات Vercel.`);
+    }
     return result;
   };
   let cmsSha = null;
@@ -360,7 +379,21 @@ document.addEventListener("DOMContentLoaded", () => {
   const ensureAuthUi = async () => {
     if (!(loginCard && appCard)) return;
     let authenticated = false;
-    try { authenticated = Boolean((await fetchCmsApi("/api/auth")).authenticated); } catch (_) {}
+    try {
+      const state = await fetchCmsApi("/api/auth");
+      authenticated = Boolean(state.authenticated);
+      if (!authenticated && loginHintEl) {
+        if (state.loginReady === false) {
+          loginHintEl.textContent = "بيانات الدخول غير مضبوطة على Vercel Production: ADMIN_USERNAME وADMIN_PASSWORD وSESSION_SECRET.";
+        } else if (state.githubReady === false) {
+          loginHintEl.textContent = "ربط GitHub غير مكتمل على Vercel Production: GITHUB_TOKEN وGITHUB_REPOSITORY وGITHUB_BRANCH.";
+        } else {
+          loginHintEl.textContent = "اكتب اسم المستخدم وكلمة المرور المحددين في Vercel Production.";
+        }
+      }
+    } catch (err) {
+      if (loginHintEl) loginHintEl.textContent = err?.message || "تعذر الاتصال بخدمة الإدارة.";
+    }
     loginCard.classList.toggle("hidden", authenticated);
     appCard.classList.toggle("hidden", !authenticated);
   };
@@ -1442,7 +1475,13 @@ document.addEventListener("DOMContentLoaded", () => {
         await ensureAuthUi();
         await bootstrapAdminData();
         showToast("تم تسجيل الدخول بنجاح", "success");
-      } catch (err) { showToast(err?.message || "تعذر تسجيل الدخول.", "error"); }
+      } catch (err) {
+        const message = err?.message || "تعذر تسجيل الدخول.";
+        if (loginHintEl) loginHintEl.textContent = message;
+        loginCard?.classList.remove("hidden");
+        appCard?.classList.add("hidden");
+        showToast(message, "error");
+      }
     })();
   });
   logoutBtn.addEventListener("click", async () => {
