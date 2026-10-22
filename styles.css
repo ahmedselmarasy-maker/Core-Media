@@ -1919,3 +1919,27 @@ body {
 
 /* Keep the optional intro video action hidden until a valid URL is configured. */
 .cm-hero-video-trigger[hidden] { display: none !important; }
+
+/* Preview-stage YouTube playlists: no unsupported thumbnail URLs */
+.cm-portfolio-thumb.cm-playlist-cover { background: radial-gradient(circle at 18% 15%, #163b61 0%, #071a30 55%, #04101f 100%); }
+.cm-playlist-card-cover { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; width:100%; padding:24px; text-align:center; }
+.cm-playlist-card-cover span.cm-playlist-card-icon { display:flex; align-items:center; justify-content:center; width:64px; height:64px; border-radius:50%; background:linear-gradient(135deg,#f0ad43,#ff7e40); font-size:25px; box-shadow:0 12px 28px #fa892a44; }
+.cm-playlist-card-cover small {font:700 11px/1.5 sans-serif; letter-spacing:2px; color:#d6dfef; }
+.cm-lightbox-media-frame-video.cm-youtube-playlist-frame { flex-direction: column; gap:0; }
+.cm-playlist-open-youtube {display:block; width:100%; color:#fff; background:#0d2035; text-align:center; padding:10px 14px; font-size:13px; text-decoration:underline; }
+.cm-playlist-open-youtube:hover {color:#f4b14c; }
+.cm-lightbox-media-frame-video.cm-youtube-frame.cm-youtube-playlist-frame {
+  aspect-ratio: auto;
+  display: flex;
+  flex-direction: column;
+  overflow: visible;
+  background: #0d2035;
+}
+.cm-youtube-playlist-frame iframe.cm-youtube-player {
+  position: relative;
+  inset: auto;
+  flex: 0 0 auto;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  border-radius: 12px 12px 0 0;
+}

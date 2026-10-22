@@ -1,6 +1,98 @@
 {
   "version": 1,
   "updatedAt": "2026-10-22T00:00:00.000Z",
-  "brands": [],
-  "site": {}
+  "brands": [
+    {
+      "id": "cm-demo-youtube-playlist-01",
+      "name": "قائمة أعمال 01",
+      "market": "egypt",
+      "egyptCategory": "playlists",
+      "media": [
+        {
+          "type": "video",
+          "file": "https://www.youtube.com/playlist?list=PLH30EsvyyXzM",
+          "title": "شاهد قائمة الفيديوهات كاملة",
+          "orientation": "landscape"
+        }
+      ],
+      "coverUrl": "",
+      "sortOrder": 1
+    },
+    {
+      "id": "cm-demo-youtube-playlist-02",
+      "name": "قائمة أعمال 02",
+      "market": "egypt",
+      "egyptCategory": "playlists",
+      "media": [
+        {
+          "type": "video",
+          "file": "https://www.youtube.com/playlist?list=PLfiqxe869HDs",
+          "title": "شاهد قائمة الفيديوهات كاملة",
+          "orientation": "landscape"
+        }
+      ],
+      "coverUrl": "",
+      "sortOrder": 2
+    },
+    {
+      "id": "cm-demo-youtube-playlist-03",
+      "name": "قائمة أعمال 03",
+      "market": "egypt",
+      "egyptCategory": "playlists",
+      "media": [
+        {
+          "type": "video",
+          "file": "https://www.youtube.com/playlist?list=PLUQ3lchMfSpU",
+          "title": "شاهد قائمة الفيديوهات كاملة",
+          "orientation": "landscape"
+        }
+      ],
+      "coverUrl": "",
+      "sortOrder": 3
+    }
+  ],
+  "site": {
+    "sectors": {
+      "egyptCategories": [
+        {
+          "id": "restaurants",
+          "label": "مطاعم",
+          "enLabel": "Restaurants",
+          "icon": "restaurants"
+        },
+        {
+          "id": "cafes",
+          "label": "كافيهات",
+          "enLabel": "Cafés",
+          "icon": "cafes"
+        },
+        {
+          "id": "medical",
+          "label": "طبي",
+          "enLabel": "Medical",
+          "icon": "medical"
+        },
+        {
+          "id": "education",
+          "label": "تعليم ومدرسين",
+          "enLabel": "Education",
+          "icon": "education"
+        },
+        {
+          "id": "other",
+          "label": "مشاريع أخرى",
+          "enLabel": "Other Projects",
+          "icon": "other"
+        },
+        {
+          "id": "playlists",
+          "label": "قوائم الفيديو",
+          "enLabel": "Video Playlists",
+          "icon": "playlists",
+          "description": "معرض تجريبي لقوائم الفيديو الخاصة بأعمال Core Media",
+          "tagline": "3 قوائم فيديو"
+        }
+      ]
+    }
+  }
 }

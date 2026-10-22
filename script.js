@@ -482,12 +482,15 @@ document.addEventListener("DOMContentLoaded", () => {
     const cover = (brand.coverUrl || "").trim();
     const fallbackThumbnail = videos.map((m) => window.cmYouTube?.thumbnail(m.file)).find(Boolean) || "";
     const thumbnail = cover || fallbackThumbnail;
+    const hasPlaylist = videos.some((m) => window.cmYouTube?.parse(m.file)?.kind === "playlist");
     const thumbHtml = thumbnail
       ? `<img src="${escAttr(thumbnail)}" alt="${escAttr(brand.name)}" loading="lazy" /><span class="cm-portfolio-thumb-label">${escAttr(brand.name)}</span>`
-      : `<span>${escAttr(brand.name)}</span>`;
+      : hasPlaylist
+        ? `<span class="cm-playlist-card-cover"><span class="cm-playlist-card-icon" aria-hidden="true">▶</span><span>${escAttr(brand.name)}</span><small>PLAYLIST · YOUTUBE</small></span>`
+        : `<span>${escAttr(brand.name)}</span>`;
 
     return `<article class="cm-portfolio-card" data-category="${category}" data-market="${brand.market}" data-images="${escAttr(dataImages)}" data-videos="${escAttr(dataVideos)}" data-video-orientations="${escAttr(dataVideoOrientations)}" data-aos="fade-up">
-      <div class="cm-portfolio-thumb ${thumbnail ? "has-cover" : "placeholder-video"}">
+      <div class="cm-portfolio-thumb ${thumbnail ? "has-cover" : hasPlaylist ? "placeholder-video cm-playlist-cover" : "placeholder-video"}">
         ${thumbHtml}
       </div>
       <div class="cm-portfolio-info">
@@ -522,6 +525,7 @@ document.addEventListener("DOMContentLoaded", () => {
     law: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18M5 6h14M4 6l-3 6h6L4 6Zm16 0-3 6h6l-3-6ZM6 21h12"/></svg>',
     events: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 2v6m10-6v6M3 11h18m-10 4 1 2 3 .3-2 2 .5 3-2.5-1.5L8 22l.5-3-2-2 3-.3 1.5-2Z"/></svg>',
     hotel: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 21V6h18v15M8 6V3h8v3M2 21h20M8 10h2m4 0h2m-8 4h2m4 0h2m-6 7v-4h4v4"/></svg>',
+    playlists: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16M4 9h16M4 13h7m2 2 7 4-7 4v-8Z"/></svg>',
   };
   const categoryArrow = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14 6-6 6 6 6"/></svg>';
   const categoryIconFor = (category) => categoryIcons[category?.icon] || categoryIcons[category?.id] || categoryIcons.other;
@@ -727,10 +731,13 @@ document.addEventListener("DOMContentLoaded", () => {
       const autoplay = /\bautoplay\b/.test(extraAttrs);
       const muted = /\bmuted\b/.test(extraAttrs);
       const embed = window.cmYouTube.embed(src, { autoplay, mute: muted });
-      return `<div class="cm-lightbox-media-frame cm-lightbox-media-frame-video cm-youtube-frame ${isPortrait ? "is-portrait" : "is-landscape"}">
-        <iframe class="cm-youtube-player" src="${escAttr(embed)}" title="فيديو من قناة Core Media على يوتيوب" loading="lazy"
+      const isPlaylist = youtube.kind === "playlist";
+      const originalUrl = window.cmYouTube.canonical(src);
+      return `<div class="cm-lightbox-media-frame cm-lightbox-media-frame-video cm-youtube-frame ${isPortrait ? "is-portrait" : "is-landscape"} ${isPlaylist ? "cm-youtube-playlist-frame" : ""}">
+        <iframe class="cm-youtube-player" src="${escAttr(embed)}" title="${isPlaylist ? "قائمة فيديوهات Core Media على يوتيوب" : "فيديو من قناة Core Media على يوتيوب"}" loading="lazy"
           referrerpolicy="strict-origin-when-cross-origin"
           allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>
+        ${isPlaylist ? `<a class="cm-playlist-open-youtube" href="${escAttr(originalUrl)}" rel="noopener noreferrer" target="_blank">لو القائمة مش بتشتغل هنا، افتحها على يوتيوب ↗</a>` : ""}
       </div>`;
     }
     return `<div class="cm-lightbox-media-frame cm-lightbox-media-frame-video">

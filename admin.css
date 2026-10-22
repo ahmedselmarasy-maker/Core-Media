@@ -1156,3 +1156,5 @@
 }
 .cm-media-replacement-input { direction: ltr; text-align: left; }
 .cm-media-video-controls button { width: 100%; white-space: normal; }
+
+.cm-admin-playlist-thumb { width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#112d4b,#071421);color:#fff;font-size:13px;font-weight:700;text-align:center; }

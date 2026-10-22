@@ -564,7 +564,9 @@ document.addEventListener("DOMContentLoaded", () => {
       const isVideo = m.type === "video";
       const youtubeVideo = window.cmYouTube?.parse(m.file);
       const previewHtml = youtubeVideo
-        ? `<img src="${escAttr(window.cmYouTube.thumbnail(m.file))}" alt="معاينة يوتيوب" loading="lazy" /><i data-lucide="play-circle" class="cm-media-play-icon"></i>`
+        ? youtubeVideo.kind === "playlist"
+          ? `<span class="cm-admin-playlist-thumb">▶ قائمة يوتيوب</span>`
+          : `<img src="${escAttr(window.cmYouTube.thumbnail(m.file))}" alt="معاينة يوتيوب" loading="lazy" /><i data-lucide="play-circle" class="cm-media-play-icon"></i>`
         : isVideo
           ? `<video src="${escAttr(m.file)}" muted preload="metadata"></video><i data-lucide="play-circle" class="cm-media-play-icon"></i>`
           : `<img src="${escAttr(m.file)}" alt="preview" />`;
@@ -574,7 +576,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <div class="cm-media-info">
           <span class="cm-media-badge">${isVideo ? "قاطعة" : "تصميم"}</span>
           <input class="cm-media-title-input" data-index="${i}" value="${escAttr(m.title || "")}" placeholder="${escAttr(mediaLabel(m, i))}" />
-          <span class="cm-media-file" title="${escAttr(m.file)}">${escAttr(youtubeVideo ? `YouTube · ${youtubeVideo.id}` : m.file.split("/").pop())}</span>
+          <span class="cm-media-file" title="${escAttr(m.file)}">${escAttr(youtubeVideo ? `${youtubeVideo.kind === "playlist" ? "YouTube Playlist" : "YouTube"} · ${youtubeVideo.id}` : m.file.split("/").pop())}</span>
           ${isVideo ? `<div class="cm-media-video-controls">
             <label>اتجاه الفيديو
               <select class="cm-media-orientation-select" data-index="${i}">
@@ -584,7 +586,7 @@ document.addEventListener("DOMContentLoaded", () => {
               </select>
             </label>
             <label>استبدل هذا الفيديو برابط YouTube
-              <input class="cm-media-replacement-input" dir="ltr" type="text" placeholder="https://youtu.be/..." />
+              <input class="cm-media-replacement-input" dir="ltr" type="text" placeholder="https://youtube.com/playlist?list=..." />
             </label>
             <button class="cm-btn cm-btn-outline cm-btn-sm cm-replace-youtube" type="button">حفظ رابط يوتيوب بدل الفيديو</button>
           </div>` : ""}
@@ -616,7 +618,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const link = field?.value?.trim() || "";
         const video = window.cmYouTube?.parse(link);
         if (!video) {
-          showToast("الصق رابط YouTube صحيحًا (watch / Shorts / youtu.be).", "error");
+          showToast("الصق رابط YouTube صحيحًا (فيديو أو Shorts أو Playlist).", "error");
           return;
         }
         const previousMedia = brand.media.map((item) => ({ ...item }));
