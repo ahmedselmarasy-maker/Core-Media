@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#071321" />
+  <meta name="description" content="موقع Core Media تحت التحديث حاليًا. نعمل على تحسين تجربتك وسنعود قريبًا." />
+  <title>Core Media | تحديثات جارية</title>
+  <style>
+    :root { color-scheme: dark; --bg:#071321; --paper:#f6f9ff; --muted:#aebccc; --cyan:#00b8f3; --orange:#f6a41a; }
+    *, *::before, *::after { box-sizing: border-box; }
+    html { min-height: 100%; }
+    body {
+      margin: 0; min-height: 100vh; min-height: 100dvh;
+      background: radial-gradient(ellipse 700px 500px at 14% 12%, rgba(0,166,249,.13),transparent 70%),
+                  radial-gradient(ellipse 690px 440px at 90% 87%, rgba(241,142,28,.10),transparent 70%),
+                  var(--bg);
+      color:var(--paper); font-family: Tahoma, "Segoe UI", Arial, sans-serif;
+      display: flex; align-items: center; justify-content: center;
+      padding: 48px 22px 26px; overflow-x: hidden;
+    }
+    body::before {
+      content: ""; position: fixed; inset: 0; pointer-events: none; opacity: .23;
+      background-image: linear-gradient(rgba(255,255,255,.045) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(255,255,255,.045) 1px, transparent 1px);
+      background-size: 52px 52px;
+      mask-image: linear-gradient(to bottom, transparent 3%, black 40%, transparent 100%);
+    }
+    .page { width: min(100%, 850px); text-align: center; position: relative; z-index: 1; }
+    .brand {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: min(330px, 82vw); min-height: 136px; padding: 14px 20px;
+      margin-bottom: 42px; border-radius: 20px;
+      background: rgba(249,251,255,.98);
+      box-shadow: 0 26px 80px rgba(0,0,0,.24), 0 0 0 1px rgba(255,255,255,.2);
+    }
+    .brand img { display: block; width: 100%; height: auto; max-height: 120px; object-fit: contain; }
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 10px; margin-bottom: 22px;
+      color: #d7e3f2; border: 1px solid rgba(255,255,255,.16);
+      background:rgba(255,255,255,.055); border-radius: 100px; padding: 11px 19px;
+      font-size: 14px; font-weight: 700; letter-spacing: .05px;
+    }
+    .dot { width: 9px; height: 9px; flex: none; background: var(--orange); border-radius: 50%; box-shadow: 0 0 0 5px rgba(246,164,26,.13); animation:glow 2.2s ease-in-out infinite; }
+    h1 { font-size: clamp(30px, 5.5vw, 56px); line-height: 1.5; font-weight: 800; letter-spacing: -.7px; margin: 0 0 13px; }
+    h1 strong { color:var(--orange); font-weight: inherit; }
+    .subtitle { max-width: 590px; margin: 0 auto; color:var(--muted); font-size: clamp(16px, 2vw, 19px); line-height: 2.1; }
+    .line { margin: 35px auto 0; height: 4px; width: min(270px, 72vw); border-radius: 80px; overflow: hidden; background: rgba(255,255,255,.10); position:relative; }
+    .line::before { content:""; position:absolute; inset:0; transform:translateX(100%); background:linear-gradient(90deg, transparent, var(--cyan), var(--orange)); animation:scan 3.2s linear infinite; }
+    .english { font-size: 12px; margin-top: 27px; color: #758ba1; font-weight: 600; letter-spacing: 2.1px; direction:ltr; }
+    footer { margin-top: 68px; font-size: 12px; color: #71869c; direction:ltr; }
+    @keyframes scan { 0% {transform:translateX(102%)} 100% {transform:translateX(-102%)} }
+    @keyframes glow { 0%,100% {opacity:1} 50% {opacity:.55} }
+    @media(max-width:560px) { body { padding-top: 38px; } .brand { margin-bottom: 34px; min-height: 112px; } .eyebrow { font-size:12px; } footer {margin-top:48px;} }
+    @media(prefers-reduced-motion:reduce) { *,*::before,*::after {animation:none!important;} .line::before{transform:none;} }
+  </style>
+</head>
+<body>
+  <main class="page" aria-labelledby="message-heading">
+    <div class="brand"><img src="/core-logo.webp" alt="Core Media — Media & Production" width="290" height="123" /></div>
+    <div>
+      <span class="eyebrow"><span class="dot" aria-hidden="true"></span> بنطوّر تجربتك معانا</span>
+    </div>
+    <h1 id="message-heading">حاجة <strong>أحسن</strong> جاية قريب</h1>
+    <p class="subtitle">موقع <b>Core Media</b> تحت التحديث حاليًا.<br />بنعمل بعض التحسينات علشان نقدملك تجربة أفضل، والموقع هيرجع يشتغل بشكل طبيعي قريب جدًا.</p>
+    <div class="line" aria-hidden="true"></div>
+    <div class="english" lang="en">WE'LL BE BACK SOON</div>
+    <footer>© Core Media — Media &amp; Production</footer>
+  </main>
+</body>
+</html>
