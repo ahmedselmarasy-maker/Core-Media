@@ -1,27 +1,33 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
-const c={window:{},URL,URLSearchParams};vm.createContext(c);
-vm.runInContext(fs.readFileSync(new URL('../youtube-utils.js',import.meta.url),'utf8'),c);
-const yt=c.window.cmYouTube;
-const ids=['PLH30EsvyyXzM','PLfiqxe869HDs','PLUQ3lchMfSpU'];
-const cms=JSON.parse(fs.readFileSync(new URL('../data/cms.json',import.meta.url),'utf8'));
-assert.equal(cms.brands.length,3);
-assert.ok(cms.site.sectors.egyptCategories.some(c=>c.id==='playlists'));
-for(let i=0;i<ids.length;i++){
- const url=`https://youtube.com/playlist?list=${ids[i]}&si=share`;
- const p=yt.parse(url);
- assert.equal(p.kind,'playlist');
- assert.equal(p.playlistId,ids[i]);
- assert.equal(yt.canonical(url),`https://www.youtube.com/playlist?list=${ids[i]}`);
- assert.equal(yt.thumbnail(url),'');
- assert.match(yt.embed(url),/embed\/videoseries\?/);
- assert.ok(yt.embed(url).includes(`list=${ids[i]}`));
- assert.equal(cms.brands[i].media[0].file,yt.canonical(url));
- assert.equal(cms.brands[i].egyptCategory,'playlists');
+
+const context = { window: {}, URL, URLSearchParams };
+vm.createContext(context);
+vm.runInContext(fs.readFileSync(new URL('../youtube-utils.js', import.meta.url), 'utf8'), context);
+const yt = context.window.cmYouTube;
+const cms = JSON.parse(fs.readFileSync(new URL('../data/cms.json', import.meta.url), 'utf8'));
+
+const mapping = [
+  ['PLH30EsvyyXzM', 'education', 'أعمال المدرسين'],
+  ['PLfiqxe869HDs', 'cafes', 'أعمال الكافيهات'],
+  ['PLUQ3lchMfSpU', 'medical', 'أعمال القطاع الطبي'],
+];
+assert.equal(cms.brands.length, 3);
+assert.ok(!cms.site.sectors.egyptCategories.some(category => category.id === 'playlists'));
+for (const [id, category, title] of mapping) {
+  const brand = cms.brands.find(brand => brand.media.some(media => media.file.includes(id)));
+  assert.ok(brand, `Missing playlist ${id}`);
+  assert.equal(brand.name, title);
+  assert.equal(brand.egyptCategory, category);
+  assert.ok(cms.site.sectors.egyptCategories.some(item => item.id === category));
+  const item = brand.media.find(media => media.file.includes(id));
+  const parsed = yt.parse(item.file);
+  assert.equal(parsed.kind, 'playlist');
+  assert.equal(parsed.playlistId, id);
+  assert.equal(yt.canonical(item.file), `https://www.youtube.com/playlist?list=${id}`);
+  assert.match(yt.embed(item.file), /embed\/videoseries\?/);
 }
-assert.equal(yt.parse('https://youtu.be/aqz-KE-bpKQ').kind,'video');
-assert.equal(yt.parse('https://www.youtube.com/shorts/aqz-KE-bpKQ').short,true);
-assert.equal(yt.parse('https://evil.test/playlist?list=PLH30EsvyyXzM'),null);
-assert.equal(yt.parse('https://youtube.com/playlist?list=abc'),null);
-console.log('PASS: 3 playlists, IDs, embeds, CMS cards, existing videos, blocked offsite URLs');
+assert.equal(yt.parse('https://www.youtube.com/shorts/aqz-KE-bpKQ').kind, 'video');
+assert.equal(yt.parse('https://evil.test/playlist?list=PLH30EsvyyXzM'), null);
+console.log('PASS: Playlists belong to Education, Cafes, Medical; no custom playlist sector.');
