@@ -1,0 +1,16 @@
+# Windows shortcuts
+*.lnk
+
+# OS junk
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Local env overrides
+.env
+.env.local
+
+# Avoid committing raw videos. Use YouTube links in the admin panel.
+*.mp4
+*.mov
+*.m4v

@@ -1882,3 +1882,40 @@ body {
   .cm-preloader-logo-stage, .cm-lens-glass, .cm-lens-stage { will-change: auto; }
   .cm-lens-capture-glow, .cm-lens-svg { display: none; }
 }
+
+/* YouTube is hosted externally. Keep the player inside the project modal and
+   preserve 9:16 Shorts or 16:9 videos without clipping on phones. */
+.cm-lightbox-media-frame-video.cm-youtube-frame {
+  width: 100%;
+  max-width: 960px;
+  min-height: 0;
+  max-height: none;
+  aspect-ratio: 16 / 9;
+  display: block;
+  position: relative;
+  border-radius: 12px;
+  background: #000;
+  overflow: hidden;
+}
+.cm-lightbox-media-frame-video.cm-youtube-frame.is-portrait {
+  width: min(100%, 380px, calc(72vh * 9 / 16));
+  max-width: 100%;
+  aspect-ratio: 9 / 16;
+}
+.cm-youtube-frame iframe.cm-youtube-player {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  inset: 0;
+  border: 0;
+  border-radius: 12px;
+  display: block;
+}
+@media (max-width: 600px) {
+  .cm-lightbox-media-frame-video.cm-youtube-frame.is-portrait {
+    width: min(100%, 340px, calc(67vh * 9 / 16));
+  }
+}
+
+/* Keep the optional intro video action hidden until a valid URL is configured. */
+.cm-hero-video-trigger[hidden] { display: none !important; }

@@ -222,7 +222,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  const STORAGE_KEY = "cmPortfolioDataV1";
+  const STORAGE_KEY = "cmPortfolioDataV2";
   const SITE_STORAGE_KEY = "cmSiteContentV1";
   const INTRO_VIDEO_DISMISSED_KEY = "cmIntroVideoDismissedV1";
   let WHATSAPP_E164 = "201019132369";
@@ -283,14 +283,9 @@ document.addEventListener("DOMContentLoaded", () => {
       .replace(/>/g, "&gt;")
       .replace(/'/g, "&#39;");
 
-  const makeId = (name, i) =>
-    `brand-${String(name || "item")
-      .toLowerCase()
-      .replace(/\s+/g, "-")
-      .replace(/[^\w-]/g, "")}-${i}`;
 
   const isVideoPath = (path) =>
-    /\.(mp4|mov|avi|webm)$/i.test(String(path || "").trim());
+    Boolean(window.cmYouTube?.parse(path)) || /\.(mp4|mov|avi|webm)(?:[?#].*)?$/i.test(String(path || "").trim());
 
   const inferMediaType = (path, fallback = "design") =>
     isVideoPath(path) ? "video" : fallback;
@@ -299,6 +294,7 @@ document.addEventListener("DOMContentLoaded", () => {
     type: m?.type === "video" || isVideoPath(m?.file) ? "video" : "design",
     file: String(m?.file || "").trim(),
     title: String(m?.title || "").trim(),
+    orientation: ["portrait", "landscape"].includes(m?.orientation) ? m.orientation : "auto",
   });
 
   const normalizeBrand = (row) => ({
@@ -315,6 +311,17 @@ document.addEventListener("DOMContentLoaded", () => {
     if (value == null || value === "") return;
     const el = document.querySelector(selector);
     if (el) el.textContent = value;
+  };
+
+  // Never resurrect the deleted, Git LFS-hosted default company video.
+  // This only filters that exact legacy filename; YouTube and other uploads still work.
+  const cleanIntroVideoUrl = (value) => {
+    const url = String(value || "").trim();
+    let decoded = url;
+    try { decoded = decodeURIComponent(url); } catch (_) {}
+    const baseName = decoded.split(/[?#]/)[0].split(/[\\/]/).pop()
+      .replace(/\s+/g, "").toLocaleLowerCase();
+    return baseName === "فيديوالشركة.mp4" ? "" : url;
   };
 
   const applySiteContent = (content) => {
@@ -335,7 +342,10 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     const introTrigger = document.getElementById("cm-intro-video-trigger");
     if (introTrigger) {
-      if (hero.introVideoUrl) introTrigger.setAttribute("data-file", hero.introVideoUrl);
+      const videoUrl = cleanIntroVideoUrl(hero.introVideoUrl);
+      introTrigger.hidden = !videoUrl;
+      if (videoUrl) introTrigger.setAttribute("data-file", videoUrl);
+      else introTrigger.removeAttribute("data-file");
       if (hero.introVideoLabel) introTrigger.textContent = hero.introVideoLabel;
     }
 
@@ -444,13 +454,17 @@ document.addEventListener("DOMContentLoaded", () => {
     if (supabase) {
       try {
         const { data: row, error } = await supabase.from(SITE_TABLE).select("content").eq("id", 1).maybeSingle();
-        if (!error && row?.content && typeof row.content === "object") {
-          try {
-            localStorage.setItem(SITE_STORAGE_KEY, JSON.stringify(row.content));
-          } catch (_) {}
+        if (error) throw error;
+        // A successful empty result is authoritative. Never resurrect an old local
+        // snapshot merely because the settings row is absent or empty.
+        if (row?.content && typeof row.content === "object") {
+          try { localStorage.setItem(SITE_STORAGE_KEY, JSON.stringify(row.content)); } catch (_) {}
           return row.content;
         }
-      } catch (_) {}
+        return null;
+      } catch (error) {
+        console.warn("Supabase site settings unavailable; trying the last local snapshot", error);
+      }
     }
     try {
       const raw = localStorage.getItem(SITE_STORAGE_KEY);
@@ -470,88 +484,32 @@ document.addEventListener("DOMContentLoaded", () => {
       return String(a.name || "").localeCompare(String(b.name || ""), "ar");
     });
 
-  const parseInitialPortfolioData = () => {
-    const cards = Array.from(document.querySelectorAll("#portfolio-groups .cm-portfolio-card"));
-    return cards.map((card, index) => {
-      const market = card.getAttribute("data-market") || "egypt";
-      const name = card.querySelector(".cm-portfolio-info h3")?.textContent?.trim() || `Brand ${index + 1}`;
-      const group = card.closest(".cm-portfolio-group");
-      const egyptCategory = market === "egypt" ? group?.getAttribute("data-egypt-cat") || "other" : "other";
-      const media = Array.from(card.querySelectorAll(".cm-tag"))
-        .map((tag) => {
-          const file = tag.getAttribute("data-file") || "";
-          const inVideoRow = tag.closest(".cm-portfolio-tags-videos");
-          return {
-            type: inVideoRow ? "video" : inferMediaType(file, "design"),
-            file: file.trim(),
-          };
-        })
-        .filter((m) => m.file);
-      return {
-        id: makeId(name, index + 1),
-        name,
-        market,
-        egyptCategory,
-        media,
-      };
-    });
-  };
-
-  // Read the original HTML projects ONCE, before the visible portfolio is replaced.
-  // The original website still contains this catalog, so it is a reliable fallback
-  // for first-time visitors and browsers with an obsolete/empty localStorage cache.
-  const bundledPortfolioData = parseInitialPortfolioData();
-
-  const normalizeBrandName = (value) =>
-    String(value || "").normalize("NFKC").trim().replace(/\s+/g, " ").toLocaleLowerCase();
-
-  const bundledBrandsByName = new Map(
-    bundledPortfolioData.map((brand) => [normalizeBrandName(brand.name), brand])
-  );
-
-  const recoverLegacyCategories = (brands) => {
-    // Early versions assigned "other" to every project. Restore the known original
-    // Egyptian group *only* if this looks like an entirely uncategorized legacy set.
-    const allUncategorized = brands.length > 0 &&
-      brands.every((brand) => !brand.egyptCategory || brand.egyptCategory === "other");
-    return brands.map((brand) => {
-      const original = bundledBrandsByName.get(normalizeBrandName(brand.name));
-      const missingCategory = !brand.egyptCategory;
-      const isLegacyOther = allUncategorized && brand.egyptCategory === "other";
-      if (original?.market === "egypt" && original.egyptCategory !== "other" &&
-          (missingCategory || isLegacyOther)) {
-        return { ...brand, egyptCategory: original.egyptCategory };
-      }
-      return brand;
-    });
-  };
-
-  const loadPortfolioData = () => {
+  // Supabase is the source of truth. This versioned local snapshot is used only
+  // when the database cannot be reached; it is never used to seed or repopulate DB.
+  const loadPortfolioCache = () => {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) {
-        const parsed = JSON.parse(raw);
-        // An empty cache must NOT hide projects bundled in index.html.
-        if (Array.isArray(parsed) && parsed.some((brand) => brand?.name)) {
-          return recoverLegacyCategories(parsed);
-        }
+      if (raw === null) return null;
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) {
+        return sortBrands(parsed.filter((brand) => brand && typeof brand.name === "string"));
       }
     } catch (error) {
-      console.warn("Local portfolio cache unavailable, using bundled projects", error);
+      console.warn("Local portfolio snapshot unavailable", error);
     }
-    return bundledPortfolioData;
+    return null;
   };
 
   const savePortfolioData = (data) => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(sortBrands(Array.isArray(data) ? data : [])));
   };
 
   const loadPortfolioDataFromSupabase = async () => {
-    if (!supabase) return null;
+    if (!supabase) throw new Error("Supabase is not configured");
     const { data: rows, error } = await supabase.from(BRAND_TABLE).select("*").order("sort_order", { ascending: true });
     if (error) throw error;
-    const normalized = (rows || []).map(normalizeBrand);
-    return sortBrands(normalized);
+    // [] is a valid saved state (including when every project has been deleted).
+    return sortBrands((rows || []).map(normalizeBrand));
   };
 
   const mediaByType = (brand, type) =>
@@ -561,7 +519,8 @@ document.addEventListener("DOMContentLoaded", () => {
     items
       .map((m, i) => {
         const label = m.title || `${prefix} ${i + 1}`;
-        return `<span class="cm-tag" data-file="${escAttr(m.file)}">${escAttr(label)}</span>`;
+        const orientation = m.orientation || "auto";
+        return `<span class="cm-tag" data-file="${escAttr(m.file)}" data-orientation="${escAttr(orientation)}">${escAttr(label)}</span>`;
       })
       .join("");
 
@@ -570,6 +529,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const videos = mediaByType(brand, "video");
     const dataImages = designs.map((m) => m.file).join("|");
     const dataVideos = videos.map((m) => m.file).join("|");
+    const dataVideoOrientations = videos.map((m) => m.orientation || "auto").join("|");
     const hasDesign = designs.length > 0;
     const hasVideo = videos.length > 0;
     const category = [hasDesign ? "design" : "", hasVideo ? "video" : ""]
@@ -577,12 +537,14 @@ document.addEventListener("DOMContentLoaded", () => {
       .join(" ");
 
     const cover = (brand.coverUrl || "").trim();
-    const thumbHtml = cover
-      ? `<img src="${escAttr(cover)}" alt="${escAttr(brand.name)}" loading="lazy" /><span class="cm-portfolio-thumb-label">${escAttr(brand.name)}</span>`
+    const fallbackThumbnail = videos.map((m) => window.cmYouTube?.thumbnail(m.file)).find(Boolean) || "";
+    const thumbnail = cover || fallbackThumbnail;
+    const thumbHtml = thumbnail
+      ? `<img src="${escAttr(thumbnail)}" alt="${escAttr(brand.name)}" loading="lazy" /><span class="cm-portfolio-thumb-label">${escAttr(brand.name)}</span>`
       : `<span>${escAttr(brand.name)}</span>`;
 
-    return `<article class="cm-portfolio-card" data-category="${category}" data-market="${brand.market}" data-images="${escAttr(dataImages)}" data-videos="${escAttr(dataVideos)}" data-aos="fade-up">
-      <div class="cm-portfolio-thumb ${cover ? "has-cover" : "placeholder-video"}">
+    return `<article class="cm-portfolio-card" data-category="${category}" data-market="${brand.market}" data-images="${escAttr(dataImages)}" data-videos="${escAttr(dataVideos)}" data-video-orientations="${escAttr(dataVideoOrientations)}" data-aos="fade-up">
+      <div class="cm-portfolio-thumb ${thumbnail ? "has-cover" : "placeholder-video"}">
         ${thumbHtml}
       </div>
       <div class="cm-portfolio-info">
@@ -807,7 +769,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const closeBtn = lightbox?.querySelector(".cm-lightbox-close");
   const backdrop = lightbox?.querySelector(".cm-lightbox-backdrop");
   const introVideoTrigger = document.getElementById("cm-intro-video-trigger");
-  const getIntroVideoPath = () => (introVideoTrigger?.getAttribute("data-file") || "").trim();
+  const getIntroVideoPath = () => cleanIntroVideoUrl(introVideoTrigger?.getAttribute("data-file"));
   let introVideoOpen = false;
   const videoProtectionAttrs =
     'preload="auto" playsinline webkit-playsinline controls controlslist="nodownload noplaybackrate" disablepictureinpicture disableremoteplayback';
@@ -815,13 +777,26 @@ document.addEventListener("DOMContentLoaded", () => {
   const videoFallbackHtml =
     '<p class="cm-lightbox-video-fallback">الصوت شغال والصورة مش ظاهرة — غالبًا الملف نفسه بصيغة HEVC (حتى لو اترفح من اللاب). من لوحة الإدارة: احذف القاطعة وارفعها تاني واستنى رسالة التحويل لـ H.264.</p>';
 
-  const buildVideoHtml = (src, extraAttrs = "") =>
-    `<div class="cm-lightbox-media-frame cm-lightbox-media-frame-video">
+  const buildVideoHtml = (src, extraAttrs = "", orientation = "auto") => {
+    const youtube = window.cmYouTube?.parse(src);
+    if (youtube) {
+      const isPortrait = orientation === "portrait" || (orientation !== "landscape" && youtube.short);
+      const autoplay = /\bautoplay\b/.test(extraAttrs);
+      const muted = /\bmuted\b/.test(extraAttrs);
+      const embed = window.cmYouTube.embed(src, { autoplay, mute: muted });
+      return `<div class="cm-lightbox-media-frame cm-lightbox-media-frame-video cm-youtube-frame ${isPortrait ? "is-portrait" : "is-landscape"}">
+        <iframe class="cm-youtube-player" src="${escAttr(embed)}" title="فيديو من قناة Core Media على يوتيوب" loading="lazy"
+          referrerpolicy="strict-origin-when-cross-origin"
+          allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>
+      </div>`;
+    }
+    return `<div class="cm-lightbox-media-frame cm-lightbox-media-frame-video">
       <video class="cm-lightbox-media cm-lightbox-video" ${videoProtectionAttrs} ${extraAttrs}>
         <source src="${escAttr(src)}" type="video/mp4" />
       </video>
       ${videoFallbackHtml}
     </div>`;
+  };
 
   const enhanceLightboxVideos = () => {
     if (!lightbox) return;
@@ -884,6 +859,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const buildMediaContent = (card) => {
     const images = (card.getAttribute("data-images") || "").split("|").filter(Boolean);
     const videos = (card.getAttribute("data-videos") || "").split("|").filter(Boolean);
+    const orientations = (card.getAttribute("data-video-orientations") || "").split("|");
     const parts = [];
     images.forEach((src) => {
       parts.push(
@@ -891,7 +867,7 @@ document.addEventListener("DOMContentLoaded", () => {
       );
     });
     videos.forEach((src, i) => {
-      parts.push(buildVideoHtml(src, i === 0 ? "autoplay" : ""));
+      parts.push(buildVideoHtml(src, i === 0 ? "autoplay" : "", orientations[i] || "auto"));
     });
     return parts.length ? `<div class="cm-lightbox-gallery">${parts.join("")}</div>` : "";
   };
@@ -911,9 +887,9 @@ document.addEventListener("DOMContentLoaded", () => {
     enhanceLightboxVideos();
   };
 
-  const openSingleMedia = (filePath, title) => {
+  const openSingleMedia = (filePath, title, orientation = "auto") => {
     const mediaHtml = isVideoPath(filePath)
-      ? buildVideoHtml(filePath, "autoplay")
+      ? buildVideoHtml(filePath, "autoplay", orientation)
       : `<img src="${escAttr(filePath)}" alt="" class="cm-lightbox-media cm-lightbox-image" decoding="async" draggable="false" loading="eager" />`;
     openLightbox(title, mediaHtml);
   };
@@ -921,6 +897,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const closeLightbox = (reason = "manual") => {
     if (!lightbox) return;
     lightbox.querySelectorAll("video").forEach((v) => v.pause());
+    // Removing iframe from the DOM stops YouTube audio when the dialog is closed.
+    if (lightboxText) lightboxText.replaceChildren();
     lightbox.classList.remove("is-open");
     lightbox.classList.remove("is-intro-open");
     document.body.style.overflow = "";
@@ -931,16 +909,23 @@ document.addEventListener("DOMContentLoaded", () => {
     const introVideoPath = getIntroVideoPath();
     if (!introVideoPath) return;
 
-    openLightbox(
-      introVideoTrigger?.textContent?.trim() || "Video.Core",
-      buildVideoHtml(introVideoPath, autoOpen ? "autoplay muted" : "autoplay").replace(
+    const isYouTubeIntro = Boolean(window.cmYouTube?.parse(introVideoPath));
+    let introHtml = buildVideoHtml(introVideoPath, autoOpen ? "autoplay muted" : "autoplay");
+    if (isYouTubeIntro) {
+      introHtml = introHtml.replace('cm-youtube-frame ', 'cm-youtube-frame cm-intro-video-frame ');
+    } else {
+      introHtml = introHtml.replace(
         'cm-lightbox-media-frame-video"',
         'cm-lightbox-media-frame-video cm-intro-video-frame"'
       ).replace(
         'cm-lightbox-video"',
         'cm-lightbox-video cm-intro-video"'
-      ),
-      { description: autoOpen ? "فيديو تعريفي - سيتم تفعيل الصوت تلقائياً." : "فيديو تعريفي لشركة Core Media." }
+      );
+    }
+    openLightbox(
+      introVideoTrigger?.textContent?.trim() || "Video.Core",
+      introHtml,
+      { description: autoOpen ? "فيديو تعريفي لشركة Core Media." : "فيديو تعريفي لشركة Core Media." }
     );
     
     lightbox?.classList.add("is-intro-open");
@@ -1012,7 +997,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!filePath) return;
         const card = tag.closest(".cm-portfolio-card");
         const title = card?.querySelector(".cm-portfolio-info h3")?.textContent || "مشروع";
-        openSingleMedia(filePath, title);
+        openSingleMedia(filePath, title, tag.getAttribute("data-orientation") || "auto");
         return;
       }
       const card = e.target.closest(".cm-portfolio-card");
@@ -1026,32 +1011,50 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       const siteContent = await loadSiteContent();
       if (siteContent) applySiteContent(siteContent);
-
-      let data = null;
-      if (supabase) {
-        try {
-          data = await loadPortfolioDataFromSupabase();
-        } catch (_) {
-          data = null;
-        }
-      }
-      // Database data takes priority when it is available. If it is empty or the
-      // public read fails, use the local cache or the original HTML portfolio.
-      if (!Array.isArray(data) || !data.some((brand) => brand?.name)) data = loadPortfolioData();
-      portfolioData = sortBrands(recoverLegacyCategories(Array.isArray(data) ? data : []));
-      try { savePortfolioData(portfolioData); } catch (_) {}
-      renderCategoryGuide();
-      // Clear the original static layout only AFTER its catalog has been saved.
-      document.getElementById("portfolio-groups")?.replaceChildren();
-      // Keep the logo intro first, then honor category/info direct links.
-      preloaderPromise.then(restoreViewFromUrl);
     } catch (error) {
-      console.warn("Unable to load categories; falling back to bundled projects", error);
-      portfolioData = sortBrands(bundledPortfolioData);
-      renderCategoryGuide();
-      document.getElementById("portfolio-groups")?.replaceChildren();
-      preloaderPromise.then(restoreViewFromUrl);
+      console.warn("Unable to load site settings", error);
     }
+
+    let data = null;
+    let loadedFromDatabase = false;
+    let databaseError = null;
+    if (supabase) {
+      try {
+        data = await loadPortfolioDataFromSupabase();
+        loadedFromDatabase = true;
+        try { savePortfolioData(data); } catch (_) {}
+      } catch (error) {
+        databaseError = error;
+        console.warn("Unable to load portfolio from Supabase; using the last local snapshot only", error);
+        data = loadPortfolioCache();
+      }
+    } else {
+      databaseError = new Error("Supabase is not configured");
+      data = loadPortfolioCache();
+    }
+
+    portfolioData = sortBrands(Array.isArray(data) ? data : []);
+    renderCategoryGuide();
+    document.getElementById("portfolio-groups")?.replaceChildren();
+
+    // Be transparent during an outage; do not show or re-import the old HTML catalog.
+    const oldStatus = document.getElementById("cm-portfolio-data-status");
+    oldStatus?.remove();
+    if (!loadedFromDatabase) {
+      const status = document.createElement("p");
+      status.id = "cm-portfolio-data-status";
+      status.className = "cm-category-loading";
+      status.setAttribute("role", "status");
+      status.textContent = Array.isArray(data)
+        ? "الاتصال بقاعدة البيانات غير متاح؛ المعروض آخر نسخة محفوظة على هذا الجهاز وقد لا تشمل آخر التعديلات."
+        : (databaseError && !supabase
+          ? "إعدادات قاعدة البيانات غير مكتملة؛ تعذر تحميل المشروعات."
+          : "تعذر تحميل المشروعات ولا توجد نسخة محفوظة على هذا الجهاز.");
+      document.getElementById("category-grid")?.insertAdjacentElement("afterend", status);
+    }
+
+    // Keep the logo intro first, then honor category/info direct links.
+    preloaderPromise.then(restoreViewFromUrl);
   })();
 
 });

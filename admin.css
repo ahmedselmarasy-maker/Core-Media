@@ -1140,3 +1140,19 @@
 .cm-admin-page .cm-service-editor-item select {max-width:100%;}
 .cm-admin-page .cm-service-editor-item input[type="file"] {max-width:100%;}
 @media(max-width:800px) {.cm-category-project-checklist {grid-template-columns:1fr;}.cm-category-actions>* {flex:1 1 190px;}.cm-admin-pad{padding-inline:1rem!important;}}
+
+/* Replace existing Supabase MP4 with a YouTube link in-place. */
+.cm-media-video-controls {
+  display: grid;
+  gap: 0.55rem;
+  margin-top: 0.45rem;
+  padding-top: 0.6rem;
+  border-top: 1px solid var(--border);
+}
+.cm-media-video-controls label { display: grid; gap: 0.3rem; font-size: 0.8rem; color: var(--text-muted); }
+.cm-media-video-controls input, .cm-media-video-controls select {
+  width: 100%; min-width: 0; padding: 0.5rem 0.6rem; border-radius: 8px;
+  background: white; border: 1px solid var(--border); font-size: 0.86rem;
+}
+.cm-media-replacement-input { direction: ltr; text-align: left; }
+.cm-media-video-controls button { width: 100%; white-space: normal; }

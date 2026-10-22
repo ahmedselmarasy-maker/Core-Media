@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const STORAGE_KEY = "cmPortfolioDataV1";
+  const STORAGE_KEY = "cmPortfolioDataV2";
   const SITE_STORAGE_KEY = "cmSiteContentV1";
   const BRAND_TABLE = "cm_brands";
   const SITE_TABLE = "cm_site_settings";
@@ -9,6 +9,17 @@ document.addEventListener("DOMContentLoaded", () => {
   const supabaseAnonKey = window.CM_SUPABASE_ANON_KEY;
   const bucketName = window.CM_SUPABASE_BUCKET || DEFAULT_BUCKET;
   const loginHintEl = document.getElementById("admin-login-hint");
+
+  // Never resurrect the deleted, Git LFS-hosted default company video.
+  // This only filters that exact legacy filename; YouTube and other uploads still work.
+  const cleanIntroVideoUrl = (value) => {
+    const url = String(value || "").trim();
+    let decoded = url;
+    try { decoded = decodeURIComponent(url); } catch (_) {}
+    const baseName = decoded.split(/[?#]/)[0].split(/[\\/]/).pop()
+      .replace(/\s+/g, "").toLocaleLowerCase();
+    return baseName === "فيديوالشركة.mp4" ? "" : url;
+  };
 
   const DEFAULT_SITE = {
     hero: {
@@ -23,7 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
         { number: "+200", label: "حملة" },
         { number: "360°", label: "تسويق" },
       ],
-      introVideoUrl: "فيديو  الشركة  .mp4",
+      introVideoUrl: "",
       introVideoLabel: "Video.Core",
       quote: "“بنحوّل أفكارك لمحتوى يلفت النظر ويسيب أثر.”",
       quoteCaption: "إبداع في كل تفصيلة.. ونتائج تصنع الفرق.",
@@ -160,11 +171,14 @@ document.addEventListener("DOMContentLoaded", () => {
   const brandDeleteBtn = document.getElementById("brand-delete");
 
   const mediaTypeInput = document.getElementById("media-type");
+  const mediaOrientationInput = document.getElementById("media-orientation");
+  const mediaOrientationGroup = document.getElementById("media-orientation-group");
   const mediaTitleInput = document.getElementById("media-title");
   const mediaFileInput = document.getElementById("media-file");
   const mediaUploadInput = document.getElementById("media-upload");
   const addMediaBtn = document.getElementById("add-media");
   const mediaListEl = document.getElementById("media-list");
+  const cleanupStorageOrphansBtn = document.getElementById("cleanup-storage-orphans");
   const brandListEl = document.getElementById("brand-list");
   const brandSearchInput = document.getElementById("brand-search");
   const uploadProgressEl = document.getElementById("upload-progress");
@@ -188,7 +202,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const projectChecklist = document.getElementById("category-project-checklist");
   const assignStatus = document.getElementById("assign-status");
   const saveCategoryProjectsBtn = document.getElementById("save-category-projects");
-  const importLegacyBrandsBtn = document.getElementById("import-legacy-brands");
 
   const CATEGORY_ICONS = [
     ["restaurants", "مطاعم"], ["cafes", "كافيهات"], ["medical", "طبي"],
@@ -209,18 +222,20 @@ document.addEventListener("DOMContentLoaded", () => {
       .replace(/"/g, "&quot;")
       .replace(/</g, "&lt;");
 
-  const isVideoPath = (path) => /\.(mp4|mov|avi|webm)$/i.test(String(path || "").trim());
+  const isYouTubeUrl = (value) => Boolean(window.cmYouTube?.parse(value));
+  const isVideoPath = (path) => isYouTubeUrl(path) || /\.(mp4|mov|avi|webm)(?:[?#].*)?$/i.test(String(path || "").trim());
+  const cleanVideoLink = (value) => window.cmYouTube?.canonical(value) || String(value || "").trim();
+  const mediaOrientation = (value) => ["auto", "portrait", "landscape"].includes(value) ? value : "auto";
+  const updateMediaOrientationVisibility = () => {
+    mediaOrientationGroup?.classList.toggle("hidden", mediaTypeInput.value !== "video");
+  };
+  mediaTypeInput?.addEventListener("change", updateMediaOrientationVisibility);
+  updateMediaOrientationVisibility();
   const inferMediaType = (path, fallback = "design") => (isVideoPath(path) ? "video" : fallback);
   const isUuid = (value) =>
     /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
       String(value || "").trim()
     );
-  const makeLocalId = (name, i) =>
-    `brand-${String(name || "item")
-      .toLowerCase()
-      .replace(/\s+/g, "-")
-      .replace(/[^\w-]/g, "")}-${i}`;
-
   const deepMerge = (base, patch) => {
     if (!patch || typeof patch !== "object") return structuredClone(base);
     const out = structuredClone(base);
@@ -278,6 +293,7 @@ document.addEventListener("DOMContentLoaded", () => {
     type: m?.type === "video" || isVideoPath(m?.file) ? "video" : "design",
     file: String(m?.file || "").trim(),
     title: String(m?.title || "").trim(),
+    orientation: mediaOrientation(m?.orientation),
   });
 
   const normalizeBrand = (row) => ({
@@ -305,13 +321,10 @@ document.addEventListener("DOMContentLoaded", () => {
     return sortBrands((rows || []).map(normalizeBrand));
   };
 
-  const readLocalBackupData = () => {
+  const savePortfolioCache = (brands) => {
     try {
-      const parsed = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
-      return Array.isArray(parsed) ? parsed : [];
-    } catch (_) {
-      return [];
-    }
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(sortBrands(Array.isArray(brands) ? brands : [])));
+    } catch (_) {}
   };
 
   const upsertBrand = async (brand) => {
@@ -345,13 +358,145 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     if (error) throw error;
-    return normalizeBrand(row);
+    const saved = normalizeBrand(row);
+    const current = Array.isArray(data) ? data : [];
+    const next = current.some((item) => item.id === saved.id)
+      ? current.map((item) => item.id === saved.id ? saved : item)
+      : [...current, saved];
+    savePortfolioCache(next);
+    return saved;
+  };
+
+  const parseStorageObjectPath = (value) => {
+    try {
+      const candidate = new URL(String(value || ""));
+      const base = new URL(String(supabaseUrl || ""));
+      if (candidate.origin !== base.origin) return null;
+      const marker = "/storage/v1/object/";
+      const markerIndex = candidate.pathname.indexOf(marker);
+      if (markerIndex < 0) return null;
+      const parts = candidate.pathname.slice(markerIndex + marker.length).split("/");
+      const accessType = decodeURIComponent(parts.shift() || "");
+      if (!["public", "sign", "authenticated"].includes(accessType)) return null;
+      const bucket = decodeURIComponent(parts.shift() || "");
+      if (bucket !== bucketName || !parts.length) return null;
+      return parts.map((part) => decodeURIComponent(part)).join("/");
+    } catch (_) {
+      return null;
+    }
+  };
+
+  const collectStoragePaths = (value, output = new Set()) => {
+    if (typeof value === "string") {
+      const path = parseStorageObjectPath(value);
+      if (path) output.add(path);
+    } else if (Array.isArray(value)) {
+      value.forEach((item) => collectStoragePaths(item, output));
+    } else if (value && typeof value === "object") {
+      Object.values(value).forEach((item) => collectStoragePaths(item, output));
+    }
+    return output;
+  };
+
+  const getReferencedStoragePaths = async () => {
+    const [brandsResult, settingsResult] = await Promise.all([
+      supabase.from(BRAND_TABLE).select("media,cover_url"),
+      supabase.from(SITE_TABLE).select("content").eq("id", 1).maybeSingle(),
+    ]);
+    if (brandsResult.error) throw brandsResult.error;
+    if (settingsResult.error) throw settingsResult.error;
+    const referenced = new Set();
+    (brandsResult.data || []).forEach((row) => {
+      collectStoragePaths(row.media, referenced);
+      collectStoragePaths(row.cover_url, referenced);
+    });
+    if (settingsResult.data?.content) collectStoragePaths(settingsResult.data.content, referenced);
+    return referenced;
+  };
+
+  const listStorageObjectsRecursive = async (folder = "", output = []) => {
+    const limit = 100;
+    let offset = 0;
+    while (true) {
+      const { data: items, error } = await supabase.storage.from(bucketName).list(folder, {
+        limit,
+        offset,
+        sortBy: { column: "name", order: "asc" },
+      });
+      if (error) throw error;
+      const rows = Array.isArray(items) ? items : [];
+      for (const item of rows) {
+        const path = folder ? `${folder}/${item.name}` : item.name;
+        if (item.id == null && item.metadata == null) {
+          await listStorageObjectsRecursive(path, output);
+        } else {
+          output.push({ path, size: Number(item.metadata?.size || 0) });
+        }
+      }
+      if (rows.length < limit) break;
+      offset += rows.length;
+    }
+    return output;
+  };
+
+  const deleteStoragePaths = async (paths) => {
+    const unique = [...new Set(paths.filter(Boolean))];
+    let deletedCount = 0;
+    const errors = [];
+    for (let i = 0; i < unique.length; i += 50) {
+      const batch = unique.slice(i, i + 50);
+      const { error } = await supabase.storage.from(bucketName).remove(batch);
+      if (error) errors.push(error.message || String(error));
+      else deletedCount += batch.length;
+    }
+    return { deletedCount, failedCount: unique.length - deletedCount, errors };
+  };
+
+  const removeUnreferencedStorageObjects = async (candidateUrls) => {
+    const candidates = [...new Set((candidateUrls || []).map(parseStorageObjectPath).filter(Boolean))];
+    if (!candidates.length) return { deletedCount: 0, failedCount: 0, skippedCount: 0 };
+    let referenced;
+    try {
+      referenced = await getReferencedStoragePaths();
+    } catch (error) {
+      return { deletedCount: 0, failedCount: candidates.length, skippedCount: 0, error };
+    }
+    const unused = candidates.filter((path) => !referenced.has(path));
+    if (!unused.length) return { deletedCount: 0, failedCount: 0, skippedCount: candidates.length };
+    try {
+      const result = await deleteStoragePaths(unused);
+      return { ...result, skippedCount: candidates.length - unused.length };
+    } catch (error) {
+      return {
+        deletedCount: 0,
+        failedCount: unused.length,
+        skippedCount: candidates.length - unused.length,
+        error,
+      };
+    }
+  };
+
+  const findStorageOrphans = async () => {
+    const [referenced, objects] = await Promise.all([
+      getReferencedStoragePaths(),
+      listStorageObjectsRecursive(),
+    ]);
+    return objects.filter((item) => !referenced.has(item.path));
   };
 
   const deleteBrand = async (id) => {
     if (!supabase) throw new Error("Supabase not configured");
-    const { error } = await supabase.from(BRAND_TABLE).delete().eq("id", id);
+    const brand = (Array.isArray(data) ? data : []).find((item) => item.id === id);
+    const candidates = [
+      ...(Array.isArray(brand?.media) ? brand.media.map((item) => item.file) : []),
+      brand?.coverUrl || "",
+    ];
+    const { data: deletedRows, error } = await supabase.from(BRAND_TABLE).delete().eq("id", id).select("id");
     if (error) throw error;
+    if (!deletedRows?.length) throw new Error("لم تؤكد قاعدة البيانات حذف المشروع؛ لم يتم تغيير النسخة المحلية.");
+    const next = (Array.isArray(data) ? data : []).filter((item) => item.id !== id);
+    savePortfolioCache(next);
+    return removeUnreferencedStorageObjects(candidates);
   };
 
   const loadSiteFromDb = async () => {
@@ -374,81 +519,6 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       localStorage.setItem(SITE_STORAGE_KEY, JSON.stringify(nextSite));
     } catch (_) {}
-  };
-
-  const loadSiteLocal = () => {
-    try {
-      const parsed = JSON.parse(localStorage.getItem(SITE_STORAGE_KEY) || "null");
-      if (parsed && typeof parsed === "object") return deepMerge(DEFAULT_SITE, parsed);
-    } catch (_) {}
-    return structuredClone(DEFAULT_SITE);
-  };
-
-  const migrateLocalDataToDb = async () => {
-    const backup = readLocalBackupData();
-    if (!backup.length) return [];
-    const migrated = [];
-    for (let i = 0; i < backup.length; i += 1) {
-      const item = backup[i] || {};
-      const saved = await upsertBrand({
-        id: item.id || null,
-        name: item.name || `Brand ${i + 1}`,
-        market: item.market === "saudi" ? "saudi" : "egypt",
-        egyptCategory: item.egyptCategory || "other",
-        media: Array.isArray(item.media) ? item.media : [],
-        coverUrl: item.coverUrl || "",
-        sortOrder: typeof item.sortOrder === "number" ? item.sortOrder : i,
-      });
-      migrated.push(saved);
-    }
-    return sortBrands(migrated);
-  };
-
-  const parseBrandsFromIndexHtml = async () => {
-    const res = await fetch("index.html", { cache: "no-store" });
-    if (!res.ok) return [];
-    const html = await res.text();
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(html, "text/html");
-    const cards = Array.from(doc.querySelectorAll("#portfolio-groups .cm-portfolio-card"));
-    return cards.map((card, index) => {
-      const market = card.getAttribute("data-market") === "saudi" ? "saudi" : "egypt";
-      const name = card.querySelector(".cm-portfolio-info h3")?.textContent?.trim() || `Brand ${index + 1}`;
-      const group = card.closest(".cm-portfolio-group");
-      const egyptCategory = market === "egypt" ? group?.getAttribute("data-egypt-cat") || "other" : "other";
-      const media = Array.from(card.querySelectorAll(".cm-tag"))
-        .map((tag) => {
-          const file = (tag.getAttribute("data-file") || "").trim();
-          if (!file) return null;
-          const inVideoRow = tag.closest(".cm-portfolio-tags-videos");
-          const title = (tag.textContent || "").trim();
-          return {
-            type: inVideoRow ? "video" : inferMediaType(file, "design"),
-            file,
-            title: /^(تصميم|فيديو|قاطعة)\s*\d+$/i.test(title) ? "" : title,
-          };
-        })
-        .filter(Boolean);
-      return {
-        id: makeLocalId(name, index + 1),
-        name,
-        market,
-        egyptCategory,
-        media,
-        coverUrl: "",
-        sortOrder: index,
-      };
-    });
-  };
-
-  const migrateIndexHtmlDataToDb = async () => {
-    const parsed = await parseBrandsFromIndexHtml();
-    if (!parsed.length) return [];
-    const migrated = [];
-    for (let i = 0; i < parsed.length; i += 1) {
-      migrated.push(await upsertBrand(parsed[i]));
-    }
-    return sortBrands(migrated);
   };
 
   const assertIsAdmin = async () => {
@@ -690,6 +760,8 @@ document.addEventListener("DOMContentLoaded", () => {
     mediaFileInput.value = "";
     mediaTitleInput.value = "";
     mediaTypeInput.value = "design";
+    if (mediaOrientationInput) mediaOrientationInput.value = "auto";
+    updateMediaOrientationVisibility();
     if (mediaUploadInput) mediaUploadInput.value = "";
     if (brandCoverUploadInput) brandCoverUploadInput.value = "";
     updateCoverPreview("");
@@ -757,16 +829,32 @@ document.addEventListener("DOMContentLoaded", () => {
       const li = document.createElement("li");
       li.className = "cm-media-item";
       const isVideo = m.type === "video";
-      const previewHtml = isVideo
-        ? `<video src="${escAttr(m.file)}" muted></video><i data-lucide="play-circle" class="cm-media-play-icon"></i>`
-        : `<img src="${escAttr(m.file)}" alt="preview" />`;
+      const youtubeVideo = window.cmYouTube?.parse(m.file);
+      const previewHtml = youtubeVideo
+        ? `<img src="${escAttr(window.cmYouTube.thumbnail(m.file))}" alt="معاينة يوتيوب" loading="lazy" /><i data-lucide="play-circle" class="cm-media-play-icon"></i>`
+        : isVideo
+          ? `<video src="${escAttr(m.file)}" muted preload="metadata"></video><i data-lucide="play-circle" class="cm-media-play-icon"></i>`
+          : `<img src="${escAttr(m.file)}" alt="preview" />`;
 
       li.innerHTML = `
         <div class="cm-media-preview">${previewHtml}</div>
         <div class="cm-media-info">
           <span class="cm-media-badge">${isVideo ? "قاطعة" : "تصميم"}</span>
           <input class="cm-media-title-input" data-index="${i}" value="${escAttr(m.title || "")}" placeholder="${escAttr(mediaLabel(m, i))}" />
-          <span class="cm-media-file" title="${escAttr(m.file)}">${escAttr(m.file.split("/").pop())}</span>
+          <span class="cm-media-file" title="${escAttr(m.file)}">${escAttr(youtubeVideo ? `YouTube · ${youtubeVideo.id}` : m.file.split("/").pop())}</span>
+          ${isVideo ? `<div class="cm-media-video-controls">
+            <label>اتجاه الفيديو
+              <select class="cm-media-orientation-select" data-index="${i}">
+                <option value="auto" ${mediaOrientation(m.orientation) === "auto" ? "selected" : ""}>تلقائي</option>
+                <option value="portrait" ${mediaOrientation(m.orientation) === "portrait" ? "selected" : ""}>رأسي 9:16</option>
+                <option value="landscape" ${mediaOrientation(m.orientation) === "landscape" ? "selected" : ""}>أفقي 16:9</option>
+              </select>
+            </label>
+            <label>استبدل هذا الفيديو برابط YouTube
+              <input class="cm-media-replacement-input" dir="ltr" type="text" placeholder="https://youtu.be/..." />
+            </label>
+            <button class="cm-btn cm-btn-outline cm-btn-sm cm-replace-youtube" type="button">حفظ رابط يوتيوب بدل الفيديو</button>
+          </div>` : ""}
         </div>
         <div class="cm-media-actions">
           <button class="cm-icon-btn" type="button" data-move="up" data-index="${i}" title="أعلى"><i data-lucide="arrow-up"></i></button>
@@ -777,13 +865,51 @@ document.addEventListener("DOMContentLoaded", () => {
         </div>
       `;
 
+      li.querySelector(".cm-media-orientation-select")?.addEventListener("change", async (event) => {
+        const previousMedia = brand.media.map((item) => ({ ...item }));
+        brand.media[i].orientation = mediaOrientation(event.target.value);
+        try {
+          await persistBrandMedia(brand);
+          showToast("تم حفظ اتجاه الفيديو", "success");
+        } catch (error) {
+          brand.media = previousMedia;
+          renderMediaList();
+          showToast(error?.message || "تعذر حفظ اتجاه الفيديو", "error");
+        }
+      });
+
+      li.querySelector(".cm-replace-youtube")?.addEventListener("click", async () => {
+        const field = li.querySelector(".cm-media-replacement-input");
+        const link = field?.value?.trim() || "";
+        const video = window.cmYouTube?.parse(link);
+        if (!video) {
+          showToast("الصق رابط YouTube صحيحًا (watch / Shorts / youtu.be).", "error");
+          return;
+        }
+        const previousMedia = brand.media.map((item) => ({ ...item }));
+        const oldLink = brand.media[i]?.file || "";
+        brand.media[i].file = cleanVideoLink(link);
+        brand.media[i].type = "video";
+        try {
+          await persistBrandMedia(brand);
+          showToast("تم استبدال رابط الفيديو وحفظه. ملف Supabase القديم لم يُحذف؛ راجع زر تنظيف التخزين لاحقًا.", "success");
+        } catch (error) {
+          brand.media = previousMedia;
+          renderMediaList();
+          showToast(error?.message || "تعذر حفظ الرابط، ولا يزال الفيديو السابق مستخدمًا.", "error");
+        }
+      });
+
       li.querySelector(".cm-media-title-input")?.addEventListener("change", async (e) => {
+        const previousTitle = brand.media[i]?.title || "";
         brand.media[i].title = e.target.value.trim();
         try {
           await persistBrandMedia(brand);
           showToast("تم تحديث العنوان", "success");
         } catch (err) {
-          showToast(err?.message || "تعذر حفظ العنوان.", "error");
+          brand.media[i].title = previousTitle;
+          renderMediaList();
+          showToast(err?.message || "تعذر حفظ العنوان؛ أُعيد العنوان السابق.", "error");
         }
       });
 
@@ -793,25 +919,39 @@ document.addEventListener("DOMContentLoaded", () => {
           const dir = btn.getAttribute("data-move");
           const swapWith = dir === "up" ? idx - 1 : idx + 1;
           if (swapWith < 0 || swapWith >= brand.media.length) return;
+          const previousMedia = brand.media.map((item) => ({ ...item }));
           const tmp = brand.media[idx];
           brand.media[idx] = brand.media[swapWith];
           brand.media[swapWith] = tmp;
           try {
             await persistBrandMedia(brand);
           } catch (err) {
-            showToast(err?.message || "تعذر إعادة الترتيب.", "error");
+            brand.media = previousMedia;
+            renderMediaList();
+            showToast(err?.message || "تعذر حفظ الترتيب؛ أُعيد الترتيب السابق.", "error");
           }
         });
       });
 
       li.querySelector(".cm-delete-media")?.addEventListener("click", async () => {
-        if (!window.confirm("هل أنت متأكد من الحذف؟")) return;
+        if (!window.confirm("هل أنت متأكد من حذف العنصر من المشروع؟ لو لم يعد مستخدمًا في أي مكان، سنحاول حذف ملفه الفعلي من التخزين أيضًا.")) return;
+        const previousMedia = brand.media.map((item) => ({ ...item }));
+        const removedMedia = brand.media[i];
         brand.media.splice(i, 1);
         try {
           await persistBrandMedia(brand);
-          showToast("تم حذف العنصر بنجاح", "success");
+          const cleanup = await removeUnreferencedStorageObjects([removedMedia?.file]);
+          if (cleanup.failedCount) {
+            showToast("تم حذف العنصر من المشروع، لكن تعذر حذف الملف من التخزين. جرّب فحص الملفات غير المستخدمة بعد عودة Storage للعمل.", "info");
+          } else {
+            showToast(cleanup.skippedCount
+              ? "تم حذف العنصر من المشروع. احتفظنا بالملف لأنه ما زال مستخدمًا في مكان آخر."
+              : "تم حذف العنصر من المشروع، وتم حذف ملف التخزين غير المستخدم إن كان موجودًا.", "success");
+          }
         } catch (err) {
-          showToast(err?.message || "تعذر حفظ التعديل.", "error");
+          brand.media = previousMedia;
+          renderMediaList();
+          showToast(err?.message || "تعذر حفظ التعديل؛ أُعيد العنصر إلى القائمة.", "error");
         }
       });
 
@@ -958,6 +1098,9 @@ document.addEventListener("DOMContentLoaded", () => {
       showToast("احفظ البراند أولاً ثم أضف الوسائط.", "info");
       return;
     }
+    const previousMedia = (Array.isArray(brand.media) ? brand.media : []).map((item) => ({ ...item }));
+    const uploadedPublicUrls = [];
+    let mediaSaved = false;
     try {
       await assertIsAdmin();
       brand.media = Array.isArray(brand.media) ? brand.media : [];
@@ -965,12 +1108,18 @@ document.addEventListener("DOMContentLoaded", () => {
       const typedPath = (mediaFileInput?.value || "").trim();
       const customTitle = (mediaTitleInput?.value || "").trim();
       const selectedType = mediaTypeInput.value || "design";
+      const selectedOrientation = mediaOrientation(mediaOrientationInput?.value);
+      if (files.length && typedPath) throw new Error("استخدم رابطًا أو ملفات للرفع، وليس الاثنين معًا.");
+      if (typedPath && /(?:youtube|youtu\.be)/i.test(typedPath) && !isYouTubeUrl(typedPath)) {
+        throw new Error("رابط YouTube غير صالح؛ انسخ رابط المشاركة من الفيديو.");
+      }
 
       const pushItem = (filePath, type, title) => {
         brand.media.push({
-          type: type || inferMediaType(filePath, selectedType),
-          file: filePath,
+          type: isYouTubeUrl(filePath) ? "video" : (type || inferMediaType(filePath, selectedType)),
+          file: cleanVideoLink(filePath),
           title: title || "",
+          orientation: selectedOrientation,
         });
       };
 
@@ -991,6 +1140,7 @@ document.addEventListener("DOMContentLoaded", () => {
           }
           const { publicUrl } = await uploadToStorage(file, brand.id);
           if (!publicUrl) continue;
+          uploadedPublicUrls.push(publicUrl);
           const type = preferVideo || isVideoPath(file.name) ? "video" : "design";
           const title = files.length === 1 ? customTitle : "";
           pushItem(publicUrl, type, title);
@@ -1002,13 +1152,19 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
+      await persistBrandMedia(brand);
+      mediaSaved = true;
       mediaFileInput.value = "";
       mediaTitleInput.value = "";
       if (mediaUploadInput) mediaUploadInput.value = "";
-      await persistBrandMedia(brand);
       showToast("تمت إضافة الوسائط بنجاح", "success");
     } catch (err) {
-      showToast(err?.message || "تعذر إضافة الوسائط.", "error");
+      if (!mediaSaved) {
+        brand.media = previousMedia;
+        renderMediaList();
+        if (uploadedPublicUrls.length) await removeUnreferencedStorageObjects(uploadedPublicUrls);
+      }
+      showToast(err?.message || "تعذر إضافة الوسائط؛ لم يُعتمد التعديل.", "error");
     } finally {
       addMediaBtn.disabled = false;
       cancelUploadBtn?.classList.add("hidden");
@@ -1031,10 +1187,10 @@ document.addEventListener("DOMContentLoaded", () => {
   brandDeleteBtn?.addEventListener("click", async () => {
     const brand = selectedBrand();
     if (!brand?.id) return;
-    if (!window.confirm(`هل أنت متأكد من حذف براند "${brand.name}"؟`)) return;
+    if (!window.confirm(`هل أنت متأكد من حذف براند "${brand.name}"؟ سيتم أيضًا محاولة حذف ملفات التخزين المرتبطة به إذا لم تعد مستخدمة في مشروع آخر أو إعدادات الموقع.`)) return;
     try {
       await assertIsAdmin();
-      await deleteBrand(brand.id);
+      const cleanup = await deleteBrand(brand.id);
       data = data.filter((b) => b.id !== brand.id);
       const overrides = { ...getSectors().projectCategories };
       if (Object.prototype.hasOwnProperty.call(overrides, brand.id)) {
@@ -1043,7 +1199,9 @@ document.addEventListener("DOMContentLoaded", () => {
         await saveSiteToDb(site);
       }
       renderCategoryProjectChecklist();
-      showToast("تم حذف البراند بنجاح", "success");
+      showToast(cleanup?.failedCount
+        ? "تم حذف البراند من الموقع، لكن تعذر حذف بعض الملفات من التخزين. استخدم فحص الملفات غير المستخدمة بعد عودة Storage للعمل."
+        : "تم حذف البراند والملفات غير المستخدمة المرتبطة به.", cleanup?.failedCount ? "info" : "success");
       clearForm();
       renderBrandList();
       updateDashboardStats();
@@ -1065,7 +1223,7 @@ document.addEventListener("DOMContentLoaded", () => {
       document.getElementById(`metric${i + 1}-label`).value = metrics[i]?.label || "";
     }
     document.getElementById("intro-video-label").value = h.introVideoLabel || "";
-    document.getElementById("intro-video-url").value = h.introVideoUrl || "";
+    document.getElementById("intro-video-url").value = cleanIntroVideoUrl(h.introVideoUrl);
     document.getElementById("hero-quote").value = h.quote ?? DEFAULT_SITE.hero.quote;
     document.getElementById("hero-quote-caption").value = h.quoteCaption ?? DEFAULT_SITE.hero.quoteCaption;
 
@@ -1324,7 +1482,7 @@ document.addEventListener("DOMContentLoaded", () => {
             <span class="cm-project-media-count">${(brand.media || []).length} ملف</span>
           </label>`;
         }).join("")
-      : `<p class="cm-admin-note cm-admin-pad">لا توجد مشاريع محفوظة بعد. اضغط «استيراد المشاريع القديمة الناقصة» لو عندك مشاريع داخل النسخة القديمة.</p>`;
+      : `<p class="cm-admin-note cm-admin-pad">لا توجد مشاريع محفوظة في قاعدة البيانات حاليًا. أضف مشروعًا جديدًا من قسم إدارة البراندات؛ لن يتم استيراد محتوى قديم تلقائيًا.</p>`;
     filterAssignmentList();
   };
 
@@ -1364,41 +1522,6 @@ document.addEventListener("DOMContentLoaded", () => {
       renderBrandList();
     } catch (error) {
       showToast(error?.message || "تعذر حفظ المشاريع داخل القسم", "error");
-    }
-  });
-
-  // Import only missing legacy HTML projects. Avoid duplicates by market/name;
-  // existing DB projects (including their media) are never overwritten.
-  importLegacyBrandsBtn?.addEventListener("click", async () => {
-    try {
-      await assertIsAdmin();
-      const legacy = await parseBrandsFromIndexHtml();
-      if (!legacy.length) throw new Error("لم يتم العثور على مشاريع قديمة داخل index.html");
-      const key = (item) => `${String(item.market).toLowerCase()}|${String(item.name).trim().toLocaleLowerCase()}`;
-      const existing = new Set(data.map(key));
-      const missing = legacy.filter((item) => !existing.has(key(item)));
-      if (!missing.length) return showToast("كل المشاريع القديمة موجودة بالفعل، مفيش حاجة محتاجة استيراد.", "info");
-      if (!window.confirm(`هتستورد ${missing.length} مشروع قديم ناقص بملفاته الموجودة بالفعل. متابعة؟`)) return;
-      importLegacyBrandsBtn.disabled = true;
-      let imported = 0;
-      try {
-        for (const brand of missing) {
-          const saved = await upsertBrand(brand);
-          data.push(saved);
-          existing.add(key(saved));
-          imported++;
-        }
-      } finally {
-        importLegacyBrandsBtn.disabled = false;
-      }
-      data = sortBrands(data);
-      renderBrandList();
-      updateDashboardStats();
-      renderCategoryProjectChecklist();
-      showToast(`تم استيراد ${imported} مشروع قديم. اختار أقسامهم واحفظ.`, "success");
-    } catch (error) {
-      importLegacyBrandsBtn.disabled = false;
-      showToast(error?.message || "تعذر استيراد المشاريع", "error");
     }
   });
 
@@ -1471,7 +1594,11 @@ document.addEventListener("DOMContentLoaded", () => {
   heroForm?.addEventListener("submit", async (e) => {
     e.preventDefault();
     try {
-      let introUrl = document.getElementById("intro-video-url").value.trim();
+      let introUrl = cleanIntroVideoUrl(document.getElementById("intro-video-url").value);
+      if (/(?:youtube|youtu\.be)/i.test(introUrl) && !window.cmYouTube?.parse(introUrl)) {
+        throw new Error("رابط YouTube الخاص بالفيديو التعريفي غير صالح.");
+      }
+      if (window.cmYouTube?.parse(introUrl)) introUrl = cleanVideoLink(introUrl);
       const fileRaw = introVideoUpload?.files?.[0] || null;
       if (fileRaw) {
         uploadProgressEl?.classList.remove("hidden");
@@ -1562,17 +1689,54 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  const bootstrapAdminData = async () => {
-    data = await loadFromDb();
-    if (!data.length) data = await migrateLocalDataToDb();
-    if (!data.length) data = await migrateIndexHtmlDataToDb();
-
+  cleanupStorageOrphansBtn?.addEventListener("click", async () => {
+    if (cleanupStorageOrphansBtn.disabled) return;
+    cleanupStorageOrphansBtn.disabled = true;
+    const originalHtml = cleanupStorageOrphansBtn.innerHTML;
+    cleanupStorageOrphansBtn.textContent = "جاري فحص التخزين...";
     try {
-      const fromDb = await loadSiteFromDb();
-      site = fromDb || loadSiteLocal();
-      if (!fromDb) await saveSiteToDb(site);
-    } catch (_) {
-      site = loadSiteLocal();
+      await assertIsAdmin();
+      const orphans = await findStorageOrphans();
+      if (!orphans.length) {
+        showToast("لم يتم العثور على ملفات غير مستخدمة في Bucket ‏cm-portfolio.", "success");
+        return;
+      }
+      const totalBytes = orphans.reduce((sum, item) => sum + (item.size || 0), 0);
+      const totalMb = (totalBytes / (1024 * 1024)).toFixed(2);
+      const preview = orphans.slice(0, 8).map((item) => item.path).join("\n");
+      const more = orphans.length > 8 ? `\n... و${orphans.length - 8} ملفات أخرى` : "";
+      const confirmed = window.confirm(
+        `تم العثور على ${orphans.length} ملف غير مشار إليه في بيانات المشروعات أو إعدادات الموقع، بإجمالي ${totalMb} MB.\n\nأمثلة:\n${preview}${more}\n\nسيتم حذف هذه الملفات نهائيًا من Supabase Storage. هل تريد المتابعة؟`
+      );
+      if (!confirmed) return;
+      const result = await deleteStoragePaths(orphans.map((item) => item.path));
+      if (result.failedCount) {
+        showToast(`تم حذف ${result.deletedCount} ملفًا، وتعذر حذف ${result.failedCount}. ${result.errors[0] || ""}`, "info");
+      } else {
+        showToast(`تم حذف ${result.deletedCount} ملف غير مستخدم وتحرير نحو ${totalMb} MB.`, "success");
+      }
+    } catch (error) {
+      showToast(`تعذر فحص التخزين؛ لم يتم حذف أي ملف. ${error?.message || "قد تكون خدمة Storage ما زالت مقيدة بسبب تجاوز الحصة."}`, "error");
+    } finally {
+      cleanupStorageOrphansBtn.disabled = false;
+      cleanupStorageOrphansBtn.innerHTML = originalHtml;
+      if (window.lucide) window.lucide.createIcons();
+    }
+  });
+
+  const bootstrapAdminData = async () => {
+    // A successful empty query is a valid state. Never repopulate deleted projects
+    // from localStorage or index.html, and never silently edit from a stale cache.
+    data = await loadFromDb();
+    savePortfolioCache(data);
+
+    const fromDb = await loadSiteFromDb();
+    if (fromDb) {
+      site = fromDb;
+    } else {
+      // Missing settings row: initialize clean defaults, not an old local snapshot.
+      site = structuredClone(DEFAULT_SITE);
+      await saveSiteToDb(site);
     }
 
     renderBrandList();

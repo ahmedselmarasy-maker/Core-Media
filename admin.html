@@ -283,7 +283,7 @@
                     </div>
 
                     <p class="cm-admin-note" style="margin: 0.75rem 1.25rem 0;">
-                      حتى لو بترفع من اللاب: ملفات الآيفون/الواتساب كثيرًا تكون HEVC. كل فيديو بيتحوّل تلقائيًا لـ H.264 قبل الرفع (ممكن ياخد دقيقة).
+                      الأفضل للفيديوهات: ارفع على YouTube كـ Unlisted (غير مدرج)، وبعدها الصق الرابط. الفيديو بيتشغل جوه الموقع من غير استهلاك مساحة فيديوهات Supabase. رفع الملفات المباشر ما زال متاحًا اختياريًا.
                     </p>
 
                     <div class="cm-media-upload-zone">
@@ -300,11 +300,19 @@
                           <input id="media-title" placeholder="مثلاً: قاطعة رمضان 1" />
                         </div>
                         <div class="cm-form-group">
-                          <label for="media-file">رابط الملف (اختياري)</label>
-                          <input id="media-file" placeholder="https://..." />
+                          <label for="media-file">رابط YouTube أو ملف (لإضافة فيديو جديد)</label>
+                          <input id="media-file" type="text" dir="ltr" placeholder="https://youtu.be/... أو رابط Shorts" />
+                        </div>
+                        <div class="cm-form-group hidden" id="media-orientation-group">
+                          <label for="media-orientation">اتجاه الفيديو داخل الموقع</label>
+                          <select id="media-orientation">
+                            <option value="auto">تلقائي (Shorts رأسي)</option>
+                            <option value="portrait">رأسي 9:16 (ريلز)</option>
+                            <option value="landscape">أفقي 16:9</option>
+                          </select>
                         </div>
                         <div class="cm-form-group">
-                          <label for="media-upload">أو ارفع ملف جديد</label>
+                          <label for="media-upload">أو ارفع صورة/فيديو إلى Supabase (اختياري)</label>
                           <input id="media-upload" type="file" accept="image/*,video/*" class="cm-file-input" multiple />
                         </div>
                       </div>
@@ -327,6 +335,12 @@
                     <div class="cm-media-list-wrap">
                       <h3>الوسائط الحالية — اسحب أو استخدم الأسهم للترتيب</h3>
                       <ul id="media-list" class="cm-media-grid"></ul>
+                      <div class="cm-form-footer" style="padding-top: 1rem;">
+                        <button class="cm-btn cm-btn-outline cm-btn-sm" type="button" id="cleanup-storage-orphans">
+                          <i data-lucide="trash-2"></i> فحص الملفات غير المستخدمة في التخزين
+                        </button>
+                      </div>
+                      <p class="cm-admin-note" style="margin: 0.5rem 1.25rem 1rem;">يفحص ملفات Bucket ‏cm-portfolio مقابل كل مراجع المشروعات وإعدادات الموقع. لن يُحذف أي ملف إلا بعد عرض العدد والحجم وطلب تأكيدك.</p>
                     </div>
                   </div>
                 </div>
@@ -397,7 +411,6 @@
                 <div class="cm-category-assign-count" id="assign-status" aria-live="polite"></div>
                 <div class="cm-category-project-checklist" id="category-project-checklist"></div>
                 <div class="cm-form-footer cm-category-actions">
-                  <button class="cm-btn cm-btn-outline" type="button" id="import-legacy-brands"><i data-lucide="archive-restore"></i> استيراد المشاريع القديمة الناقصة</button>
                   <button class="cm-btn cm-btn-primary" type="button" id="save-category-projects"><i data-lucide="save"></i> حفظ مشاريع القسم</button>
                 </div>
               </section>
@@ -468,11 +481,11 @@
                   </div>
                   <div class="cm-form-group">
                     <label for="intro-video-url">رابط / مسار الفيديو</label>
-                    <input id="intro-video-url" placeholder="فيديو  الشركة  .mp4" />
+                    <input id="intro-video-url" dir="ltr" placeholder="رابط YouTube (اختياري)" />
                   </div>
                 </div>
                 <div class="cm-form-group">
-                  <label for="intro-video-upload">أو ارفع فيديو تعريفي جديد</label>
+                  <label for="intro-video-upload">أو ارفع فيديو تعريفي جديد إلى Supabase (اختياري)</label>
                   <input id="intro-video-upload" type="file" accept="video/*" class="cm-file-input" />
                 </div>
 
@@ -619,6 +632,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="supabase-config.js"></script>
     <script type="module" src="admin-video-convert.js"></script>
+    <script src="youtube-utils.js"></script>
     <script src="admin.js"></script>
     <script>
       if (window.lucide) window.lucide.createIcons();
