@@ -1,0 +1,1183 @@
+{
+  "version": 1,
+  "updatedAt": "2026-10-22 15:46:36.922979+00",
+  "brands": [
+    {
+      "id": "6b673b42-cb02-46ba-93d6-08fcd1350ac6",
+      "name": "Teaandmore",
+      "media": [
+        {
+          "file": "Teaandmore/شاي 1.jpg",
+          "type": "design",
+          "title": ""
+        },
+        {
+          "file": "Teaandmore/شاي 2.jpg",
+          "type": "design",
+          "title": ""
+        },
+        {
+          "file": "Teaandmore/شاي 3.jpg",
+          "type": "design",
+          "title": ""
+        },
+        {
+          "file": "Teaandmore/شاي 4.jpg",
+          "type": "design",
+          "title": ""
+        }
+      ],
+      "market": "saudi",
+      "coverUrl": "",
+      "sortOrder": 0,
+      "egyptCategory": "restaurants"
+    },
+    {
+      "id": "003c405a-4059-4403-a95b-7731d351ad34",
+      "name": "المعلمين",
+      "media": [
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/003c405a-4059-4403-a95b-7731d351ad34/1787031936031.mp4-0818-8.mp4",
+          "type": "video",
+          "title": ""
+        },
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/003c405a-4059-4403-a95b-7731d351ad34/1787032249652.mp4-0818-18.mp4",
+          "type": "video",
+          "title": ""
+        },
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/003c405a-4059-4403-a95b-7731d351ad34/1787031969188.mp4-0818-9.mp4",
+          "type": "video",
+          "title": ""
+        },
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/003c405a-4059-4403-a95b-7731d351ad34/1787032059433.mp4-0818-11.mp4",
+          "type": "video",
+          "title": ""
+        },
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/003c405a-4059-4403-a95b-7731d351ad34/1787032084037.mp4-0818-12.mp4",
+          "type": "video",
+          "title": ""
+        },
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/003c405a-4059-4403-a95b-7731d351ad34/1787032136473.mp4-0818-13.mp4",
+          "type": "video",
+          "title": ""
+        },
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/003c405a-4059-4403-a95b-7731d351ad34/1787032164332.mp4-0818-14.mp4",
+          "type": "video",
+          "title": ""
+        },
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/003c405a-4059-4403-a95b-7731d351ad34/1787032206383.mp4-0818-15.mp4",
+          "type": "video",
+          "title": ""
+        },
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/003c405a-4059-4403-a95b-7731d351ad34/1787032027460.mp4-0818-10.mp4",
+          "type": "video",
+          "title": ""
+        }
+      ],
+      "market": "egypt",
+      "coverUrl": "",
+      "sortOrder": 0,
+      "egyptCategory": "education"
+    },
+    {
+      "id": "f186ddb5-9c3b-4adf-8d6e-9a9ac4a8cdc0",
+      "name": "د.آيه دره",
+      "media": [
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/f186ddb5-9c3b-4adf-8d6e-9a9ac4a8cdc0/1787033123575.mp4-0818-5.mp4",
+          "type": "video",
+          "title": ""
+        },
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/f186ddb5-9c3b-4adf-8d6e-9a9ac4a8cdc0/1787033165361.mp4-0818-6.mp4",
+          "type": "video",
+          "title": ""
+        },
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/f186ddb5-9c3b-4adf-8d6e-9a9ac4a8cdc0/1787033209980.mp4-0818-7.mp4",
+          "type": "video",
+          "title": ""
+        }
+      ],
+      "market": "egypt",
+      "coverUrl": "",
+      "sortOrder": 0,
+      "egyptCategory": "medical"
+    },
+    {
+      "id": "b3561397-3b65-405c-bfd9-cac5cf1773ee",
+      "name": "د.محمد البطاحجي",
+      "media": [
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/b3561397-3b65-405c-bfd9-cac5cf1773ee/1780921836045.jpeg-FB_IMG_1780921693152.jpg.jpeg",
+          "type": "design",
+          "title": ""
+        },
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/b3561397-3b65-405c-bfd9-cac5cf1773ee/1779403435414.mp4-YouCut_20260522_014153231.mp4",
+          "type": "video",
+          "title": ""
+        },
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/b3561397-3b65-405c-bfd9-cac5cf1773ee/1787034020110.mp4-0818_3_-1.mp4",
+          "type": "video",
+          "title": ""
+        },
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/b3561397-3b65-405c-bfd9-cac5cf1773ee/1787034077628.mp4-0818_3_-2.mp4",
+          "type": "video",
+          "title": ""
+        }
+      ],
+      "market": "egypt",
+      "coverUrl": "",
+      "sortOrder": 0,
+      "egyptCategory": "medical"
+    },
+    {
+      "id": "82647305-891b-46b7-bada-b6c85a5cf0b7",
+      "name": "د.محمد الشوربجي",
+      "media": [
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/82647305-891b-46b7-bada-b6c85a5cf0b7/1779400284119.mp4-YouCut_20260522_004649864.mp4",
+          "type": "video",
+          "title": ""
+        },
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/82647305-891b-46b7-bada-b6c85a5cf0b7/1779400322914.mp4-YouCut_20260522_004613780.mp4",
+          "type": "video",
+          "title": ""
+        },
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/82647305-891b-46b7-bada-b6c85a5cf0b7/1779400376381.mp4-YouCut_20260522_004224602.mp4",
+          "type": "video",
+          "title": ""
+        },
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/82647305-891b-46b7-bada-b6c85a5cf0b7/1787033606829.mp4-0818_2_-1.mp4",
+          "type": "video",
+          "title": ""
+        },
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/82647305-891b-46b7-bada-b6c85a5cf0b7/1787033639432.mp4-0818_2_-2.mp4",
+          "type": "video",
+          "title": ""
+        },
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/82647305-891b-46b7-bada-b6c85a5cf0b7/1787033672226.mp4-0818_2_-3.mp4",
+          "type": "video",
+          "title": ""
+        }
+      ],
+      "market": "egypt",
+      "coverUrl": "",
+      "sortOrder": 0,
+      "egyptCategory": "medical"
+    },
+    {
+      "id": "97cb4345-e306-42fd-a6a6-bce6e584f155",
+      "name": "د.محمد شوقي",
+      "media": [
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/97cb4345-e306-42fd-a6a6-bce6e584f155/1779397689479.png-_.png",
+          "type": "design",
+          "title": ""
+        },
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/97cb4345-e306-42fd-a6a6-bce6e584f155/1779400887628.png-3.-1.png",
+          "type": "design",
+          "title": ""
+        },
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/97cb4345-e306-42fd-a6a6-bce6e584f155/1779400896874.png-_.png",
+          "type": "design",
+          "title": ""
+        },
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/97cb4345-e306-42fd-a6a6-bce6e584f155/1780920584983.jpeg-WhatsApp_Image_2026-06-08_at_3.07.47_PM.jpeg",
+          "type": "design",
+          "title": ""
+        },
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/97cb4345-e306-42fd-a6a6-bce6e584f155/1787032748351.mp4-0818-1.mp4",
+          "type": "video",
+          "title": ""
+        },
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/97cb4345-e306-42fd-a6a6-bce6e584f155/1787032786725.mp4-0818-2.mp4",
+          "type": "video",
+          "title": ""
+        },
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/97cb4345-e306-42fd-a6a6-bce6e584f155/1787032827303.mp4-0818-3.mp4",
+          "type": "video",
+          "title": ""
+        },
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/97cb4345-e306-42fd-a6a6-bce6e584f155/1787032870988.mp4-0818-4.mp4",
+          "type": "video",
+          "title": ""
+        },
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/97cb4345-e306-42fd-a6a6-bce6e584f155/1779400155488.mp4-YouCut_20260522_004041719.mp4",
+          "type": "video",
+          "title": ""
+        },
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/97cb4345-e306-42fd-a6a6-bce6e584f155/1779400213374.mp4-YouCut_20260522_004116120.mp4",
+          "type": "video",
+          "title": ""
+        },
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/97cb4345-e306-42fd-a6a6-bce6e584f155/1779400909538.mp4-YouCut_20260522_005634651.mp4",
+          "type": "video",
+          "title": ""
+        },
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/97cb4345-e306-42fd-a6a6-bce6e584f155/1779400971065.mp4-YouCut_20260522_005827678.mp4",
+          "type": "video",
+          "title": ""
+        },
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/97cb4345-e306-42fd-a6a6-bce6e584f155/1780921248257.mp4-8.mp4",
+          "type": "video",
+          "title": ""
+        },
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/97cb4345-e306-42fd-a6a6-bce6e584f155/1780921656831.mp4-0608.mp4",
+          "type": "video",
+          "title": ""
+        }
+      ],
+      "market": "egypt",
+      "coverUrl": "",
+      "sortOrder": 0,
+      "egyptCategory": "medical"
+    },
+    {
+      "id": "1a8b6a24-047c-4d3d-bf08-485da477ed5f",
+      "name": "زاد",
+      "media": [
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/1a8b6a24-047c-4d3d-bf08-485da477ed5f/1779403726575.png-3_2_.png",
+          "type": "design"
+        },
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/1a8b6a24-047c-4d3d-bf08-485da477ed5f/1779403753821.png-2_2_.png",
+          "type": "design"
+        },
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/1a8b6a24-047c-4d3d-bf08-485da477ed5f/1779403801494.png-_-0909.png",
+          "type": "design"
+        },
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/1a8b6a24-047c-4d3d-bf08-485da477ed5f/1779403829014.png-_.png",
+          "type": "design"
+        },
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/1a8b6a24-047c-4d3d-bf08-485da477ed5f/1779403846598.png-_-1_1_.png",
+          "type": "design"
+        },
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/1a8b6a24-047c-4d3d-bf08-485da477ed5f/1779403898041.mp4-YouCut_20260522_012700961.mp4",
+          "type": "video"
+        }
+      ],
+      "market": "egypt",
+      "coverUrl": "",
+      "sortOrder": 0,
+      "egyptCategory": "other"
+    },
+    {
+      "id": "476f63cf-ff9b-4490-9c5b-a76e4d49da1c",
+      "name": "Zawitzad",
+      "media": [
+        {
+          "file": "Zawitzad/ذاد 1.jpg",
+          "type": "design",
+          "title": ""
+        },
+        {
+          "file": "Zawitzad/ذاد 2.jpg",
+          "type": "design",
+          "title": ""
+        },
+        {
+          "file": "Zawitzad/ذاد 3.png",
+          "type": "design",
+          "title": ""
+        },
+        {
+          "file": "Zawitzad/ذاد 4.jpg",
+          "type": "design",
+          "title": ""
+        }
+      ],
+      "market": "saudi",
+      "coverUrl": "",
+      "sortOrder": 1,
+      "egyptCategory": "restaurants"
+    },
+    {
+      "id": "e6abb31a-8269-45bb-a2a6-134d0e7b038a",
+      "name": "Nkht.balh",
+      "media": [
+        {
+          "file": "Nkht.balh/نكهة بلح 1.jpg",
+          "type": "design",
+          "title": ""
+        },
+        {
+          "file": "Nkht.balh/نكهة بلح 2.jpg",
+          "type": "design",
+          "title": ""
+        },
+        {
+          "file": "Nkht.balh/نكهة بلح 3.jpg",
+          "type": "design",
+          "title": ""
+        },
+        {
+          "file": "Nkht.balh/نكهة بلح 4.jpg",
+          "type": "design",
+          "title": ""
+        },
+        {
+          "file": "Nkht.balh/اول--عرض.png",
+          "type": "design",
+          "title": ""
+        },
+        {
+          "file": "Nkht.balh/تاني--عرض.png",
+          "type": "design",
+          "title": ""
+        },
+        {
+          "file": "Nkht.balh/العرض--الثالث.png",
+          "type": "design",
+          "title": ""
+        },
+        {
+          "file": "Nkht.balh/مولح  نكهة بلح  .mp4",
+          "type": "video",
+          "title": ""
+        },
+        {
+          "file": "Nkht.balh/نكهة بلح  نهائي  .mp4",
+          "type": "video",
+          "title": ""
+        }
+      ],
+      "market": "saudi",
+      "coverUrl": "",
+      "sortOrder": 2,
+      "egyptCategory": "restaurants"
+    },
+    {
+      "id": "a17a9d5f-0f14-43b2-8e06-1028a7398dac",
+      "name": "افندينا",
+      "media": [
+        {
+          "file": "افندينا/افندينا.png",
+          "type": "design"
+        },
+        {
+          "file": "افندينا/YouCut_20260221_010705741.mp4",
+          "type": "video"
+        },
+        {
+          "file": "افندينا/YouCut_20260420_023003316.mp4",
+          "type": "video"
+        }
+      ],
+      "market": "egypt",
+      "coverUrl": "",
+      "sortOrder": 3,
+      "egyptCategory": "restaurants"
+    },
+    {
+      "id": "ecd2c344-46d0-48ef-8422-87f1424f7a56",
+      "name": "بنت السلطان",
+      "media": [
+        {
+          "file": "بنت السلطان/عرض.png",
+          "type": "design"
+        },
+        {
+          "file": "بنت السلطان/بنت السلطان.mp4",
+          "type": "video"
+        },
+        {
+          "file": "بنت السلطان/بنت  السلطان  شركة.mp4",
+          "type": "video"
+        },
+        {
+          "file": "بنت السلطان/YouCut_20260420_023306260.mp4",
+          "type": "video"
+        }
+      ],
+      "market": "egypt",
+      "coverUrl": "",
+      "sortOrder": 4,
+      "egyptCategory": "restaurants"
+    },
+    {
+      "id": "05ef9b58-faab-415c-8e75-0a97b85e5d99",
+      "name": "دهب للمشويات",
+      "media": [
+        {
+          "file": "دهب للمشويات/Untitled-1-Recovered.png",
+          "type": "design"
+        },
+        {
+          "file": "دهب للمشويات/رمضان.png",
+          "type": "design"
+        },
+        {
+          "file": "دهب للمشويات/0126 (1).mp4",
+          "type": "video"
+        },
+        {
+          "file": "دهب للمشويات/YouCut_20260420_022713726.mp4",
+          "type": "video"
+        }
+      ],
+      "market": "egypt",
+      "coverUrl": "",
+      "sortOrder": 5,
+      "egyptCategory": "restaurants"
+    },
+    {
+      "id": "e06b72bd-484d-4274-9896-ec3ceba0c591",
+      "name": "Arkid",
+      "media": [
+        {
+          "file": "Arkid/تصميم--1--اركيد.png",
+          "type": "design",
+          "title": ""
+        },
+        {
+          "file": "Arkid/تصميم--2.png",
+          "type": "design",
+          "title": ""
+        },
+        {
+          "file": "Arkid/اركيد (1).png",
+          "type": "design",
+          "title": ""
+        },
+        {
+          "file": "Arkid/اركيد  -0=.png",
+          "type": "design",
+          "title": ""
+        },
+        {
+          "file": "Arkid/2-اطفال.png",
+          "type": "design",
+          "title": ""
+        },
+        {
+          "file": "Arkid/YouCut_20260420_022858326.mp4",
+          "type": "video",
+          "title": ""
+        },
+        {
+          "file": "Arkid/اركيد  بارستا  .mp4",
+          "type": "video",
+          "title": ""
+        },
+        {
+          "file": "Arkid/اركيد -=-=.mp4",
+          "type": "video",
+          "title": ""
+        },
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/e06b72bd-484d-4274-9896-ec3ceba0c591/1779402999282.mp4-YouCut_20260522_012608783.mp4",
+          "type": "video",
+          "title": ""
+        },
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/e06b72bd-484d-4274-9896-ec3ceba0c591/1780922991302.mp4-___Arkid_Caf___..._720P_HD_.mp4",
+          "type": "video",
+          "title": ""
+        },
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/e06b72bd-484d-4274-9896-ec3ceba0c591/1780923003543.mp4-_..._.mp4",
+          "type": "video",
+          "title": ""
+        },
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/e06b72bd-484d-4274-9896-ec3ceba0c591/1780923013336.mp4-___..._.mp4",
+          "type": "video",
+          "title": ""
+        },
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/e06b72bd-484d-4274-9896-ec3ceba0c591/1780923084469.jpeg-WhatsApp_Image_2026-06-08_at_3.48.42_PM.jpeg",
+          "type": "design",
+          "title": ""
+        },
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/e06b72bd-484d-4274-9896-ec3ceba0c591/1780923089253.jpeg-WhatsApp_Image_2026-06-08_at_3.48.42_PM_5_.jpeg",
+          "type": "design",
+          "title": ""
+        },
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/e06b72bd-484d-4274-9896-ec3ceba0c591/1780923093537.jpeg-WhatsApp_Image_2026-06-08_at_3.48.42_PM_4_.jpeg",
+          "type": "design",
+          "title": ""
+        },
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/e06b72bd-484d-4274-9896-ec3ceba0c591/1780923098151.jpeg-WhatsApp_Image_2026-06-08_at_3.48.42_PM_4_.jpeg",
+          "type": "design",
+          "title": ""
+        },
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/e06b72bd-484d-4274-9896-ec3ceba0c591/1780923103698.jpeg-WhatsApp_Image_2026-06-08_at_3.48.42_PM_3_.jpeg",
+          "type": "design",
+          "title": ""
+        },
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/e06b72bd-484d-4274-9896-ec3ceba0c591/1780923108951.jpeg-WhatsApp_Image_2026-06-08_at_3.48.42_PM_2_.jpeg",
+          "type": "design",
+          "title": ""
+        },
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/e06b72bd-484d-4274-9896-ec3ceba0c591/1780923114353.jpeg-WhatsApp_Image_2026-06-08_at_3.48.42_PM_1_.jpeg",
+          "type": "design",
+          "title": ""
+        },
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/e06b72bd-484d-4274-9896-ec3ceba0c591/1780923121071.jpeg-WhatsApp_Image_2026-06-08_at_3.48.41_PM.jpeg",
+          "type": "design",
+          "title": ""
+        },
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/e06b72bd-484d-4274-9896-ec3ceba0c591/1787031044402.mp4-0816_1_-2.mp4",
+          "type": "video",
+          "title": ""
+        }
+      ],
+      "market": "egypt",
+      "coverUrl": "",
+      "sortOrder": 6,
+      "egyptCategory": "cafes"
+    },
+    {
+      "id": "b70214b2-74b0-4985-9deb-4a75d95472a2",
+      "name": "Smoothie",
+      "media": [
+        {
+          "file": "Smoothie/سوشيال.png",
+          "type": "design"
+        },
+        {
+          "file": "Smoothie/جرين-اسموزي (1).png",
+          "type": "design"
+        },
+        {
+          "file": "Smoothie/جحج.png",
+          "type": "design"
+        },
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/b70214b2-74b0-4985-9deb-4a75d95472a2/1776724274788.mp4-YouCut_20260421_002211885.mp4",
+          "type": "video"
+        },
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/b70214b2-74b0-4985-9deb-4a75d95472a2/1780923649373.mp4-_..._.mp4",
+          "type": "video"
+        },
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/b70214b2-74b0-4985-9deb-4a75d95472a2/1780923667423.mp4-_...___.mp4",
+          "type": "video"
+        },
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/b70214b2-74b0-4985-9deb-4a75d95472a2/1780923710873.mp4-_...___.mp4",
+          "type": "video"
+        },
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/b70214b2-74b0-4985-9deb-4a75d95472a2/1780923724196.mp4-_.mp4",
+          "type": "video"
+        },
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/b70214b2-74b0-4985-9deb-4a75d95472a2/1780923738240.mp4-_..._.mp4",
+          "type": "video"
+        },
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/b70214b2-74b0-4985-9deb-4a75d95472a2/1780923743780.mp4-___.mp4",
+          "type": "video"
+        },
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/b70214b2-74b0-4985-9deb-4a75d95472a2/1780923751228.mp4-_..._720P_HD_.mp4",
+          "type": "video"
+        }
+      ],
+      "market": "egypt",
+      "coverUrl": "",
+      "sortOrder": 7,
+      "egyptCategory": "cafes"
+    },
+    {
+      "id": "b28416c6-ccef-4264-8e69-913ea2de5c36",
+      "name": "NAAMA",
+      "media": [
+        {
+          "file": "NAAMA/11.png",
+          "type": "design"
+        },
+        {
+          "file": "NAAMA/12.png",
+          "type": "design"
+        },
+        {
+          "file": "NAAMA/2.png",
+          "type": "design"
+        },
+        {
+          "file": "NAAMA/3.png",
+          "type": "design"
+        },
+        {
+          "file": "NAAMA/4.png",
+          "type": "design"
+        },
+        {
+          "file": "NAAMA/Untitled-1.png",
+          "type": "design"
+        },
+        {
+          "file": "NAAMA/Untitled-2.png",
+          "type": "design"
+        },
+        {
+          "file": "NAAMA/بلية.png",
+          "type": "design"
+        },
+        {
+          "file": "NAAMA/بلية--1.png",
+          "type": "design"
+        },
+        {
+          "file": "NAAMA/زززز.png",
+          "type": "design"
+        },
+        {
+          "file": "NAAMA/0409 (2).mp4",
+          "type": "video"
+        },
+        {
+          "file": "NAAMA/VID-20260420-WA0000.mp4",
+          "type": "video"
+        },
+        {
+          "file": "NAAMA/VID-20260420-WA0001.mp4",
+          "type": "video"
+        }
+      ],
+      "market": "egypt",
+      "coverUrl": "",
+      "sortOrder": 11,
+      "egyptCategory": "other"
+    },
+    {
+      "id": "7480c8c6-59b2-4f7b-ae97-259a7b533b97",
+      "name": "بيت الملكة",
+      "media": [
+        {
+          "file": "بيت الملكة/12.png",
+          "type": "design"
+        },
+        {
+          "file": "بيت الملكة/اول--تصميم-نهائي.png",
+          "type": "design"
+        },
+        {
+          "file": "بيت الملكة/الرابع.png",
+          "type": "design"
+        },
+        {
+          "file": "بيت الملكة/الفيديو  الاول  .mp4",
+          "type": "video"
+        },
+        {
+          "file": "بيت الملكة/YouCut_20260420_023356763.mp4",
+          "type": "video"
+        },
+        {
+          "file": "بيت الملكة/YouCut_20260420_023708651.mp4",
+          "type": "video"
+        },
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/7480c8c6-59b2-4f7b-ae97-259a7b533b97/1780922543691.mp4-_720P_HD_.mp4",
+          "type": "video"
+        },
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/7480c8c6-59b2-4f7b-ae97-259a7b533b97/1780922567326.jpeg-WhatsApp_Image_2026-06-08_at_3.39.47_PM.jpeg",
+          "type": "design"
+        },
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/7480c8c6-59b2-4f7b-ae97-259a7b533b97/1780922572980.jpeg-WhatsApp_Image_2026-06-08_at_3.39.48_PM_1_.jpeg",
+          "type": "design"
+        },
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/7480c8c6-59b2-4f7b-ae97-259a7b533b97/1780922577715.jpeg-WhatsApp_Image_2026-06-08_at_3.39.48_PM.jpeg",
+          "type": "design"
+        },
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/7480c8c6-59b2-4f7b-ae97-259a7b533b97/1780922585389.jpeg-WhatsApp_Image_2026-06-08_at_3.39.47_PM_1_.jpeg",
+          "type": "design"
+        },
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/7480c8c6-59b2-4f7b-ae97-259a7b533b97/1780922612624.mp4-_..._.mp4",
+          "type": "video"
+        }
+      ],
+      "market": "egypt",
+      "coverUrl": "",
+      "sortOrder": 12,
+      "egyptCategory": "other"
+    },
+    {
+      "id": "5fd76ea6-1af1-4d7e-872c-e319e7bc0dca",
+      "name": "أكلة جمبري",
+      "media": [
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/5fd76ea6-1af1-4d7e-872c-e319e7bc0dca/1786909896394.png-1.png",
+          "type": "design",
+          "title": ""
+        },
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/5fd76ea6-1af1-4d7e-872c-e319e7bc0dca/1786909899970.png-2.png",
+          "type": "design",
+          "title": ""
+        },
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/5fd76ea6-1af1-4d7e-872c-e319e7bc0dca/1786909903454.png-3.png",
+          "type": "design",
+          "title": ""
+        },
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/5fd76ea6-1af1-4d7e-872c-e319e7bc0dca/1786909906940.png-4.png",
+          "type": "design",
+          "title": ""
+        },
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/5fd76ea6-1af1-4d7e-872c-e319e7bc0dca/1786909910549.jpeg-5.jpeg",
+          "type": "design",
+          "title": ""
+        },
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/5fd76ea6-1af1-4d7e-872c-e319e7bc0dca/1786909911114.png-1234.png",
+          "type": "design",
+          "title": ""
+        },
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/5fd76ea6-1af1-4d7e-872c-e319e7bc0dca/1786909914481.png-2135.png",
+          "type": "design",
+          "title": ""
+        },
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/5fd76ea6-1af1-4d7e-872c-e319e7bc0dca/1786909924806.png-_1.png",
+          "type": "design",
+          "title": ""
+        },
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/5fd76ea6-1af1-4d7e-872c-e319e7bc0dca/1787030698884.mp4-0816_1_-5.mp4",
+          "type": "video",
+          "title": ""
+        },
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/5fd76ea6-1af1-4d7e-872c-e319e7bc0dca/1787030724687.mp4-0816_1_-11.mp4",
+          "type": "video",
+          "title": ""
+        }
+      ],
+      "market": "egypt",
+      "coverUrl": "",
+      "sortOrder": 16,
+      "egyptCategory": "restaurants"
+    },
+    {
+      "id": "17685862-dd8e-4234-b830-de5107d38de9",
+      "name": "البيت الراقي",
+      "media": [
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/17685862-dd8e-4234-b830-de5107d38de9/1787031495534.mp4-0816_1_-3.mp4",
+          "type": "video",
+          "title": ""
+        },
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/17685862-dd8e-4234-b830-de5107d38de9/1787031537890.mp4-0816_1_-7.mp4",
+          "type": "video",
+          "title": ""
+        }
+      ],
+      "market": "egypt",
+      "coverUrl": "",
+      "sortOrder": 17,
+      "egyptCategory": "other"
+    },
+    {
+      "id": "efeac906-8e6c-402c-a8c8-f4882bf42a8a",
+      "name": "محمود للنظارات",
+      "media": [
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/efeac906-8e6c-402c-a8c8-f4882bf42a8a/1787030504950.png-1.png",
+          "type": "design",
+          "title": ""
+        },
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/efeac906-8e6c-402c-a8c8-f4882bf42a8a/1787030508180.png-_--_--_.png",
+          "type": "design",
+          "title": ""
+        },
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/efeac906-8e6c-402c-a8c8-f4882bf42a8a/1787030511922.png-_--_--_--_.png",
+          "type": "design",
+          "title": ""
+        },
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/efeac906-8e6c-402c-a8c8-f4882bf42a8a/1787030515848.png-_--_.png",
+          "type": "design",
+          "title": ""
+        },
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/efeac906-8e6c-402c-a8c8-f4882bf42a8a/1787030519462.png-_--_--_--_.png",
+          "type": "design",
+          "title": ""
+        },
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/efeac906-8e6c-402c-a8c8-f4882bf42a8a/1787033291302.mp4-0818_1_-1.mp4",
+          "type": "video",
+          "title": ""
+        },
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/efeac906-8e6c-402c-a8c8-f4882bf42a8a/1787030573584.mp4-0816_1_-9.mp4",
+          "type": "video",
+          "title": ""
+        }
+      ],
+      "market": "egypt",
+      "coverUrl": "",
+      "sortOrder": 18,
+      "egyptCategory": "other"
+    },
+    {
+      "id": "880f5785-b2db-4441-9e9c-8f2cfe40cdd8",
+      "name": "دكان السعادة",
+      "media": [
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/880f5785-b2db-4441-9e9c-8f2cfe40cdd8/1787030306161.mp4-0816_1_-1.mp4",
+          "type": "video",
+          "title": ""
+        },
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/880f5785-b2db-4441-9e9c-8f2cfe40cdd8/1787030330420.mp4-0816_1_-4.mp4",
+          "type": "video",
+          "title": ""
+        },
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/880f5785-b2db-4441-9e9c-8f2cfe40cdd8/1787030366550.mp4-0816_1_-10.mp4",
+          "type": "video",
+          "title": ""
+        }
+      ],
+      "market": "egypt",
+      "coverUrl": "",
+      "sortOrder": 19,
+      "egyptCategory": "other"
+    },
+    {
+      "id": "478444c1-17c7-491b-9485-f5ff160d411f",
+      "name": "دار البن",
+      "media": [
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/478444c1-17c7-491b-9485-f5ff160d411f/1787031641996.mp4-0816_1_-6.mp4",
+          "type": "video",
+          "title": ""
+        }
+      ],
+      "market": "egypt",
+      "coverUrl": "",
+      "sortOrder": 20,
+      "egyptCategory": "cafes"
+    },
+    {
+      "id": "e54a8e6f-5837-41d7-8162-f75ba57f71d8",
+      "name": "Rapid Care",
+      "media": [
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/e54a8e6f-5837-41d7-8162-f75ba57f71d8/1787032472270.mp4-0818-16.mp4",
+          "type": "video",
+          "title": ""
+        },
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/e54a8e6f-5837-41d7-8162-f75ba57f71d8/1787032501727.mp4-0818-17.mp4",
+          "type": "video",
+          "title": ""
+        }
+      ],
+      "market": "egypt",
+      "coverUrl": "",
+      "sortOrder": 21,
+      "egyptCategory": "medical"
+    },
+    {
+      "id": "0385f14d-29ad-450e-aada-610a92e6a522",
+      "name": "Lady Gym",
+      "media": [
+        {
+          "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/0385f14d-29ad-450e-aada-610a92e6a522/1787035469104.mp4-0816_1_-8.mp4",
+          "type": "video",
+          "title": ""
+        }
+      ],
+      "market": "egypt",
+      "coverUrl": "",
+      "sortOrder": 22,
+      "egyptCategory": "other"
+    },
+    {
+      "id": "cm-youtube-education",
+      "name": "أعمال المدرسين",
+      "market": "egypt",
+      "egyptCategory": "education",
+      "media": [
+        {
+          "type": "video",
+          "file": "https://www.youtube.com/playlist?list=PLH30EsvyyXzM",
+          "title": "مشاهدة فيديوهات المدرسين",
+          "orientation": "landscape"
+        }
+      ],
+      "coverUrl": "",
+      "sortOrder": 1
+    },
+    {
+      "id": "cm-youtube-cafes",
+      "name": "أعمال الكافيهات",
+      "market": "egypt",
+      "egyptCategory": "cafes",
+      "media": [
+        {
+          "type": "video",
+          "file": "https://www.youtube.com/playlist?list=PLfiqxe869HDs",
+          "title": "مشاهدة فيديوهات الكافيهات",
+          "orientation": "landscape"
+        }
+      ],
+      "coverUrl": "",
+      "sortOrder": 2
+    },
+    {
+      "id": "cm-youtube-medical",
+      "name": "أعمال القطاع الطبي",
+      "market": "egypt",
+      "egyptCategory": "medical",
+      "media": [
+        {
+          "type": "video",
+          "file": "https://www.youtube.com/playlist?list=PLUQ3lchMfSpU",
+          "title": "مشاهدة فيديوهات القطاع الطبي",
+          "orientation": "landscape"
+        }
+      ],
+      "coverUrl": "",
+      "sortOrder": 3
+    }
+  ],
+  "site": {
+    "sectors": {
+      "egyptCategories": [
+        {
+          "id": "restaurants",
+          "icon": "restaurants",
+          "label": "مطاعم",
+          "tagline": "",
+          "visible": true,
+          "coverUrl": "",
+          "description": "",
+          "enLabel": "Restaurants"
+        },
+        {
+          "id": "cafes",
+          "icon": "cafes",
+          "label": "كافيهات",
+          "tagline": "",
+          "visible": true,
+          "coverUrl": "",
+          "description": "",
+          "enLabel": "Cafés"
+        },
+        {
+          "id": "medical",
+          "icon": "medical",
+          "label": "ميديكال",
+          "tagline": "",
+          "visible": true,
+          "coverUrl": "",
+          "description": "",
+          "enLabel": "Medical"
+        },
+        {
+          "id": "education",
+          "icon": "education",
+          "label": "معلمين",
+          "tagline": "",
+          "visible": true,
+          "coverUrl": "",
+          "description": "",
+          "enLabel": "Education"
+        },
+        {
+          "id": "other",
+          "icon": "other",
+          "label": "مشاريع أخرى",
+          "tagline": "",
+          "visible": true,
+          "coverUrl": "",
+          "description": "",
+          "enLabel": "Other Projects"
+        }
+      ],
+      "guide": {
+        "eyebrow": "BEYOND CONTENT",
+        "heading": "مجالك مختلف...",
+        "highlight": "وإبداعنا بيخليه مميز",
+        "linksLabel": "أو تعرّف علينا أكثر",
+        "accentColor": "#e4911f",
+        "description": "اختار مجالك واكتشف إزاى Core Media بتحول الأفكار لمحتوي يصنع الفرق.",
+        "backgroundColor": "#061523"
+      },
+      "markets": [
+        {
+          "id": "saudi",
+          "label": "القطاع السعودي"
+        },
+        {
+          "id": "egypt",
+          "label": "القطاع المصري"
+        }
+      ],
+      "projectCategories": {}
+    },
+    "hero": {
+      "badge": "تسويق • محتوى • إعلام",
+      "quote": "“بنحوّل أفكارك لمحتوى يلفت النظر ويسيب أثر.”",
+      "metrics": [
+        {
+          "label": "علامة تجارية",
+          "number": "+50"
+        },
+        {
+          "label": "حملة",
+          "number": "+200"
+        },
+        {
+          "label": "تسويق",
+          "number": "360°"
+        }
+      ],
+      "subtitle": "نساعد العلامات التجارية والشركات الناشئة وصناع المحتوى على بناء منظومات تسويقية قوية، من الاستراتيجية وصناعة المحتوى إلى شراء الإعلانات والإنتاج الإبداعي.",
+      "highlight": "تجربة تسويق متكاملة",
+      "ctaPrimary": "احجز مكالمة استراتيجية",
+      "ctaSecondary": "شاهد أعمالنا",
+      "quoteCaption": "إبداع في كل تفصيلة.. ونتائج تصنع الفرق.",
+      "introVideoUrl": "",
+      "introVideoLabel": ""
+    },
+    "about": {
+      "text": "Core Media هو استوديو تسويق متكامل يجمع الاستراتيجية والإبداع والإعلام في مكان واحد. نتعاون مع العلامات التجارية والشركات الناشئة والأعمال المعتمدة على المحتوى لتصميم حملات تؤثر في الناس وتحقق نتائج ملموسة.",
+      "pills": [
+        "استراتيجية مبنية على البيانات",
+        "محتوى يقوده السرد",
+        "هوية بصرية قوية",
+        "إعلام قائم على الأداء"
+      ],
+      "title": "من نحن",
+      "whoText": "علامات تجارية راسخة، شركات ناشئة طموحة، وصناع محتوى وأعمال تبحث عن تسويق متكامل وليس منشورات عشوائية.",
+      "whoTitle": "من نعمل معه",
+      "philosophyText": "كل علامة تجارية لديها قصة أساسية، ومهمتنا تحويلها إلى صور ورسائل وإعلام لا يمكن لجمهورك تجاهله.",
+      "philosophyTitle": "فلسفتنا"
+    },
+    "contact": {
+      "text": "نحن هنا لمساعدتك في بناء حضور رقمي قوي ومؤثر. تواصل معنا لمناقشة مشروعك القادم.",
+      "email": "core.media.333@gmail.com",
+      "title": "لنبدأ رحلتك التسويقية",
+      "facebookUrl": "https://www.facebook.com/share/1bM3zcFksr/",
+      "whatsappE164": "201019132369",
+      "whatsappDisplay": "01019132369"
+    },
+    "services": {
+      "items": [
+        {
+          "text": "أبحاث، وتموضع، وخطط تسويق متكاملة مصممة حسب علامتك التجارية وجمهورك وأهدافك.",
+          "title": "الاستراتيجية التسويقية",
+          "bullets": [
+            "أبحاث السوق والجمهور",
+            "تموضع العلامة التجارية",
+            "استراتيجية الإطلاق والحملات"
+          ]
+        },
+        {
+          "text": "محتوى يعكس صوت علامتك التجارية ويتحدث بلغة جمهورك عبر مختلف المنصات.",
+          "title": "صناعة المحتوى",
+          "bullets": [
+            "محتوى السوشيال والرقمي",
+            "كتابة السكربتات والنصوص",
+            "محتوى تحريري وطويل"
+          ]
+        },
+        {
+          "text": "أنظمة بصرية متسقة ولافتة تجعل علامتك التجارية معروفة من أول نظرة.",
+          "title": "الهوية البصرية",
+          "bullets": [
+            "تصميم الشعار ونظام الهوية",
+            "دليل استخدام العلامة",
+            "حِزم السوشيال والحملات"
+          ]
+        },
+        {
+          "text": "من الفكرة الكبرى إلى جدول تنفيذ تفصيلي على القنوات الرقمية والتقليدية.",
+          "title": "تخطيط الحملات",
+          "bullets": [
+            "تحديد القنوات والميزانيات",
+            "إدارة وتنفيذ الحملات",
+            "تقارير الأداء والتحسين"
+          ]
+        },
+        {
+          "text": "إنتاج مرئي يخطف الأنظار، من الفيديوهات القصيرة إلى التصاميم الإعلانية عالية الجودة.",
+          "title": "التصميم والفيديو",
+          "bullets": [
+            "مونتاج وتحرير الفيديو",
+            "الموشن جرافيكس",
+            "تصوير المنتجات والخدمات"
+          ]
+        },
+        {
+          "text": "إدارة ميزانياتك الإعلانية بذكاء لضمان الوصول لأفضل جمهور بأقل تكلفة.",
+          "title": "شراء الإعلانات",
+          "bullets": [
+            "إعلانات ميتا (فيسبوك وإنستجرام)",
+            "إعلانات جوجل ويوتيوب",
+            "إعلانات تيك توك وسناب شات"
+          ]
+        }
+      ],
+      "title": "الخدمات",
+      "subtitle": "باقة تسويقية كاملة تحت سقف واحد: استراتيجية ومحتوى وتصميم وإعلام يعملون بتناغم."
+    },
+    "portfolio": {
+      "title": "أعمالنا",
+      "subtitle": "نماذج من شراكات النجاح التي بنيناها مع علامات تجارية في مختلف القطاعات."
+    }
+  }
+}

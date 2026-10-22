@@ -253,11 +253,20 @@ document.addEventListener("DOMContentLoaded", () => {
   // GitHub-backed static CMS snapshot, published by Vercel on every saved commit.
   // This response must be authoritative, including when brands is [].
   const loadPublicCms = async () => {
-    const response = await fetch("data/cms.json", { cache: "no-store" });
-    if (!response.ok) throw new Error(`CMS data unavailable (${response.status})`);
-    const document = await response.json();
-    if (!Array.isArray(document.brands)) throw new Error("Invalid CMS document");
-    return document;
+    // The original GitHub web upload accidentally flattened data/cms.json to /cms.json.
+    // Prefer the canonical path used by the admin CMS, but recover the imported 26 projects
+    // from the root-level snapshot rather than showing empty sections.
+    for (const path of ["data/cms.json", "cms.json"]) {
+      try {
+        const response = await fetch(path, { cache: "no-store" });
+        if (!response.ok) continue;
+        const document = await response.json();
+        if (Array.isArray(document.brands)) return document;
+      } catch (error) {
+        console.warn(`Failed to load Core Media CMS from ${path}`, error);
+      }
+    }
+    throw new Error("تعذر تحميل بيانات المشروعات من data/cms.json أو cms.json");
   };
 
   const yearEl = document.getElementById("year");
