@@ -227,3 +227,8 @@ body.cm-category-mode #portfolio #portfolio-groups .cm-portfolio-card:hover {
   .cm-category-choice { gap: 15px; }
   .cm-category-choice-english { font-size: .75rem; }
 }
+
+/* YouTube playlist sync indicators. Individual videos remain ordinary project cards. */
+.cm-playlist-status { margin: 20px auto; padding: 16px 20px; text-align: center; background: rgba(10,24,41,.72); color: #dce8f4; border: 1px solid rgba(255,255,255,.16); border-radius: 14px; max-width: 760px; line-height: 1.8; }
+.cm-playlist-warning { border-color: rgba(255,180,90,.42); color:#ffdfb0; }
+.cm-playlist-warning a { color: #ffbc71; text-decoration: underline; }

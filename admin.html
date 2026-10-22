@@ -27,10 +27,10 @@
 
         <form id="admin-login-form" class="cm-admin-form">
           <div class="cm-form-group">
-            <label for="admin-email">البريد الإلكتروني</label>
+            <label for="admin-email">اسم المستخدم</label>
             <div class="cm-input-wrapper">
               <i data-lucide="mail"></i>
-              <input id="admin-email" type="email" required placeholder="admin@email.com" autocomplete="email" />
+              <input id="admin-email" type="text" required placeholder="اسم المستخدم" autocomplete="username" />
             </div>
           </div>
 
@@ -283,7 +283,7 @@
                     </div>
 
                     <p class="cm-admin-note" style="margin: 0.75rem 1.25rem 0;">
-                      الأفضل للفيديوهات: ارفع على YouTube كـ Unlisted (غير مدرج)، وبعدها الصق الرابط. الفيديو بيتشغل جوه الموقع من غير استهلاك مساحة فيديوهات Supabase. رفع الملفات المباشر ما زال متاحًا اختياريًا.
+                      الفيديوهات: ارفعها على YouTube بوضع Unlisted (غير مدرج)، ثم الصق رابطها. الصور الخفيفة فقط يمكن رفعها إلى GitHub من لوحة التحكم.
                     </p>
 
                     <div class="cm-media-upload-zone">
@@ -312,8 +312,8 @@
                           </select>
                         </div>
                         <div class="cm-form-group">
-                          <label for="media-upload">أو ارفع صورة/فيديو إلى Supabase (اختياري)</label>
-                          <input id="media-upload" type="file" accept="image/*,video/*" class="cm-file-input" multiple />
+                          <label for="media-upload">أو ارفع تصميمات وصور إلى GitHub (أقل من 2MB للصورة)</label>
+                          <input id="media-upload" type="file" accept="image/jpeg,image/png,image/webp" class="cm-file-input" multiple />
                         </div>
                       </div>
                       <button class="cm-btn cm-btn-secondary cm-btn-block" type="button" id="add-media">
@@ -337,10 +337,10 @@
                       <ul id="media-list" class="cm-media-grid"></ul>
                       <div class="cm-form-footer" style="padding-top: 1rem;">
                         <button class="cm-btn cm-btn-outline cm-btn-sm" type="button" id="cleanup-storage-orphans">
-                          <i data-lucide="trash-2"></i> فحص الملفات غير المستخدمة في التخزين
+                          <i data-lucide="trash-2"></i> تنظيف التخزين القديم متوقف أثناء النقل
                         </button>
                       </div>
-                      <p class="cm-admin-note" style="margin: 0.5rem 1.25rem 1rem;">يفحص ملفات Bucket ‏cm-portfolio مقابل كل مراجع المشروعات وإعدادات الموقع. لن يُحذف أي ملف إلا بعد عرض العدد والحجم وطلب تأكيدك.</p>
+                      <p class="cm-admin-note" style="margin: 0.5rem 1.25rem 1rem;">تنظيف Supabase القديم مهمة منفصلة بعد نقل الفيديوهات والتأكد من تشغيل كل الروابط. حذف مشروع هنا لا يحذف الملفات القديمة تلقائيًا.</p>
                     </div>
                   </div>
                 </div>
@@ -485,8 +485,8 @@
                   </div>
                 </div>
                 <div class="cm-form-group">
-                  <label for="intro-video-upload">أو ارفع فيديو تعريفي جديد إلى Supabase (اختياري)</label>
-                  <input id="intro-video-upload" type="file" accept="video/*" class="cm-file-input" />
+                  <p class="cm-admin-note">للفيديو التعريفي استخدم رابط YouTube في الخانة السابقة بدل رفع ملف فيديو.</p>
+                  <input id="intro-video-upload" type="file" class="hidden" accept="image/jpeg,image/png,image/webp" disabled />
                 </div>
 
                 <div class="cm-form-footer">
@@ -629,8 +629,6 @@
     <div id="toast-container" class="cm-toast-container"></div>
     <div id="sidebar-overlay" class="cm-sidebar-overlay"></div>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="supabase-config.js"></script>
     <script type="module" src="admin-video-convert.js"></script>
     <script src="youtube-utils.js"></script>
     <script src="admin.js"></script>

@@ -222,12 +222,8 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  const STORAGE_KEY = "cmPortfolioDataV2";
-  const SITE_STORAGE_KEY = "cmSiteContentV1";
   const INTRO_VIDEO_DISMISSED_KEY = "cmIntroVideoDismissedV1";
   let WHATSAPP_E164 = "201019132369";
-  const BRAND_TABLE = "cm_brands";
-  const SITE_TABLE = "cm_site_settings";
   // English subtitles are configurable from the Admin Panel; defaults cover old saved categories.
   const DEFAULT_EN_CATEGORY_LABELS = {
     restaurants: "Restaurants",
@@ -254,14 +250,15 @@ document.addEventListener("DOMContentLoaded", () => {
     egypt: "القطاع المصري",
   };
 
-  const supabaseUrl = window.CM_SUPABASE_URL;
-  const supabaseAnonKey = window.CM_SUPABASE_ANON_KEY;
-  const hasSupabaseConfig =
-    supabaseUrl &&
-    supabaseAnonKey &&
-    !String(supabaseUrl).includes("PASTE_YOUR_SUPABASE_URL_HERE") &&
-    !String(supabaseAnonKey).includes("PASTE_YOUR_SUPABASE_ANON_KEY_HERE");
-  const supabase = hasSupabaseConfig ? window.supabase.createClient(supabaseUrl, supabaseAnonKey) : null;
+  // GitHub-backed static CMS snapshot, published by Vercel on every saved commit.
+  // This response must be authoritative, including when brands is [].
+  const loadPublicCms = async () => {
+    const response = await fetch("data/cms.json", { cache: "no-store" });
+    if (!response.ok) throw new Error(`CMS data unavailable (${response.status})`);
+    const document = await response.json();
+    if (!Array.isArray(document.brands)) throw new Error("Invalid CMS document");
+    return document;
+  };
 
   const yearEl = document.getElementById("year");
   if (yearEl) yearEl.textContent = new Date().getFullYear().toString();
@@ -450,32 +447,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if (waBtn && WHATSAPP_E164) waBtn.setAttribute("href", `https://wa.me/${WHATSAPP_E164}`);
   };
 
-  const loadSiteContent = async () => {
-    if (supabase) {
-      try {
-        const { data: row, error } = await supabase.from(SITE_TABLE).select("content").eq("id", 1).maybeSingle();
-        if (error) throw error;
-        // A successful empty result is authoritative. Never resurrect an old local
-        // snapshot merely because the settings row is absent or empty.
-        if (row?.content && typeof row.content === "object") {
-          try { localStorage.setItem(SITE_STORAGE_KEY, JSON.stringify(row.content)); } catch (_) {}
-          return row.content;
-        }
-        return null;
-      } catch (error) {
-        console.warn("Supabase site settings unavailable; trying the last local snapshot", error);
-      }
-    }
-    try {
-      const raw = localStorage.getItem(SITE_STORAGE_KEY);
-      if (raw) {
-        const parsed = JSON.parse(raw);
-        if (parsed && typeof parsed === "object") return parsed;
-      }
-    } catch (_) {}
-    return null;
-  };
-
   const sortBrands = (brands) =>
     [...brands].sort((a, b) => {
       const ao = typeof a.sortOrder === "number" ? a.sortOrder : 0;
@@ -483,34 +454,6 @@ document.addEventListener("DOMContentLoaded", () => {
       if (ao !== bo) return ao - bo;
       return String(a.name || "").localeCompare(String(b.name || ""), "ar");
     });
-
-  // Supabase is the source of truth. This versioned local snapshot is used only
-  // when the database cannot be reached; it is never used to seed or repopulate DB.
-  const loadPortfolioCache = () => {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw === null) return null;
-      const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed)) {
-        return sortBrands(parsed.filter((brand) => brand && typeof brand.name === "string"));
-      }
-    } catch (error) {
-      console.warn("Local portfolio snapshot unavailable", error);
-    }
-    return null;
-  };
-
-  const savePortfolioData = (data) => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(sortBrands(Array.isArray(data) ? data : [])));
-  };
-
-  const loadPortfolioDataFromSupabase = async () => {
-    if (!supabase) throw new Error("Supabase is not configured");
-    const { data: rows, error } = await supabase.from(BRAND_TABLE).select("*").order("sort_order", { ascending: true });
-    if (error) throw error;
-    // [] is a valid saved state (including when every project has been deleted).
-    return sortBrands((rows || []).map(normalizeBrand));
-  };
 
   const mediaByType = (brand, type) =>
     (brand.media || []).filter((m) => (m.type || "design") === type && m.file);
@@ -539,12 +482,15 @@ document.addEventListener("DOMContentLoaded", () => {
     const cover = (brand.coverUrl || "").trim();
     const fallbackThumbnail = videos.map((m) => window.cmYouTube?.thumbnail(m.file)).find(Boolean) || "";
     const thumbnail = cover || fallbackThumbnail;
+    const hasPlaylist = videos.some((m) => window.cmYouTube?.parse(m.file)?.kind === "playlist");
     const thumbHtml = thumbnail
       ? `<img src="${escAttr(thumbnail)}" alt="${escAttr(brand.name)}" loading="lazy" /><span class="cm-portfolio-thumb-label">${escAttr(brand.name)}</span>`
-      : `<span>${escAttr(brand.name)}</span>`;
+      : hasPlaylist
+        ? `<span class="cm-playlist-card-cover"><span class="cm-playlist-card-icon" aria-hidden="true">▶</span><span>${escAttr(brand.name)}</span><small>PLAYLIST · YOUTUBE</small></span>`
+        : `<span>${escAttr(brand.name)}</span>`;
 
     return `<article class="cm-portfolio-card" data-category="${category}" data-market="${brand.market}" data-images="${escAttr(dataImages)}" data-videos="${escAttr(dataVideos)}" data-video-orientations="${escAttr(dataVideoOrientations)}" data-aos="fade-up">
-      <div class="cm-portfolio-thumb ${thumbnail ? "has-cover" : "placeholder-video"}">
+      <div class="cm-portfolio-thumb ${thumbnail ? "has-cover" : hasPlaylist ? "placeholder-video cm-playlist-cover" : "placeholder-video"}">
         ${thumbHtml}
       </div>
       <div class="cm-portfolio-info">
@@ -558,7 +504,7 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   // The portfolio is a dedicated category experience, never an "all projects" page.
-  // "egyptCategory" is kept as the existing Supabase column name to avoid a DB migration;
+  // The existing egyptCategory property is retained for compatibility with migrated projects;
   // it now represents the business category for BOTH Egyptian and Saudi brands.
   const categoryIdFor = (brand) => {
     const id = brand.egyptCategory || "other";
@@ -579,6 +525,7 @@ document.addEventListener("DOMContentLoaded", () => {
     law: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18M5 6h14M4 6l-3 6h6L4 6Zm16 0-3 6h6l-3-6ZM6 21h12"/></svg>',
     events: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 2v6m10-6v6M3 11h18m-10 4 1 2 3 .3-2 2 .5 3-2.5-1.5L8 22l.5-3-2-2 3-.3 1.5-2Z"/></svg>',
     hotel: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 21V6h18v15M8 6V3h8v3M2 21h20M8 10h2m4 0h2m-8 4h2m4 0h2m-6 7v-4h4v4"/></svg>',
+    playlists: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16M4 9h16M4 13h7m2 2 7 4-7 4v-8Z"/></svg>',
   };
   const categoryArrow = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14 6-6 6 6 6"/></svg>';
   const categoryIconFor = (category) => categoryIcons[category?.icon] || categoryIcons[category?.id] || categoryIcons.other;
@@ -600,6 +547,33 @@ document.addEventListener("DOMContentLoaded", () => {
   const resultsBar = document.getElementById("category-results-bar");
   let portfolioData = [];
   let activeCategory = null;
+  const pendingPlaylistsByCategory = new Map();
+  const failedPlaylistsByCategory = new Map();
+  const refreshVisibleCategory = () => {
+    renderCategoryGuide();
+    if (activeCategory) {
+      const category = visibleCategories().find(entry => entry.id === activeCategory);
+      if (category) renderSelectedCategory(category);
+    }
+  };
+  const discoverPlaylistVideos = async (brand, item, alreadyPending = false) => {
+    const cat = categoryIdFor(brand);
+    if (!alreadyPending) pendingPlaylistsByCategory.set(cat, (pendingPlaylistsByCategory.get(cat) || 0) + 1);
+    refreshVisibleCategory();
+    try {
+      const videos = await window.cmPlaylistLoader.getVideos(item.file);
+      const cards = window.cmPlaylistLoader.asPortfolioBrands(brand, item, videos);
+      portfolioData = sortBrands([...portfolioData, ...cards]);
+    } catch (error) {
+      console.error('Unable to expand YouTube playlist:', item.file, error);
+      const errors = failedPlaylistsByCategory.get(cat) || [];
+      errors.push({ name: brand.name, url: item.file });
+      failedPlaylistsByCategory.set(cat, errors);
+    } finally {
+      pendingPlaylistsByCategory.set(cat, Math.max(0, (pendingPlaylistsByCategory.get(cat) || 1) - 1));
+      refreshVisibleCategory();
+    }
+  };
 
   const renderCategoryGuide = () => {
     if (!gridEl) return;
@@ -619,9 +593,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const groupsRoot = document.getElementById("portfolio-groups");
     if (!groupsRoot) return;
     const brands = portfolioData.filter((brand) => brandInCategory(brand, category.id));
+    const waiting = (pendingPlaylistsByCategory.get(category.id) || 0) > 0;
+    const failures = failedPlaylistsByCategory.get(category.id) || [];
+    const loadingMarkup = waiting ? '<div class="cm-playlist-status" role="status">جاري تحميل فيديوهات القسم من يوتيوب...</div>' : '';
+    const errorMarkup = failures.length ? `<div class="cm-playlist-status cm-playlist-warning" role="status">تعذر جلب فيديوهات بعض القوائم من يوتيوب. تأكد من أن روابط القوائم صحيحة وأنها عامة أو غير مدرجة وتسمح بالتضمين. ${failures.map(f => `<a href="${escAttr(f.url)}" target="_blank" rel="noopener noreferrer">${escAttr(f.name)} ↗</a>`).join(' · ')}</div>` : '';
     groupsRoot.innerHTML = brands.length
-      ? `<div class="cm-category-projects-grid">${brands.map(buildCardHtml).join("")}</div>`
-      : `<div class="cm-category-empty"><span class="cm-category-empty-icon">${categoryIconFor(category)}</span><h3>بنجهز أعمال القسم ده</h3><p>لسه مفيش مشاريع معروضة هنا. تقدر ترجع وتستكشف قسم تاني.</p><button type="button" class="cm-empty-back" id="category-empty-back">اختار قسم تاني</button></div>`;
+      ? `<div class="cm-category-projects-grid">${brands.map(buildCardHtml).join("")}</div>${loadingMarkup}${errorMarkup}`
+      : loadingMarkup || errorMarkup || `<div class="cm-category-empty"><span class="cm-category-empty-icon">${categoryIconFor(category)}</span><h3>بنجهز أعمال القسم ده</h3><p>لسه مفيش مشاريع معروضة هنا. تقدر ترجع وتستكشف قسم تاني.</p><button type="button" class="cm-empty-back" id="category-empty-back">اختار قسم تاني</button></div>`;
     setText('[data-cm="portfolio-title"]', `أعمال ${category.label}`);
     setText('[data-cm="portfolio-subtitle"]', category.description || `نماذج من شغل Core Media في مجال ${category.label}، مختارة علشان تشوف التفاصيل اللي تهمك.`);
     if (resultsBar) resultsBar.textContent = brands.length ? `${brands.length} مشروع في هذا القسم` : "";
@@ -784,10 +762,13 @@ document.addEventListener("DOMContentLoaded", () => {
       const autoplay = /\bautoplay\b/.test(extraAttrs);
       const muted = /\bmuted\b/.test(extraAttrs);
       const embed = window.cmYouTube.embed(src, { autoplay, mute: muted });
-      return `<div class="cm-lightbox-media-frame cm-lightbox-media-frame-video cm-youtube-frame ${isPortrait ? "is-portrait" : "is-landscape"}">
-        <iframe class="cm-youtube-player" src="${escAttr(embed)}" title="فيديو من قناة Core Media على يوتيوب" loading="lazy"
+      const isPlaylist = youtube.kind === "playlist";
+      const originalUrl = window.cmYouTube.canonical(src);
+      return `<div class="cm-lightbox-media-frame cm-lightbox-media-frame-video cm-youtube-frame ${isPortrait ? "is-portrait" : "is-landscape"} ${isPlaylist ? "cm-youtube-playlist-frame" : ""}">
+        <iframe class="cm-youtube-player" src="${escAttr(embed)}" title="${isPlaylist ? "قائمة فيديوهات Core Media على يوتيوب" : "فيديو من قناة Core Media على يوتيوب"}" loading="lazy"
           referrerpolicy="strict-origin-when-cross-origin"
           allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>
+        ${isPlaylist ? `<a class="cm-playlist-open-youtube" href="${escAttr(originalUrl)}" rel="noopener noreferrer" target="_blank">لو القائمة مش بتشتغل هنا، افتحها على يوتيوب ↗</a>` : ""}
       </div>`;
     }
     return `<div class="cm-lightbox-media-frame cm-lightbox-media-frame-video">
@@ -1009,53 +990,38 @@ document.addEventListener("DOMContentLoaded", () => {
 
   (async () => {
     try {
-      const siteContent = await loadSiteContent();
-      if (siteContent) applySiteContent(siteContent);
-    } catch (error) {
-      console.warn("Unable to load site settings", error);
-    }
-
-    let data = null;
-    let loadedFromDatabase = false;
-    let databaseError = null;
-    if (supabase) {
-      try {
-        data = await loadPortfolioDataFromSupabase();
-        loadedFromDatabase = true;
-        try { savePortfolioData(data); } catch (_) {}
-      } catch (error) {
-        databaseError = error;
-        console.warn("Unable to load portfolio from Supabase; using the last local snapshot only", error);
-        data = loadPortfolioCache();
+      const cms = await loadPublicCms();
+      if (cms.site && typeof cms.site === "object") applySiteContent(cms.site);
+      // CMS state is authoritative. Keep normal portfolio items as-is.
+      // Each playlist is expanded asynchronously into one card per real YouTube video.
+      const brands = (cms.brands || []).map(normalizeBrand);
+      const playlistJobs = [];
+      const regularBrands = [];
+      for (const brand of brands) {
+        const playlistItems = (brand.media || []).filter(item => window.cmYouTube?.parse(item.file)?.kind === 'playlist');
+        for (const item of playlistItems) playlistJobs.push({ brand, item });
+        const ordinaryMedia = (brand.media || []).filter(item => window.cmYouTube?.parse(item.file)?.kind !== 'playlist');
+        if (ordinaryMedia.length || !playlistItems.length) regularBrands.push({ ...brand, media: ordinaryMedia });
       }
-    } else {
-      databaseError = new Error("Supabase is not configured");
-      data = loadPortfolioCache();
+      portfolioData = sortBrands(regularBrands);
+      // Establish loading state before showing any category; no misleading empty section.
+      for (const { brand } of playlistJobs) {
+        const cat = categoryIdFor(brand);
+        pendingPlaylistsByCategory.set(cat, (pendingPlaylistsByCategory.get(cat) || 0) + 1);
+      }
+      renderCategoryGuide();
+      document.getElementById("portfolio-groups")?.replaceChildren();
+      preloaderPromise.then(restoreViewFromUrl);
+      for (const { brand, item } of playlistJobs) {
+        // Separate requests: discovering one playlist cannot hide another category.
+        discoverPlaylistVideos(brand, item, true);
+      }
+    } catch (error) {
+      console.error("Unable to load the published CMS snapshot", error);
+      portfolioData = [];
+      renderCategoryGuide();
+      document.getElementById("portfolio-groups")?.replaceChildren();
+      preloaderPromise.then(restoreViewFromUrl);
     }
-
-    portfolioData = sortBrands(Array.isArray(data) ? data : []);
-    renderCategoryGuide();
-    document.getElementById("portfolio-groups")?.replaceChildren();
-
-    // Be transparent during an outage; do not show or re-import the old HTML catalog.
-    const oldStatus = document.getElementById("cm-portfolio-data-status");
-    oldStatus?.remove();
-    if (!loadedFromDatabase) {
-      const status = document.createElement("p");
-      status.id = "cm-portfolio-data-status";
-      status.className = "cm-category-loading";
-      status.setAttribute("role", "status");
-      status.textContent = Array.isArray(data)
-        ? "الاتصال بقاعدة البيانات غير متاح؛ المعروض آخر نسخة محفوظة على هذا الجهاز وقد لا تشمل آخر التعديلات."
-        : (databaseError && !supabase
-          ? "إعدادات قاعدة البيانات غير مكتملة؛ تعذر تحميل المشروعات."
-          : "تعذر تحميل المشروعات ولا توجد نسخة محفوظة على هذا الجهاز.");
-      document.getElementById("category-grid")?.insertAdjacentElement("afterend", status);
-    }
-
-    // Keep the logo intro first, then honor category/info direct links.
-    preloaderPromise.then(restoreViewFromUrl);
   })();
-
 });
-
