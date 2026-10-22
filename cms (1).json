@@ -968,7 +968,7 @@
       "media": [
         {
           "type": "video",
-          "file": "https://www.youtube.com/playlist?list=PLfiqxe869HDs",
+          "file": "https://www.youtube.com/playlist?list=PLUQ3lchMfSpU",
           "title": "مشاهدة فيديوهات الكافيهات",
           "orientation": "landscape"
         }
@@ -984,7 +984,7 @@
       "media": [
         {
           "type": "video",
-          "file": "https://www.youtube.com/playlist?list=PLUQ3lchMfSpU",
+          "file": "https://www.youtube.com/playlist?list=PLfiqxe869HDs",
           "title": "مشاهدة فيديوهات القطاع الطبي",
           "orientation": "landscape"
         }
