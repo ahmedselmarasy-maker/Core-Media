@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-11-04T18:07:13.570Z",
+  "updatedAt": "2026-11-04T18:07:17.749Z",
   "brands": [
     {
       "id": "cm-youtube-medical",
@@ -1730,7 +1730,7 @@
         "title": "فيديو 2",
         "file": "بنت السلطان/بنت السلطان.mp4",
         "orientation": "auto",
-        "visible": false,
+        "visible": true,
         "sortOrder": 14,
         "sourceProject": "بنت السلطان"
       },
