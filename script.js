@@ -488,7 +488,7 @@ document.addEventListener("DOMContentLoaded", () => {
       .filter(Boolean)
       .join(" ");
 
-    const cover = (brand.coverUrl || "").trim();
+    const cover = safeImageUrl(brand.coverUrl) || safeImageUrl(designs[0]?.file);
     const fallbackThumbnail = videos.map((m) => window.cmYouTube?.thumbnail(m.file)).find(Boolean) || "";
     const thumbnail = cover || fallbackThumbnail;
     const hasPlaylist = videos.some((m) => window.cmYouTube?.parse(m.file)?.kind === "playlist");
@@ -501,12 +501,13 @@ document.addEventListener("DOMContentLoaded", () => {
     return `<article class="cm-portfolio-card" data-category="${category}" data-market="${brand.market}" data-images="${escAttr(dataImages)}" data-videos="${escAttr(dataVideos)}" data-video-orientations="${escAttr(dataVideoOrientations)}" data-aos="fade-up">
       <div class="cm-portfolio-thumb ${thumbnail ? "has-cover" : hasPlaylist ? "placeholder-video cm-playlist-cover" : "placeholder-video"}">
         ${thumbHtml}
+        ${hasVideo ? '<span class="cm-media-play-indicator" aria-hidden="true">▶</span>' : ""}
       </div>
       <div class="cm-portfolio-info">
         <h3 class="cm-gradient-text">${escAttr(brand.name)}</h3>
         <div class="cm-portfolio-tags">
           <div class="cm-portfolio-tags-row cm-portfolio-tags-designs">${renderTags(designs, "تصميم")}</div>
-          <div class="cm-portfolio-tags-row cm-portfolio-tags-videos">${renderTags(videos, "قاطعة")}</div>
+          <div class="cm-portfolio-tags-row cm-portfolio-tags-videos">${renderTags(videos, "فيديو")}</div>
         </div>
       </div>
     </article>`;
@@ -601,17 +602,47 @@ document.addEventListener("DOMContentLoaded", () => {
   const renderSelectedCategory = (category) => {
     const groupsRoot = document.getElementById("portfolio-groups");
     if (!groupsRoot) return;
-    const brands = portfolioData.filter((brand) => brandInCategory(brand, category.id));
+    const categoryItems = portfolioData.filter(brand => brandInCategory(brand, category.id));
+    // These are individual media items in the new CMS. Keep legacy brands
+    // compatible by showing only the relevant media inside each gallery.
+    const designs = categoryItems.filter(brand => mediaByType(brand, "design").length)
+      .map(brand => ({ ...brand, media: mediaByType(brand, "design") }));
+    const videos = categoryItems.filter(brand => mediaByType(brand, "video").length)
+      .map(brand => ({ ...brand, media: mediaByType(brand, "video") }));
     const waiting = (pendingPlaylistsByCategory.get(category.id) || 0) > 0;
     const failures = failedPlaylistsByCategory.get(category.id) || [];
-    const loadingMarkup = waiting ? '<div class="cm-playlist-status" role="status">جاري تحميل فيديوهات القسم من يوتيوب...</div>' : '';
-    const errorMarkup = failures.length ? `<div class="cm-playlist-status cm-playlist-warning" role="status">تعذر جلب فيديوهات بعض القوائم من يوتيوب. تأكد من أن روابط القوائم صحيحة وأنها عامة أو غير مدرجة وتسمح بالتضمين. ${failures.map(f => `<a href="${escAttr(f.url)}" target="_blank" rel="noopener noreferrer">${escAttr(f.name)} ↗</a>`).join(' · ')}</div>` : '';
-    groupsRoot.innerHTML = brands.length
-      ? `<div class="cm-category-projects-grid">${brands.map(buildCardHtml).join("")}</div>${loadingMarkup}${errorMarkup}`
-      : loadingMarkup || errorMarkup || `<div class="cm-category-empty"><span class="cm-category-empty-icon">${categoryIconFor(category)}</span><h3>بنجهز أعمال القسم ده</h3><p>لسه مفيش فيديوهات أو تصميمات معروضة هنا. تقدر ترجع وتستكشف قسم تاني.</p><button type="button" class="cm-empty-back" id="category-empty-back">اختار قسم تاني</button></div>`;
-    setText('[data-cm="portfolio-title"]', `أعمال ${category.label}`);
-    setText('[data-cm="portfolio-subtitle"]', category.description || `نماذج من شغل Core Media في مجال ${category.label}، مختارة علشان تشوف التفاصيل اللي تهمك.`);
-    if (resultsBar) resultsBar.textContent = brands.length ? `${brands.length} عمل في هذا القسم` : "";
+    const loadingMarkup = waiting
+      ? '<p class="cm-playlist-status" role="status">جاري تحميل فيديوهات القسم من يوتيوب...</p>'
+      : '';
+    const errorMarkup = failures.length
+      ? '<p class="cm-playlist-status cm-playlist-warning" role="status">تعذر تحميل بعض فيديوهات يوتيوب. ' +
+          failures.map(f => '<a href="' + escAttr(f.url) + '" target="_blank" rel="noopener noreferrer">' + escAttr(f.name) + ' ↗</a>').join(' · ') +
+        '</p>'
+      : '';
+    const designList = designs.length
+      ? '<div class="cm-category-projects-grid cm-design-grid">' + designs.map(buildCardHtml).join("") + '</div>'
+      : '<p class="cm-media-empty">مفيش تصميمات معروضة في القسم ده حاليًا.</p>';
+    const videoList = videos.length
+      ? '<div class="cm-category-projects-grid cm-video-grid">' + videos.map(buildCardHtml).join("") + '</div>'
+      : waiting ? '' : '<p class="cm-media-empty">مفيش فيديوهات معروضة في القسم ده حاليًا.</p>';
+    groupsRoot.innerHTML =
+      '<div class="cm-media-category-layout">' +
+        '<section class="cm-media-section cm-media-designs" aria-labelledby="cm-designs-heading">' +
+          '<div class="cm-media-section-heading"><div><span class="cm-media-section-eyebrow">OUR WORK · 01</span>' +
+          '<h3 id="cm-designs-heading">التصميمات</h3><p>تصميمات من أعمالنا في قسم ' + escAttr(category.label) + '</p></div>' +
+          '<span class="cm-media-section-count">' + designs.length + ' تصميم</span></div>' +
+          designList +
+        '</section>' +
+        '<section class="cm-media-section cm-media-videos" aria-labelledby="cm-videos-heading">' +
+          '<div class="cm-media-section-heading"><div><span class="cm-media-section-eyebrow">OUR WORK · 02</span>' +
+          '<h3 id="cm-videos-heading">الفيديوهات</h3><p>شاهد فيديوهات أعمالنا في قسم ' + escAttr(category.label) + '</p></div>' +
+          '<span class="cm-media-section-count">' + videos.length + ' فيديو</span></div>' +
+          videoList + loadingMarkup + errorMarkup +
+        '</section>' +
+      '</div>';
+    setText('[data-cm="portfolio-title"]', 'أعمال ' + category.label);
+    setText('[data-cm="portfolio-subtitle"]', category.description || 'استكشف التصميمات والفيديوهات في قسم ' + category.label + '.');
+    if (resultsBar) resultsBar.textContent = designs.length + ' تصميم · ' + videos.length + ' فيديو';
     if (window.AOS) window.AOS.refresh();
   };
 
@@ -762,7 +793,7 @@ document.addEventListener("DOMContentLoaded", () => {
     'preload="auto" playsinline webkit-playsinline controls controlslist="nodownload noplaybackrate" disablepictureinpicture disableremoteplayback';
 
   const videoFallbackHtml =
-    '<p class="cm-lightbox-video-fallback">الصوت شغال والصورة مش ظاهرة — غالبًا الملف نفسه بصيغة HEVC (حتى لو اترفح من اللاب). من لوحة الإدارة: احذف القاطعة وارفعها تاني واستنى رسالة التحويل لـ H.264.</p>';
+    '<p class="cm-lightbox-video-fallback">الصوت شغال والصورة مش ظاهرة — غالبًا الملف نفسه بصيغة HEVC (حتى لو اترفح من اللاب). من لوحة الإدارة: راجع الفيديو واستبدله برابط أو ملف بصيغة مناسبة واستنى رسالة التحويل لـ H.264.</p>';
 
   const buildVideoHtml = (src, extraAttrs = "", orientation = "auto") => {
     const youtube = window.cmYouTube?.parse(src);

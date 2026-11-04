@@ -129,7 +129,7 @@
             <div class="cm-view active" id="view-gallery">
               <div class="cm-view-header">
                 <h2>الفيديوهات والتصميمات</h2>
-                <p>اختار القسم، واضغط إضافة، وبعدها رتّب أو أخفِ أي عمل. مفيش مشروعات أو أسماء عملاء لازم تنشئها.</p>
+                <p>اختار القسم، وأضف التصميمات والفيديوهات، وعدّل اسم أي عمل وترتيبه وظهوره في أي وقت.</p>
               </div>
               <div class="cm-gallery-flow">
                 <span><b>1</b> اختار القسم</span><span><b>2</b> أضف فيديو أو تصميم</span><span><b>3</b> رتّب المحتوى — الحفظ تلقائي</span>
@@ -144,14 +144,14 @@
                 <input type="hidden" id="gallery-id" />
                 <div class="cm-gallery-form-grid">
                   <label>النوع<select id="gallery-item-type"><option value="video">فيديو يوتيوب</option><option value="design">تصميم / صورة</option></select></label>
-                  <label>العنوان<input id="gallery-title" placeholder="اختياري: اسم الفيديو أو التصميم" maxlength="220" /></label>
+                  <label>العنوان<input id="gallery-title" placeholder="اكتب الاسم اللي عايز يظهر للزائر" maxlength="220" /></label>
                   <label>السوق<select id="gallery-item-market"><option value="egypt">القطاع المصري</option><option value="saudi">القطاع السعودي</option></select></label>
                   <label>القسم<select id="gallery-item-category"></select></label>
                   <label class="cm-gallery-url">رابط يوتيوب أو الصورة<input id="gallery-url" dir="ltr" placeholder="https://youtube.com/watch?v=... أو رابط الصورة" /></label>
                   <label>اتجاه الفيديو<select id="gallery-orientation"><option value="auto">تلقائي</option><option value="portrait">رأسي 9:16</option><option value="landscape">أفقي 16:9</option></select></label>
                   <label class="cm-gallery-upload">أو ارفع صورة من جهازك (أقل من 2 ميجابايت)<input id="gallery-upload" type="file" accept="image/jpeg,image/png,image/webp" /></label>
                 </div>
-                <p class="cm-gallery-help">الفيديوهات: انسخ رابط يوتيوب. التصميمات: ارفع صورة أو اكتب رابطها. تقدر تغيّر القسم لأي عمل في أي وقت.</p>
+                <p class="cm-gallery-help">الاسم اللي تكتبه هيظهر للزائر. الفيديوهات: رابط يوتيوب. التصميمات: صورة من جهازك أو رابط. تقدر تغيّر الاسم والقسم والترتيب في أي وقت.</p>
                 <div class="cm-gallery-form-actions">
                   <button type="submit" class="cm-btn cm-btn-primary" id="gallery-save">حفظ العمل</button>
                   <label class="cm-gallery-show-label"><input type="checkbox" id="gallery-visible" checked /> إظهاره للزوار بعد الحفظ</label>
@@ -207,7 +207,7 @@
                     <i data-lucide="clapperboard"></i>
                   </div>
                   <div class="cm-stat-info">
-                    <span class="cm-stat-label">القاطعات / الفيديوهات</span>
+                    <span class="cm-stat-label">الفيديوهات</span>
                     <h3 class="cm-stat-value" id="stat-total-videos">0</h3>
                   </div>
                 </div>
@@ -227,7 +227,7 @@
             <div class="cm-view" id="view-brands">
               <div class="cm-view-header">
                 <h2>المشروعات والصور والفيديوهات</h2>
-                <p>غيّر الاسم، صورة الغلاف، التصاميم، والقاطعات لكل براند</p>
+                <p>غيّر الاسم وصورة الغلاف والتصميمات والفيديوهات لكل عمل</p>
               </div>
               <div class="cm-simple-steps"><span>① اختار مشروع أو أضف جديد</span><span>② عدّل بياناته واضغط حفظ</span><span>③ أضف الصور أو روابط الفيديو</span></div><p class="cm-active-project">المشروع الحالي: <strong id="cm-active-project-name">اختار مشروع من القائمة</strong></p><div class="cm-dashboard-grid">
                 <aside class="cm-dashboard-sidebar">
@@ -321,12 +321,12 @@
                           <label for="media-type">النوع</label>
                           <select id="media-type">
                             <option value="design">تصميم (صورة)</option>
-                            <option value="video">قاطعة / فيديو</option>
+                            <option value="video">فيديو</option>
                           </select>
                         </div>
                         <div class="cm-form-group">
                           <label for="media-title">العنوان الظاهر (اختياري)</label>
-                          <input id="media-title" placeholder="مثلاً: قاطعة رمضان 1" />
+                          <input id="media-title" placeholder="مثلاً: فيديو رمضان 1" />
                         </div>
                         <div class="cm-form-group">
                           <label for="media-file">رابط YouTube أو ملف (لإضافة فيديو جديد)</label>

@@ -503,7 +503,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const mediaLabel = (m, i) => {
     if (m.title) return m.title;
-    return m.type === "video" ? `قاطعة ${i + 1}` : `تصميم ${i + 1}`;
+    return m.type === "video" ? `فيديو ${i + 1}` : `تصميم ${i + 1}`;
   };
 
   const selectedBrand = () => data.find((b) => b.id === brandIdInput.value) || null;
@@ -588,7 +588,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!brand) return;
     const media = Array.isArray(brand.media) ? brand.media : [];
     if (!media.length) {
-      mediaListEl.innerHTML = "<p class='cm-admin-note'>لا توجد وسائط لهذا البراند. أضف تصاميم أو قاطعات.</p>";
+      mediaListEl.innerHTML = "<p class='cm-admin-note'>لا توجد وسائط لهذا البراند. أضف تصميمات أو فيديوهات.</p>";
       return;
     }
 
@@ -608,7 +608,7 @@ document.addEventListener("DOMContentLoaded", () => {
       li.innerHTML = `
         <div class="cm-media-preview">${previewHtml}</div>
         <div class="cm-media-info">
-          <span class="cm-media-badge">${isVideo ? "قاطعة" : "تصميم"}</span>
+          <span class="cm-media-badge">${isVideo ? "فيديو" : "تصميم"}</span>
           <input class="cm-media-title-input" data-index="${i}" value="${escAttr(m.title || "")}" placeholder="${escAttr(mediaLabel(m, i))}" />
           <span class="cm-media-file" title="${escAttr(m.file)}">${escAttr(youtubeVideo ? `${youtubeVideo.kind === "playlist" ? "YouTube Playlist" : "YouTube"} · ${youtubeVideo.id}` : m.file.split("/").pop())}</span>
           ${isVideo ? `<div class="cm-media-video-controls">
@@ -759,7 +759,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <div class="cm-brand-info-mini">
           <strong>${escAttr(brand.name)}</strong>
           <div class="cm-admin-brand-meta">${escAttr(marketText(brand))}</div>
-          <div class="cm-admin-brand-meta">${designs} تصميم · ${cuts} قاطعة</div>
+          <div class="cm-admin-brand-meta">${designs} تصميم · ${cuts} فيديو</div>
         </div>
         <i data-lucide="chevron-left"></i>
       `;
