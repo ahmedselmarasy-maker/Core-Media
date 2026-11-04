@@ -619,13 +619,35 @@ document.addEventListener("DOMContentLoaded", () => {
           failures.map(f => '<a href="' + escAttr(f.url) + '" target="_blank" rel="noopener noreferrer">' + escAttr(f.name) + ' ↗</a>').join(' · ') +
         '</p>'
       : '';
+    // Divide items across independent endless strips, max 8 unique items per
+    // strip and at least 4 when the section contains that many. 10 => 5+5,
+    // 12 => 6+6, 17 => 6+6+5; never duplicate an actual work entry.
+    const splitIntoStrips = items => {
+      if (!items.length) return [];
+      const count = Math.ceil(items.length / 8);
+      const baseSize = Math.floor(items.length / count);
+      const extra = items.length % count;
+      let cursor = 0;
+      return Array.from({ length: count }, (_, index) => {
+        const next = cursor + baseSize + (index < extra ? 1 : 0);
+        const strip = items.slice(cursor, next);
+        cursor = next;
+        return strip;
+      });
+    };
     const carouselMarkup = (list, type) => {
       if (!list.length) return '<p class="cm-media-empty">مفيش ' + (type === "video" ? "فيديوهات" : "تصميمات") + ' معروضة في القسم ده حاليًا.</p>';
       const noun = type === "video" ? "الفيديوهات" : "التصميمات";
-      return '<div class="cm-work-carousel" data-work-carousel="' + type + '">' +
-        '<div class="cm-work-carousel-viewport" role="region" aria-roledescription="شريط متحرك" aria-label="شريط ' + noun + ' - اسحب للعرض" tabindex="0">' +
-          '<div class="cm-work-carousel-track">' + list.map(buildCardHtml).join("") + '</div>' +
-        '</div></div>';
+      const strips = splitIntoStrips(list);
+      return '<div class="cm-work-carousel-strips" data-media-strips="' + type + '">' +
+        strips.map((strip, index) =>
+          '<div class="cm-work-carousel" data-work-carousel="' + type + '" data-strip-number="' + (index + 1) + '">' +
+            '<div class="cm-work-carousel-viewport" role="region" aria-roledescription="شريط متحرك" aria-label="شريط ' + noun + ' ' + (index + 1) + ' من ' + strips.length + ' - اسحب للعرض" tabindex="0">' +
+              '<div class="cm-work-carousel-track">' + strip.map(buildCardHtml).join("") + '</div>' +
+            '</div>' +
+          '</div>'
+        ).join("") +
+      '</div>';
     };
     const designList = carouselMarkup(designs, "design");
     const videoList = videos.length || waiting

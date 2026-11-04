@@ -2005,3 +2005,15 @@ body {
 .cm-lightbox.is-media-fullscreen .cm-lightbox-video{max-height:calc(100dvh - 105px);}
 @media(max-width:720px){.cm-work-carousel .cm-portfolio-card{flex-basis:min(74vw,300px);width:min(74vw,300px)!important;}.cm-work-carousel-controls button{height:38px;min-width:38px;}.cm-work-carousel-track{gap:.8rem;}}
 @media(prefers-reduced-motion:reduce){.cm-work-carousel .cm-portfolio-card{transition:none;}}
+
+
+/* Balanced independent media strips: each row holds 4–8 unique works where possible. */
+.cm-work-carousel-strips {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.1rem, 2.5vw, 1.8rem);
+  min-width: 0;
+}
+.cm-work-carousel-strips .cm-work-carousel {
+  min-width: 0;
+}
