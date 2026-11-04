@@ -498,7 +498,7 @@ document.addEventListener("DOMContentLoaded", () => {
         ? `<span class="cm-playlist-card-cover"><span class="cm-playlist-card-icon" aria-hidden="true">▶</span><span>${escAttr(brand.name)}</span><small>PLAYLIST · YOUTUBE</small></span>`
         : `<span>${escAttr(brand.name)}</span>`;
 
-    return `<article class="cm-portfolio-card" data-category="${category}" data-market="${brand.market}" data-images="${escAttr(dataImages)}" data-videos="${escAttr(dataVideos)}" data-video-orientations="${escAttr(dataVideoOrientations)}" data-aos="fade-up">
+    return `<article class="cm-portfolio-card" data-category="${category}" data-market="${brand.market}" data-images="${escAttr(dataImages)}" data-videos="${escAttr(dataVideos)}" data-video-orientations="${escAttr(dataVideoOrientations)}" tabindex="0" role="button" aria-label="${escAttr(`عرض ${hasVideo ? "فيديو" : "تصميم"}: ${brand.name}`)}">
       <div class="cm-portfolio-thumb ${thumbnail ? "has-cover" : hasPlaylist ? "placeholder-video cm-playlist-cover" : "placeholder-video"}">
         ${thumbHtml}
         ${hasVideo ? '<span class="cm-media-play-indicator" aria-hidden="true">▶</span>' : ""}
@@ -619,12 +619,23 @@ document.addEventListener("DOMContentLoaded", () => {
           failures.map(f => '<a href="' + escAttr(f.url) + '" target="_blank" rel="noopener noreferrer">' + escAttr(f.name) + ' ↗</a>').join(' · ') +
         '</p>'
       : '';
-    const designList = designs.length
-      ? '<div class="cm-category-projects-grid cm-design-grid">' + designs.map(buildCardHtml).join("") + '</div>'
-      : '<p class="cm-media-empty">مفيش تصميمات معروضة في القسم ده حاليًا.</p>';
-    const videoList = videos.length
-      ? '<div class="cm-category-projects-grid cm-video-grid">' + videos.map(buildCardHtml).join("") + '</div>'
-      : waiting ? '' : '<p class="cm-media-empty">مفيش فيديوهات معروضة في القسم ده حاليًا.</p>';
+    const carouselMarkup = (list, type) => {
+      if (!list.length) return '<p class="cm-media-empty">مفيش ' + (type === "video" ? "فيديوهات" : "تصميمات") + ' معروضة في القسم ده حاليًا.</p>';
+      const noun = type === "video" ? "الفيديوهات" : "التصميمات";
+      return '<div class="cm-work-carousel" data-work-carousel="' + type + '">' +
+        '<div class="cm-work-carousel-controls" aria-label="التحكم في شريط ' + noun + '">' +
+          '<button type="button" data-work-control="previous" aria-label="السابق في ' + noun + '" title="السابق">›</button>' +
+          '<button type="button" data-work-control="pause" aria-pressed="false" aria-label="إيقاف حركة ' + noun + '" title="إيقاف الحركة">❚❚ <span>إيقاف الحركة</span></button>' +
+          '<button type="button" data-work-control="next" aria-label="التالي في ' + noun + '" title="التالي">‹</button>' +
+        '</div>' +
+        '<div class="cm-work-carousel-viewport" role="region" aria-roledescription="شريط متحرك" aria-label="أعمال ' + noun + ' - اسحب للعرض" tabindex="0">' +
+          '<div class="cm-work-carousel-track">' + list.map(buildCardHtml).join("") + '</div>' +
+        '</div></div>';
+    };
+    const designList = carouselMarkup(designs, "design");
+    const videoList = videos.length || waiting
+      ? carouselMarkup(videos, "video")
+      : '<p class="cm-media-empty">مفيش فيديوهات معروضة في القسم ده حاليًا.</p>';
     groupsRoot.innerHTML =
       '<div class="cm-media-category-layout">' +
         '<section class="cm-media-section cm-media-designs" aria-labelledby="cm-designs-heading">' +
@@ -643,6 +654,7 @@ document.addEventListener("DOMContentLoaded", () => {
     setText('[data-cm="portfolio-title"]', 'أعمال ' + category.label);
     setText('[data-cm="portfolio-subtitle"]', category.description || 'استكشف التصميمات والفيديوهات في قسم ' + category.label + '.');
     if (resultsBar) resultsBar.textContent = designs.length + ' تصميم · ' + videos.length + ' فيديو';
+    window.cmPortfolioCarousel?.mount(groupsRoot);
     if (window.AOS) window.AOS.refresh();
   };
 
@@ -897,22 +909,24 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!(lightbox && lightboxTitle && lightboxText)) return;
     const description =
       options.description || "استعرض الوسائط الخاصة بهذا البراند.";
-    lightbox.classList.remove("is-intro-open");
+    lightbox.classList.remove("is-intro-open", "is-media-fullscreen");
     if (options.lightboxClass) {
       lightbox.classList.add(options.lightboxClass);
     }
-    lightboxTitle.textContent = title || "مشروع";
-    lightboxText.innerHTML = `${mediaHtml}<span class="cm-lightbox-desc">${description}</span>`;
+    lightboxTitle.textContent = title || "عمل من أعمالنا";
+    lightboxText.innerHTML = `${mediaHtml}${options.lightboxClass === "is-media-fullscreen" ? "" : `<span class="cm-lightbox-desc">${description}</span>`}`;
     lightbox.classList.add("is-open");
+    lightbox.setAttribute("aria-hidden", "false");
     document.body.style.overflow = "hidden";
+    closeBtn?.focus({preventScroll:true});
     enhanceLightboxVideos();
   };
 
-  const openSingleMedia = (filePath, title, orientation = "auto") => {
+  const openSingleMedia = (filePath, title, orientation = "auto", fullscreen = false) => {
     const mediaHtml = isVideoPath(filePath)
       ? buildVideoHtml(filePath, "autoplay", orientation)
       : `<img src="${escAttr(filePath)}" alt="" class="cm-lightbox-media cm-lightbox-image" decoding="async" draggable="false" loading="eager" />`;
-    openLightbox(title, mediaHtml);
+    openLightbox(title, mediaHtml, fullscreen ? { lightboxClass: "is-media-fullscreen" } : {});
   };
 
   const closeLightbox = (reason = "manual") => {
@@ -920,8 +934,8 @@ document.addEventListener("DOMContentLoaded", () => {
     lightbox.querySelectorAll("video").forEach((v) => v.pause());
     // Removing iframe from the DOM stops YouTube audio when the dialog is closed.
     if (lightboxText) lightboxText.replaceChildren();
-    lightbox.classList.remove("is-open");
-    lightbox.classList.remove("is-intro-open");
+    lightbox.classList.remove("is-open", "is-intro-open", "is-media-fullscreen");
+    lightbox.setAttribute("aria-hidden", "true");
     document.body.style.overflow = "";
     introVideoOpen = false;
   };
@@ -1010,21 +1024,39 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const portfolioRoot = document.getElementById("portfolio-groups");
   if (portfolioRoot) {
-    portfolioRoot.addEventListener("click", (e) => {
-      const tag = e.target.closest(".cm-tag");
+    const activateMedia = target => {
+      const tag = target.closest(".cm-tag");
       if (tag) {
-        e.stopPropagation();
         const filePath = tag.getAttribute("data-file");
         if (!filePath) return;
         const card = tag.closest(".cm-portfolio-card");
-        const title = card?.querySelector(".cm-portfolio-info h3")?.textContent || "مشروع";
-        openSingleMedia(filePath, title, tag.getAttribute("data-orientation") || "auto");
+        const title = card?.querySelector(".cm-portfolio-info h3")?.textContent || "عمل من أعمالنا";
+        openSingleMedia(filePath, title, tag.getAttribute("data-orientation") || "auto", Boolean(card?.closest(".cm-work-carousel")));
         return;
       }
-      const card = e.target.closest(".cm-portfolio-card");
+      const card = target.closest(".cm-portfolio-card");
       if (!card) return;
-      const title = card.querySelector(".cm-portfolio-info h3")?.textContent || "مشروع";
-      openLightbox(title, buildMediaContent(card));
+      const title = card.querySelector(".cm-portfolio-info h3")?.textContent || "عمل من أعمالنا";
+      if (card.closest(".cm-work-carousel")) {
+        const videos = (card.getAttribute("data-videos") || "").split("|").filter(Boolean);
+        const designs = (card.getAttribute("data-images") || "").split("|").filter(Boolean);
+        const orientations = (card.getAttribute("data-video-orientations") || "").split("|");
+        const filePath = videos[0] || designs[0];
+        if (filePath) openSingleMedia(filePath, title, videos.length ? orientations[0] || "auto" : "auto", true);
+      } else {
+        openLightbox(title, buildMediaContent(card));
+      }
+    };
+    portfolioRoot.addEventListener("click", event => {
+      const control = event.target.closest("[data-work-control]");
+      if (control) return; // Handled by the carousel module.
+      activateMedia(event.target);
+    });
+    portfolioRoot.addEventListener("keydown", event => {
+      if (event.target.closest('.cm-portfolio-card') && (event.key === "Enter" || event.key === " ")) {
+        event.preventDefault();
+        activateMedia(event.target);
+      }
     });
   }
 
