@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-11-04T18:05:37.150Z",
+  "updatedAt": "2026-11-04T18:05:41.964Z",
   "brands": [
     {
       "id": "cm-youtube-medical",
@@ -1754,7 +1754,7 @@
         "title": "فيديو 4",
         "file": "بنت السلطان/YouCut_20260420_023306260.mp4",
         "orientation": "auto",
-        "visible": false,
+        "visible": true,
         "sortOrder": 16,
         "sourceProject": "بنت السلطان"
       },
