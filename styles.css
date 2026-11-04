@@ -1980,7 +1980,7 @@ body {
 .cm-work-carousel-viewport{width:100%;overflow-x:auto;overflow-y:hidden;direction:rtl;scrollbar-width:none;touch-action:pan-x pan-y;overscroll-behavior-inline:contain;border-radius:18px;outline-offset:4px;}
 .cm-work-carousel-viewport::-webkit-scrollbar{display:none;}
 .cm-work-carousel-track{display:flex!important;flex-wrap:nowrap;align-items:stretch;gap:1.15rem;width:max-content;min-width:100%;direction:rtl;padding:.3rem 0 1.15rem;}
-.cm-work-carousel .cm-portfolio-card{flex:0 0 clamp(220px,27vw,335px);width:clamp(220px,27vw,335px)!important;max-width:calc(100vw - 45px);height:auto;min-width:0;direction:rtl;cursor:zoom-in;}
+.cm-work-carousel .cm-portfolio-card{flex:0 0 clamp(180px,21vw,265px);width:clamp(180px,21vw,265px)!important;max-width:calc(100vw - 45px);height:auto;min-width:0;direction:rtl;cursor:zoom-in;}
 .cm-work-carousel .cm-portfolio-card:hover{transform:translateY(-4px);}
 .cm-work-carousel .cm-portfolio-card:focus-visible{outline:3px solid #249dc5;outline-offset:2px;}
 .cm-work-carousel .cm-portfolio-info{padding:1rem 1.2rem;min-height:70px;}
@@ -2003,7 +2003,7 @@ body {
 .cm-lightbox.is-media-fullscreen .cm-youtube-frame.is-landscape{width:min(94vw,1300px);max-width:100%;aspect-ratio:16/9;max-height:calc(100dvh - 110px);}
 .cm-lightbox.is-media-fullscreen .cm-youtube-frame.is-portrait{width:min(92vw,480px,calc((100dvh - 110px) * 9 / 16));max-height:calc(100dvh - 110px);aspect-ratio:9/16;}
 .cm-lightbox.is-media-fullscreen .cm-lightbox-video{max-height:calc(100dvh - 105px);}
-@media(max-width:720px){.cm-work-carousel .cm-portfolio-card{flex-basis:min(74vw,300px);width:min(74vw,300px)!important;}.cm-work-carousel-controls button{height:38px;min-width:38px;}.cm-work-carousel-track{gap:.8rem;}}
+@media(max-width:720px){.cm-work-carousel .cm-portfolio-card{flex-basis:min(60vw,240px);width:min(60vw,240px)!important;}.cm-work-carousel-controls button{height:38px;min-width:38px;}.cm-work-carousel-track{gap:.8rem;}}
 @media(prefers-reduced-motion:reduce){.cm-work-carousel .cm-portfolio-card{transition:none;}}
 
 
