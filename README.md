@@ -1,23 +1,15 @@
 # Core Media
 
-Static frontend for the Core Media website and admin panel.
+Live Core Media website and admin dashboard, deployed from GitHub to Vercel.
 
-## Data model
+- `index.html` is the public site. `admin.html` is the protected content editor.
+- `data/cms.json` is the **only** CMS data file.
+- Videos are linked from YouTube playlists or individual YouTube videos, not uploaded to the repository.
+- Images can be JPG/PNG/WebP or external image URLs. The existing admin image uploader stores new, necessary images in `media/` via GitHub, capped at 2 MB. To keep the repository free of new images, use an external image hosting URL (such as Cloudinary/ImageKit) instead.
+- The live version does **not** depend on Supabase or on old client-project records.
 
-- Supabase is the source of truth for `public.cm_brands` and `public.cm_site_settings`.
-- The project catalog is not embedded in `index.html`; empty database results are treated as an intentional empty state.
-- The browser cache is a last-known snapshot for temporary display during a connection outage only. It is never used to repopulate Supabase.
-- Admin edits are considered saved only after Supabase confirms the write.
-- Deleting media or a project attempts to remove the underlying Storage object only when no other project or site setting references it.
-- The admin panel includes a confirmed scan for orphaned objects in the `cm-portfolio` bucket.
+## Deployment environment
 
-## Local run
+Admin access requires `ADMIN_USERNAME`, `ADMIN_PASSWORD`, `SESSION_SECRET`, `GITHUB_TOKEN`, `GITHUB_REPOSITORY`, and `GITHUB_BRANCH`. `YOUTUBE_API_KEY` is optional; playlist discovery falls back to the YouTube IFrame API.
 
-1. Configure `supabase-config.js` with the project URL and publishable/anon key. Never place a service-role key in frontend files.
-2. Run `run-server.bat` on Windows, or serve this directory with any local static web server.
-3. Open `/` for the website and `/admin.html` for the admin panel.
-4. Configure the tables, RLS policies, Storage bucket, and admin user using `supabase-setup.sql` and `SETUP_SUPABASE.md`.
-
-## Deployment
-
-Deploy the updated project from GitHub to Vercel. Removed legacy media folders were only used by the former static portfolio catalog; the live catalog now comes from Supabase.
+Old client media and migration/setup files were deleted from the current branch. Prior Git commits and storage at external providers are separate.

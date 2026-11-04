@@ -121,7 +121,7 @@ document.addEventListener("DOMContentLoaded", () => {
     },
   };
 
-  // CMS saves to GitHub through secured Vercel functions. No Supabase client.
+  // CMS saves to GitHub through secured Vercel functions.
   const fetchCmsApi = async (path, options = {}) => {
     let response;
     try {
@@ -148,7 +148,7 @@ document.addEventListener("DOMContentLoaded", () => {
     return result;
   };
   let cmsSha = null;
-  if (loginHintEl) loginHintEl.textContent = "الإدارة محفوظة في GitHub عبر Vercel — بدون Supabase.";
+  if (loginHintEl) loginHintEl.textContent = "الإدارة محفوظة في GitHub عبر Vercel.";
 
   const loginCard = document.getElementById("admin-login-card");
   const appCard = document.getElementById("admin-app-card");
@@ -187,7 +187,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const mediaUploadInput = document.getElementById("media-upload");
   const addMediaBtn = document.getElementById("add-media");
   const mediaListEl = document.getElementById("media-list");
-  const cleanupStorageOrphansBtn = document.getElementById("cleanup-storage-orphans");
   const brandListEl = document.getElementById("brand-list");
   const brandSearchInput = document.getElementById("brand-search");
   const uploadProgressEl = document.getElementById("upload-progress");
@@ -1449,12 +1448,6 @@ document.addEventListener("DOMContentLoaded", () => {
       showToast(err?.message || "تعذر الحفظ.", "error");
     }
   });
-
-  // Old Supabase cleanup is intentionally disabled during migration.
-  if (cleanupStorageOrphansBtn) {
-    cleanupStorageOrphansBtn.disabled = true;
-    cleanupStorageOrphansBtn.textContent = "تنظيف Supabase القديم منفصل عن لوحة الإدارة الجديدة";
-  }
 
   const bootstrapAdminData = async () => {
     await loadCms();

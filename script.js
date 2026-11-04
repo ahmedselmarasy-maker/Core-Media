@@ -372,20 +372,13 @@ document.addEventListener("DOMContentLoaded", () => {
   // GitHub-backed static CMS snapshot, published by Vercel on every saved commit.
   // This response must be authoritative, including when brands is [].
   const loadPublicCms = async () => {
-    // The original GitHub web upload accidentally flattened data/cms.json to /cms.json.
-    // Prefer the canonical path used by the admin CMS, but recover the imported 26 projects
-    // from the root-level snapshot rather than showing empty sections.
-    for (const path of ["data/cms.json", "cms.json"]) {
-      try {
-        const response = await fetch(path, { cache: "no-store" });
-        if (!response.ok) continue;
-        const document = await response.json();
-        if (Array.isArray(document.brands)) return document;
-      } catch (error) {
-        console.warn(`Failed to load Core Media CMS from ${path}`, error);
-      }
+    const response = await fetch("data/cms.json", { cache: "no-store" });
+    if (!response.ok) throw new Error("تعذر تحميل بيانات الموقع.");
+    const document = await response.json();
+    if (!document?.site || !Array.isArray(document.site.galleryItems)) {
+      throw new Error("بيانات معرض الأعمال غير صالحة.");
     }
-    throw new Error("تعذر تحميل بيانات المشروعات من data/cms.json أو cms.json");
+    return document;
   };
 
   const yearEl = document.getElementById("year");
@@ -1292,18 +1285,18 @@ document.addEventListener("DOMContentLoaded", () => {
       if (cms.site && typeof cms.site === "object") applySiteContent(cms.site);
       // CMS state is authoritative. Keep normal portfolio items as-is.
       // Each playlist is expanded asynchronously into one card per real YouTube video.
-      const gallery = Array.isArray(cms.site?.galleryItems) ? cms.site.galleryItems : null;
+      const gallery = cms.site.galleryItems;
       const brands = gallery
-        ? gallery.filter(entry => entry && entry.visible !== false && entry.file).map((entry, index) => normalizeBrand({
-            id: entry.id || "gallery-" + index,
-            name: entry.title || (entry.type === "video" ? "فيديو" : "تصميم"),
-            market: entry.market || "egypt",
-            egyptCategory: entry.category || "other",
-            media: [{ file: entry.file, type: entry.type, title: entry.title || "", orientation: entry.orientation || "auto" }],
-            sortOrder: Number.isFinite(entry.sortOrder) ? entry.sortOrder : index,
-            coverUrl: entry.coverUrl || ""
-          }))
-        : (cms.brands || []).map(normalizeBrand);
+        .filter(entry => entry && entry.visible !== false && entry.file)
+        .map((entry, index) => normalizeBrand({
+          id: entry.id || "gallery-" + index,
+          name: entry.title || (entry.type === "video" ? "فيديو" : "تصميم"),
+          market: entry.market || "egypt",
+          egyptCategory: entry.category || "other",
+          media: [{ file: entry.file, type: entry.type, title: entry.title || "", orientation: entry.orientation || "auto" }],
+          sortOrder: Number.isFinite(entry.sortOrder) ? entry.sortOrder : index,
+          coverUrl: entry.coverUrl || ""
+        }));
       const playlistJobs = [];
       const regularBrands = [];
       for (const brand of brands) {
