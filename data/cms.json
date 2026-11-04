@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-11-04T18:05:11.514Z",
+  "updatedAt": "2026-11-04T18:05:14.385Z",
   "brands": [
     {
       "id": "cm-youtube-medical",
@@ -1562,7 +1562,7 @@
         "title": "فيديو 9",
         "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/5fd76ea6-1af1-4d7e-872c-e319e7bc0dca/1787030698884.mp4-0816_1_-5.mp4",
         "orientation": "auto",
-        "visible": false,
+        "visible": true,
         "sortOrder": 11,
         "sourceProject": "أكلة جمبري"
       },
