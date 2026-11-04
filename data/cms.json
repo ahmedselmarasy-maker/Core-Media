@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-11-04T18:05:20.636Z",
+  "updatedAt": "2026-11-04T18:05:25.080Z",
   "brands": [
     {
       "id": "cm-youtube-medical",
@@ -2294,7 +2294,7 @@
         "title": "تصميم 2",
         "file": "دهب للمشويات/رمضان.png",
         "orientation": "auto",
-        "visible": false,
+        "visible": true,
         "sortOrder": 18,
         "sourceProject": "دهب للمشويات"
       },
