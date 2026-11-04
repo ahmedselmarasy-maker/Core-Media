@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-11-04T18:04:57.751Z",
+  "updatedAt": "2026-11-04T18:05:02.438Z",
   "brands": [
     {
       "id": "cm-youtube-medical",
@@ -1430,7 +1430,7 @@
         "title": "تصميم 1",
         "file": "افندينا/افندينا.png",
         "orientation": "auto",
-        "visible": true,
+        "visible": false,
         "sortOrder": 0,
         "sourceProject": "افندينا"
       },
