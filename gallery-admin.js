@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
     filterType:get("gallery-filter-type"),filterStatus:get("gallery-filter-status"),
     search:get("gallery-search"),id:get("gallery-id"),type:get("gallery-item-type"),
     itemMarket:get("gallery-item-market"),itemCategory:get("gallery-item-category"),
-    title:get("gallery-title"),url:get("gallery-url"),upload:get("gallery-upload"),
+    title:get("gallery-title"),url:get("gallery-url"),
     orientation:get("gallery-orientation"),visible:get("gallery-visible"),
     heading:get("gallery-form-heading"),save:get("gallery-save")
   };
@@ -111,7 +111,6 @@ document.addEventListener("DOMContentLoaded", () => {
     nodes.type.value=item?.type||"video";
     nodes.title.value=item?.title||"";
     nodes.url.value=item?.file||"";
-    nodes.upload.value="";
     nodes.orientation.value=item?.orientation||"auto";
     nodes.itemMarket.value=item?.market||market();
     nodes.itemCategory.value=item?.category||category();
@@ -121,12 +120,11 @@ document.addEventListener("DOMContentLoaded", () => {
   nodes.cancel.addEventListener("click",()=>{nodes.form.hidden=true;nodes.form.reset();});
   for(const select of [nodes.market,nodes.category,nodes.filterType,nodes.filterStatus])select.addEventListener("change",()=>{nodes.form.hidden=true;render();});
   nodes.search.addEventListener("input",render);
-  nodes.type.addEventListener("change",()=>{nodes.upload.disabled=nodes.type.value==="video";});
   nodes.list.addEventListener("click",async event=>{
     const btn=event.target.closest("button[data-act]");if(!btn||busy)return;
     const item=items.find(i=>i.id===btn.dataset.id);if(!item)return;
     const act=btn.dataset.act;
-    if(act==="edit"){openForm(item);nodes.upload.disabled=item.type==="video";return;}
+    if(act==="edit"){openForm(item);return;}
     const next=structuredClone(items),chosen=next.find(i=>i.id===item.id);
     if(act==="toggle")chosen.visible=chosen.visible===false;
     else if(act==="remove"){
@@ -144,21 +142,11 @@ document.addEventListener("DOMContentLoaded", () => {
   nodes.form.addEventListener("submit",async event=>{
     event.preventDefault();
     if(busy)return;
-    const type=nodes.type.value,uploaded=nodes.upload.files?.[0];
-    let file=nodes.url.value.trim();
-    if(uploaded && type==="video"){status("ارفع الفيديو على يوتيوب وانسخ رابطه هنا.",true);return;}
-    if(uploaded){
-      if(!["image/jpeg","image/png","image/webp"].includes(uploaded.type)||uploaded.size>2000000){status("الصورة لازم تكون JPG أو PNG أو WebP وأقل من 2 ميجابايت.",true);return;}
-      try{
-        status("جاري رفع الصورة...");
-        const base64=await new Promise((res,rej)=>{const fr=new FileReader();fr.onload=()=>res(String(fr.result).split(",")[1]||"");fr.onerror=()=>rej(new Error("تعذرت قراءة الصورة"));fr.readAsDataURL(uploaded);});
-        const result=await api("/api/upload",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({mimeType:uploaded.type,base64})});
-        file=result.url;
-      }catch(error){status(error.message||"فشل رفع الصورة",true);return;}
-    }
-    if(!file||(!/^https?:\/\//i.test(file)&&!/^\/(?!\/)/.test(file))){status("اكتب رابط http(s) صحيح أو ارفع صورة من جهازك.",true);return;}
+    const type=nodes.type.value;
+    const file=nodes.url.value.trim();
+    if(!/^https:\/\//i.test(file)){status("الصورة أو الفيديو لازم يكون له رابط HTTPS مستضاف خارج GitHub.",true);return;}
     const isYoutube=Boolean(window.cmYouTube?.parse(file));
-    if(type==="video"&&!isYoutube&&!/\.(mp4|webm)(?:[?#].*)?$/i.test(file)){status("الفيديوهات الجديدة لازم تكون روابط يوتيوب صحيحة.",true);return;}
+    if(type==="video"&&!isYoutube){status("الفيديوهات الجديدة لازم تكون روابط يوتيوب صحيحة.",true);return;}
     if(type==="design"&&isYoutube){status("اختار النوع «فيديو» لرابط يوتيوب.",true);return;}
     const oldId=nodes.id.value,existing=items.find(i=>i.id===oldId);
     const next=structuredClone(items);

@@ -5,7 +5,7 @@ Live Core Media website and admin dashboard, deployed from GitHub to Vercel.
 - `index.html` is the public site. `admin.html` is the protected content editor.
 - `data/cms.json` is the **only** CMS data file.
 - Videos are linked from YouTube playlists or individual YouTube videos, not uploaded to the repository.
-- Images can be JPG/PNG/WebP or external image URLs. The existing admin image uploader stores new, necessary images in `media/` via GitHub, capped at 2 MB. To keep the repository free of new images, use an external image hosting URL (such as Cloudinary/ImageKit) instead.
+- Designs must be externally hosted direct HTTPS image URLs (WebP, JPG or PNG), for example Cloudinary or ImageKit. Image files are not uploaded into GitHub. The old file uploader is intentionally disabled.
 - The live version does **not** depend on Supabase or on old client-project records.
 
 ## Deployment environment

@@ -2,7 +2,6 @@ import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import auth from '../api/auth.mjs';
 import cms from '../api/cms.mjs';
-import upload from '../api/upload.mjs';
 
 process.env.SESSION_SECRET = 'demo_session_secret_only_for_automated_testing_123456';
 process.env.ADMIN_USERNAME = 'core-test';
@@ -58,11 +57,7 @@ try {
   assert.equal(res.status, 409, 'Old revision must not overwrite new CMS');
   res = await cms.fetch(request('PUT', '/api/cms', { sha: updated.sha, cms: updated.cms }, cookie, 'https://evil.example.test'));
   assert.equal(res.status, 403, 'Cross-origin editing blocked');
-  res = await upload.fetch(request('POST', '/api/upload', { mimeType: 'video/mp4', base64: 'aaaa' }, cookie));
-  assert.equal(res.status, 400, 'Direct MP4 uploads forbidden');
-  res = await upload.fetch(request('POST', '/api/upload', { mimeType: 'image/png', base64: Buffer.from('fakepng').toString('base64') }, cookie));
-  assert.equal(res.status, 200, 'Small images allowed');
   res = await auth.fetch(request('DELETE', '/api/auth', null, cookie));
   assert.equal(res.status, 200, 'Logout clears session');
-  console.log('PASS: auth, CMS read/write, preserved empty catalog, revision conflict, CSRF, image upload, logout');
+  console.log('PASS: auth, CMS read/write, preserved empty catalog, revision conflict, CSRF, logout');
 } finally { global.fetch = originalFetch; }

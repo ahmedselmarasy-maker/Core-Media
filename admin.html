@@ -147,11 +147,10 @@
                   <label>العنوان<input id="gallery-title" placeholder="اكتب الاسم اللي عايز يظهر للزائر" maxlength="220" /></label>
                   <label>السوق<select id="gallery-item-market"><option value="egypt">القطاع المصري</option><option value="saudi">القطاع السعودي</option></select></label>
                   <label>القسم<select id="gallery-item-category"></select></label>
-                  <label class="cm-gallery-url">رابط يوتيوب أو الصورة<input id="gallery-url" dir="ltr" placeholder="https://youtube.com/watch?v=... أو رابط الصورة" /></label>
+                  <label class="cm-gallery-url">رابط يوتيوب أو رابط الصورة المستضافة<input id="gallery-url" dir="ltr" placeholder="https://youtube.com/watch?v=... أو https://res.cloudinary.com/.../image.webp" /></label>
                   <label>اتجاه الفيديو<select id="gallery-orientation"><option value="auto">تلقائي</option><option value="portrait">رأسي 9:16</option><option value="landscape">أفقي 16:9</option></select></label>
-                  <label class="cm-gallery-upload">أو ارفع صورة من جهازك (أقل من 2 ميجابايت)<input id="gallery-upload" type="file" accept="image/jpeg,image/png,image/webp" /></label>
                 </div>
-                <p class="cm-gallery-help">الاسم اللي تكتبه هيظهر للزائر. الفيديوهات: رابط يوتيوب. التصميمات: صورة من جهازك أو رابط. تقدر تغيّر الاسم والقسم والترتيب في أي وقت.</p>
+                <p class="cm-gallery-help">الاسم اللي تكتبه هيظهر للزائر. الفيديوهات: رابط يوتيوب. التصميمات: رابط صورة من خدمة استضافة صور خارجية (WebP أو JPG أو PNG). تقدر تغيّر الاسم والقسم والترتيب في أي وقت.</p>
                 <div class="cm-gallery-form-actions">
                   <button type="submit" class="cm-btn cm-btn-primary" id="gallery-save">حفظ العمل</button>
                   <label class="cm-gallery-show-label"><input type="checkbox" id="gallery-visible" checked /> إظهاره للزوار بعد الحفظ</label>
@@ -341,12 +340,11 @@
                           </select>
                         </div>
                         <div class="cm-form-group">
-                          <label for="media-upload">أو ارفع تصميمات وصور إلى GitHub (أقل من 2MB للصورة)</label>
-                          <input id="media-upload" type="file" accept="image/jpeg,image/png,image/webp" class="cm-file-input" multiple />
+                          <p class="cm-admin-note">ارفع الصور على استضافة خارجية وضع رابطها المباشر. رفع الملفات داخل GitHub متوقف.</p>
                         </div>
                       </div>
                       <button class="cm-btn cm-btn-secondary cm-btn-block" type="button" id="add-media">
-                        <i data-lucide="upload-cloud"></i> <span>إضافة / رفع</span>
+                        <i data-lucide="upload-cloud"></i> <span>إضافة الرابط</span>
                       </button>
                     </div>
 

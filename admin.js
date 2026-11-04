@@ -865,7 +865,7 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       await assertIsAdmin();
       brand.media = Array.isArray(brand.media) ? brand.media : [];
-      const files = Array.from(mediaUploadInput?.files || []);
+      const files = []; // Direct file uploads to GitHub are disabled permanently.
       const typedPath = (mediaFileInput?.value || "").trim();
       const customTitle = (mediaTitleInput?.value || "").trim();
       const selectedType = mediaTypeInput.value || "design";
