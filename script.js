@@ -41,12 +41,13 @@ document.addEventListener("DOMContentLoaded", () => {
   const preloaderTagline = document.getElementById("preloader-tagline");
 
   // Original sound effects synthesized locally; no external files or downloads.
-  // Audio starts only after the visitor explicitly taps "تشغيل المقدمة بالصوت".
+  // Try audible autoplay without any prompt; browser policy can block first-load audio.
   const introSounds = (() => {
     const AudioEngine = window.AudioContext || window.webkitAudioContext;
     let context = null;
     let output = null;
     let enabled = false;
+    let resumeOnInteraction = null;
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
     const ready = () => enabled && context && context.state === "running";
 
@@ -89,18 +90,27 @@ document.addEventListener("DOMContentLoaded", () => {
       osc.stop(start + length + .008);
     };
     return {
-      unlock() {
-        if (!AudioEngine || reducedMotion.matches) return false;
+      start() {
+        // Try immediately on page load. Some browsers allow audible autoplay;
+        // others suspend Web Audio until a real visitor interaction.
+        if (!AudioEngine || reducedMotion.matches) return;
         try {
           context = new AudioEngine();
           output = context.createGain();
-          output.gain.value = .43; // Intentionally subtle, not a loud intro.
+          output.gain.value = .43;
           output.connect(context.destination);
           enabled = true;
-          // Resume is invoked synchronously inside the user's click handler.
-          context.resume().catch(() => { enabled = false; });
-          return true;
-        } catch (_) { enabled = false; return false; }
+          // Do not wait for resume() (it can remain pending on mobile).
+          context.resume().catch(() => {});
+          // No prompt: if visitor happens to tap during the animation,
+          // resume normally via that gesture, otherwise continue silently.
+          resumeOnInteraction = () => {
+            if (context && context.state === "suspended") context.resume().catch(() => {});
+          };
+          window.addEventListener("pointerdown", resumeOnInteraction, { passive: true });
+          window.addEventListener("touchstart", resumeOnInteraction, { passive: true });
+          window.addEventListener("keydown", resumeOnInteraction);
+        } catch (_) { enabled = false; }
       },
       focus() {
         tone(0, .32, 145, 215, .11, "triangle");
@@ -127,6 +137,12 @@ document.addEventListener("DOMContentLoaded", () => {
       },
       stop() {
         enabled = false;
+        if (resumeOnInteraction) {
+          window.removeEventListener("pointerdown", resumeOnInteraction);
+          window.removeEventListener("touchstart", resumeOnInteraction);
+          window.removeEventListener("keydown", resumeOnInteraction);
+          resumeOnInteraction = null;
+        }
         if (context) context.close().catch(() => {});
         context = null;
         output = null;
@@ -134,30 +150,6 @@ document.addEventListener("DOMContentLoaded", () => {
     };
   })();
 
-  const choosePreloaderAudio = () => new Promise(resolve => {
-    const choice = document.getElementById("preloader-audio-choice");
-    const soundOn = document.getElementById("preloader-sound-on");
-    const soundOff = document.getElementById("preloader-sound-off");
-    if (!choice || !soundOn || !soundOff) {
-      resolve(false);
-      return;
-    }
-    let chosen = false;
-    const finish = soundEnabled => {
-      if (chosen) return;
-      chosen = true;
-      clearTimeout(timeout);
-      choice.hidden = true;
-      resolve(soundEnabled);
-    };
-    const timeout = setTimeout(() => finish(false), 3200);
-    soundOn.addEventListener("click", () => {
-      // No browser autoplay workaround: the sound engine is unlocked legally
-      // through the visitor's direct interaction.
-      finish(introSounds.unlock());
-    }, { once: true });
-    soundOff.addEventListener("click", () => finish(false), { once: true });
-  });
 
   // A camera, not a decorative circle: the original glass and bezel are separate image layers.
   // Only the shutter blades are generated in SVG, perfectly clipped inside the real lens rim.
@@ -238,7 +230,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const startPreloader = async () => {
     // Prevent scrolling while preloading
     document.body.style.overflow = "hidden";
-    await choosePreloaderAudio();
+    introSounds.start();
 
     // Show Logo
     setTimeout(() => {
