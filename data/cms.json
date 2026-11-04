@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-11-04T18:05:32.004Z",
+  "updatedAt": "2026-11-04T18:05:37.150Z",
   "brands": [
     {
       "id": "cm-youtube-medical",
@@ -2306,7 +2306,7 @@
         "title": "فيديو 3",
         "file": "دهب للمشويات/0126 (1).mp4",
         "orientation": "auto",
-        "visible": false,
+        "visible": true,
         "sortOrder": 19,
         "sourceProject": "دهب للمشويات"
       },
