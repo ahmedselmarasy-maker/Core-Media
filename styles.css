@@ -2007,7 +2007,7 @@ body {
 @media(prefers-reduced-motion:reduce){.cm-work-carousel .cm-portfolio-card{transition:none;}}
 
 
-/* Balanced independent media strips: each row holds 4–8 unique works where possible. */
+/* Maximum of two independent media strips per type; 8+ works balance across both rows. */
 .cm-work-carousel-strips {
   display: flex;
   flex-direction: column;

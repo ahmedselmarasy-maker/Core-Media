@@ -619,21 +619,17 @@ document.addEventListener("DOMContentLoaded", () => {
           failures.map(f => '<a href="' + escAttr(f.url) + '" target="_blank" rel="noopener noreferrer">' + escAttr(f.name) + ' ↗</a>').join(' · ') +
         '</p>'
       : '';
-    // Divide items across independent endless strips, max 8 unique items per
-    // strip and at least 4 when the section contains that many. 10 => 5+5,
-    // 12 => 6+6, 17 => 6+6+5; never duplicate an actual work entry.
+    // Never show more than two endlessly looping strips for any media type.
+    // Up to 8 works use one strip. For 9+ works use two balanced strips;
+    // above 16 works, each strip can contain more than 8 to preserve the
+    // two-strip limit (e.g., 17 => 9+8, 20 => 10+10).
     const splitIntoStrips = items => {
       if (!items.length) return [];
-      const count = Math.ceil(items.length / 8);
-      const baseSize = Math.floor(items.length / count);
-      const extra = items.length % count;
-      let cursor = 0;
-      return Array.from({ length: count }, (_, index) => {
-        const next = cursor + baseSize + (index < extra ? 1 : 0);
-        const strip = items.slice(cursor, next);
-        cursor = next;
-        return strip;
-      });
+      const count = items.length <= 8 ? 1 : 2;
+      const firstSize = Math.ceil(items.length / count);
+      return count === 1
+        ? [items]
+        : [items.slice(0, firstSize), items.slice(firstSize)];
     };
     const carouselMarkup = (list, type) => {
       if (!list.length) return '<p class="cm-media-empty">مفيش ' + (type === "video" ? "فيديوهات" : "تصميمات") + ' معروضة في القسم ده حاليًا.</p>';
