@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-11-04T18:06:47.900Z",
+  "updatedAt": "2026-11-04T18:06:53.704Z",
   "brands": [
     {
       "id": "cm-youtube-medical",
@@ -1466,7 +1466,7 @@
         "title": "تصميم 1",
         "file": "https://dnrrstbdpvllyjaemhtd.supabase.co/storage/v1/object/public/cm-portfolio/5fd76ea6-1af1-4d7e-872c-e319e7bc0dca/1786909896394.png-1.png",
         "orientation": "auto",
-        "visible": false,
+        "visible": true,
         "sortOrder": 3,
         "sourceProject": "أكلة جمبري"
       },
