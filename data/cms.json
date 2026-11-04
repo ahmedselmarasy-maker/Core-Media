@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-11-04T18:05:25.080Z",
+  "updatedAt": "2026-11-04T18:05:32.004Z",
   "brands": [
     {
       "id": "cm-youtube-medical",
@@ -2318,7 +2318,7 @@
         "title": "فيديو 4",
         "file": "دهب للمشويات/YouCut_20260420_022713726.mp4",
         "orientation": "auto",
-        "visible": false,
+        "visible": true,
         "sortOrder": 20,
         "sourceProject": "دهب للمشويات"
       },
