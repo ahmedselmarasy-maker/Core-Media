@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-11-04T18:05:17.234Z",
+  "updatedAt": "2026-11-04T18:05:20.636Z",
   "brands": [
     {
       "id": "cm-youtube-medical",
@@ -2282,7 +2282,7 @@
         "title": "تصميم 1",
         "file": "دهب للمشويات/Untitled-1-Recovered.png",
         "orientation": "auto",
-        "visible": false,
+        "visible": true,
         "sortOrder": 17,
         "sourceProject": "دهب للمشويات"
       },
