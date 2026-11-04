@@ -623,11 +623,6 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!list.length) return '<p class="cm-media-empty">مفيش ' + (type === "video" ? "فيديوهات" : "تصميمات") + ' معروضة في القسم ده حاليًا.</p>';
       const noun = type === "video" ? "الفيديوهات" : "التصميمات";
       return '<div class="cm-work-carousel" data-work-carousel="' + type + '">' +
-        '<div class="cm-work-carousel-controls" aria-label="التحكم في شريط ' + noun + '">' +
-          '<button type="button" data-work-control="previous" aria-label="السابق في ' + noun + '" title="السابق">›</button>' +
-          '<button type="button" data-work-control="pause" aria-pressed="false" aria-label="إيقاف حركة ' + noun + '" title="إيقاف الحركة">❚❚ <span>إيقاف الحركة</span></button>' +
-          '<button type="button" data-work-control="next" aria-label="التالي في ' + noun + '" title="التالي">‹</button>' +
-        '</div>' +
         '<div class="cm-work-carousel-viewport" role="region" aria-roledescription="شريط متحرك" aria-label="أعمال ' + noun + ' - اسحب للعرض" tabindex="0">' +
           '<div class="cm-work-carousel-track">' + list.map(buildCardHtml).join("") + '</div>' +
         '</div></div>';
