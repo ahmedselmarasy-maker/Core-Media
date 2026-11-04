@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-11-04T18:06:53.704Z",
+  "updatedAt": "2026-11-04T18:06:58.692Z",
   "brands": [
     {
       "id": "cm-youtube-medical",
@@ -1454,7 +1454,7 @@
         "title": "فيديو 3",
         "file": "افندينا/YouCut_20260420_023003316.mp4",
         "orientation": "auto",
-        "visible": false,
+        "visible": true,
         "sortOrder": 2,
         "sourceProject": "افندينا"
       },
