@@ -222,6 +222,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let data = [];
   let site = structuredClone(DEFAULT_SITE);
+  window.addEventListener("cm-gallery-saved", (event) => { if (event.detail?.sha) { cmsSha = event.detail.sha; site = deepMerge(structuredClone(DEFAULT_SITE), event.detail.site || {}); } });
   let activeUploadXhr = null;
   let uploadCancelledByUser = false;
 
@@ -1461,6 +1462,7 @@ document.addEventListener("DOMContentLoaded", () => {
     updateDashboardStats();
     fillSiteForms();
     clearForm();
+    window.dispatchEvent(new Event("cm-admin-ready"));
   };
 
   loginForm.addEventListener("submit", (e) => {

@@ -22,7 +22,7 @@
             <img src="core-logo.webp" alt="Core Media Logo" />
           </div>
           <h1 class="cm-gradient-text">لوحة تحكم Core Media</h1>
-          <p>تحكم كامل في البراندات والقاطعات ومحتوى الموقع</p>
+          <p>تحكم بسيط في الفيديوهات والتصميمات والأقسام والموقع</p>
         </div>
 
         <form id="admin-login-form" class="cm-admin-form">
@@ -66,17 +66,17 @@
           </div>
 
           <nav class="cm-sidebar-nav"><div class="cm-nav-group-label">البدء</div>
-            <button class="cm-nav-item active" data-view="dashboard" type="button">
+            <button class="cm-nav-item active" data-view="gallery" type="button">
               <i data-lucide="layout-dashboard"></i>
-              <span>الرئيسية</span>
+              <span>الفيديوهات والتصميمات</span>
             </button>
-            <div class="cm-nav-group-label">المشروعات والأقسام</div><button class="cm-nav-item" data-view="brands" type="button">
+            <div class="cm-nav-group-label">المشروعات والأقسام</div><button class="cm-nav-item" data-view="brands" hidden type="button">
               <i data-lucide="briefcase"></i>
               <span>المشروعات والفيديوهات</span>
             </button>
             <button class="cm-nav-item" data-view="sectors" type="button">
               <i data-lucide="folder-tree"></i>
-              <span>الأقسام وتوزيع المشروعات</span>
+              <span>الأقسام وشكلها</span>
             </button>
             <div class="cm-nav-group-label">محتوى الموقع</div><button class="cm-nav-item" data-view="hero" type="button">
               <i data-lucide="sparkles"></i>
@@ -109,7 +109,7 @@
             </button>
             <div class="cm-header-search">
               <i data-lucide="search"></i>
-              <input type="text" id="global-search" placeholder="بحث سريع عن براند..." />
+              <input type="text" id="global-search" placeholder="بحث سريع عن براند..." hidden />
             </div>
             <div class="cm-header-actions">
               <a class="cm-btn cm-btn-outline cm-btn-sm" href="index.html" target="_blank">
@@ -124,8 +124,51 @@
           </header>
 
           <div class="cm-app-content">
+            <!-- Simple media-first gallery -->
+
+            <div class="cm-view active" id="view-gallery">
+              <div class="cm-view-header">
+                <h2>الفيديوهات والتصميمات</h2>
+                <p>اختار القسم، واضغط إضافة، وبعدها رتّب أو أخفِ أي عمل. مفيش مشروعات أو أسماء عملاء لازم تنشئها.</p>
+              </div>
+              <div class="cm-gallery-flow">
+                <span><b>1</b> اختار القسم</span><span><b>2</b> أضف فيديو أو تصميم</span><span><b>3</b> رتّب المحتوى — الحفظ تلقائي</span>
+              </div>
+              <div class="cm-gallery-toolbar">
+                <label>السوق<select id="gallery-market"><option value="egypt">القطاع المصري</option><option value="saudi">القطاع السعودي</option></select></label>
+                <label>القسم<select id="gallery-category"></select></label>
+                <button type="button" id="gallery-add" class="cm-btn cm-btn-primary">+ إضافة فيديو أو تصميم</button>
+              </div>
+              <form id="gallery-form" class="cm-gallery-form" hidden>
+                <div class="cm-gallery-form-head"><h3 id="gallery-form-heading">إضافة عمل للقسم</h3><button type="button" id="gallery-cancel" class="cm-btn cm-btn-outline cm-btn-sm">إلغاء</button></div>
+                <input type="hidden" id="gallery-id" />
+                <div class="cm-gallery-form-grid">
+                  <label>النوع<select id="gallery-item-type"><option value="video">فيديو يوتيوب</option><option value="design">تصميم / صورة</option></select></label>
+                  <label>العنوان<input id="gallery-title" placeholder="اختياري: اسم الفيديو أو التصميم" maxlength="220" /></label>
+                  <label>السوق<select id="gallery-item-market"><option value="egypt">القطاع المصري</option><option value="saudi">القطاع السعودي</option></select></label>
+                  <label>القسم<select id="gallery-item-category"></select></label>
+                  <label class="cm-gallery-url">رابط يوتيوب أو الصورة<input id="gallery-url" dir="ltr" placeholder="https://youtube.com/watch?v=... أو رابط الصورة" /></label>
+                  <label>اتجاه الفيديو<select id="gallery-orientation"><option value="auto">تلقائي</option><option value="portrait">رأسي 9:16</option><option value="landscape">أفقي 16:9</option></select></label>
+                  <label class="cm-gallery-upload">أو ارفع صورة من جهازك (أقل من 2 ميجابايت)<input id="gallery-upload" type="file" accept="image/jpeg,image/png,image/webp" /></label>
+                </div>
+                <p class="cm-gallery-help">الفيديوهات: انسخ رابط يوتيوب. التصميمات: ارفع صورة أو اكتب رابطها. تقدر تغيّر القسم لأي عمل في أي وقت.</p>
+                <div class="cm-gallery-form-actions">
+                  <button type="submit" class="cm-btn cm-btn-primary" id="gallery-save">حفظ العمل</button>
+                  <label class="cm-gallery-show-label"><input type="checkbox" id="gallery-visible" checked /> إظهاره للزوار بعد الحفظ</label>
+                </div>
+              </form>
+              <div class="cm-gallery-filters">
+                <label>عرض<select id="gallery-filter-type"><option value="all">الكل</option><option value="video">الفيديوهات فقط</option><option value="design">التصميمات فقط</option></select></label>
+                <label>الحالة<select id="gallery-filter-status"><option value="all">الكل (الظاهر والمخفي)</option><option value="visible">الظاهر فقط</option><option value="hidden">المخفي فقط</option></select></label>
+                <input id="gallery-search" placeholder="بحث باسم العمل أو العميل القديم..." />
+              </div>
+              <div class="cm-gallery-note" id="gallery-count">جاري تحميل المحتوى...</div>
+              <div class="cm-gallery-items" id="gallery-items"></div>
+              <p class="cm-gallery-status" id="gallery-status" role="status" aria-live="polite"></p>
+            </div>
+
             <!-- Dashboard -->
-            <div class="cm-view active" id="view-dashboard">
+            <div class="cm-view" id="view-dashboard">
               <div class="cm-view-header">
                 <h2>تحب تعدّل إيه النهارده؟</h2>
                 <p>اختار المهمة، وكل خيارات التحكم القديمة هتفضل متاحة.</p>
@@ -337,7 +380,7 @@
             <div class="cm-view" id="view-sectors">
               <div class="cm-view-header">
                 <h2>الأقسام وتوزيع المشروعات</h2>
-                <p>أضف أو عدّل أقسام الأنشطة التي تظهر في صفحة اختيار القسم. تنطبق على جميع المشاريع في كل الأسواق.</p>
+                <p>غيّر اسم كل قسم وأيقونته وصورته وترتيبه. توزيع الفيديوهات والتصميمات بيتم من شاشة المحتوى.</p>
               </div>
               <form id="sectors-form" class="cm-card cm-settings-card">
                 <div class="cm-card-head">
@@ -388,7 +431,7 @@
               </form>
 
               <section class="cm-card cm-settings-card cm-category-assign" aria-labelledby="category-assign-title">
-                <div class="cm-card-head"><h2 id="category-assign-title"><i data-lucide="folder-check"></i> إضافة المشاريع القديمة إلى الأقسام</h2></div>
+                <div class="cm-card-head"><h2 id="category-assign-title"><i data-lucide="folder-check"></i> أرشيف المشروعات القديمة</h2></div>
                 <p class="cm-admin-note cm-admin-pad">اختار القسم، وبعدها حدد المشاريع القديمة اللي عايزها تظهر داخله. المشروع ممكن يظهر في أكتر من قسم من غير ما تنسخ صوره أو فيديوهاته.</p>
                 <div class="cm-form-row cm-admin-pad">
                   <div class="cm-form-group"><label for="assign-category">القسم المطلوب</label><select id="assign-category"></select></div>
@@ -618,6 +661,7 @@
     <script type="module" src="admin-video-convert.js"></script>
     <script src="youtube-utils.js"></script>
     <script src="admin.js"></script>
+    <script src="gallery-admin.js"></script>
     <script>
       if (window.lucide) window.lucide.createIcons();
     </script>

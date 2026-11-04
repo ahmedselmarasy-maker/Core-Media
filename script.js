@@ -593,7 +593,7 @@ document.addEventListener("DOMContentLoaded", () => {
         ${cover ? `<img class="cm-category-choice-cover" src="${escAttr(cover)}" alt="" loading="lazy" />` : ""}
         <span class="cm-category-choice-top"><span class="cm-category-choice-icon">${categoryIconFor(category)}</span><span class="cm-category-choice-num">${String(index+1).padStart(2, "0")}</span></span>
         <span class="cm-category-choice-title"><span class="cm-category-choice-name" lang="ar">${escAttr(category.label)}</span>${category.enLabel ? `<span class="cm-category-choice-english" lang="en" dir="ltr">${escAttr(category.enLabel)}</span>` : ""}</span>
-        <span class="cm-category-choice-bottom"><span>${escAttr(category.tagline || (count ? `${count} مشروع` : "استكشف القسم"))}</span><span class="cm-category-choice-arrow">${categoryArrow}</span></span>
+        <span class="cm-category-choice-bottom"><span>${escAttr(category.tagline || (count ? `${count} عمل` : "استكشف القسم"))}</span><span class="cm-category-choice-arrow">${categoryArrow}</span></span>
       </button>`;
     }).join("");
   };
@@ -608,10 +608,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const errorMarkup = failures.length ? `<div class="cm-playlist-status cm-playlist-warning" role="status">تعذر جلب فيديوهات بعض القوائم من يوتيوب. تأكد من أن روابط القوائم صحيحة وأنها عامة أو غير مدرجة وتسمح بالتضمين. ${failures.map(f => `<a href="${escAttr(f.url)}" target="_blank" rel="noopener noreferrer">${escAttr(f.name)} ↗</a>`).join(' · ')}</div>` : '';
     groupsRoot.innerHTML = brands.length
       ? `<div class="cm-category-projects-grid">${brands.map(buildCardHtml).join("")}</div>${loadingMarkup}${errorMarkup}`
-      : loadingMarkup || errorMarkup || `<div class="cm-category-empty"><span class="cm-category-empty-icon">${categoryIconFor(category)}</span><h3>بنجهز أعمال القسم ده</h3><p>لسه مفيش مشاريع معروضة هنا. تقدر ترجع وتستكشف قسم تاني.</p><button type="button" class="cm-empty-back" id="category-empty-back">اختار قسم تاني</button></div>`;
+      : loadingMarkup || errorMarkup || `<div class="cm-category-empty"><span class="cm-category-empty-icon">${categoryIconFor(category)}</span><h3>بنجهز أعمال القسم ده</h3><p>لسه مفيش فيديوهات أو تصميمات معروضة هنا. تقدر ترجع وتستكشف قسم تاني.</p><button type="button" class="cm-empty-back" id="category-empty-back">اختار قسم تاني</button></div>`;
     setText('[data-cm="portfolio-title"]', `أعمال ${category.label}`);
     setText('[data-cm="portfolio-subtitle"]', category.description || `نماذج من شغل Core Media في مجال ${category.label}، مختارة علشان تشوف التفاصيل اللي تهمك.`);
-    if (resultsBar) resultsBar.textContent = brands.length ? `${brands.length} مشروع في هذا القسم` : "";
+    if (resultsBar) resultsBar.textContent = brands.length ? `${brands.length} عمل في هذا القسم` : "";
     if (window.AOS) window.AOS.refresh();
   };
 
@@ -1003,7 +1003,18 @@ document.addEventListener("DOMContentLoaded", () => {
       if (cms.site && typeof cms.site === "object") applySiteContent(cms.site);
       // CMS state is authoritative. Keep normal portfolio items as-is.
       // Each playlist is expanded asynchronously into one card per real YouTube video.
-      const brands = (cms.brands || []).map(normalizeBrand);
+      const gallery = Array.isArray(cms.site?.galleryItems) ? cms.site.galleryItems : null;
+      const brands = gallery
+        ? gallery.filter(entry => entry && entry.visible !== false && entry.file).map((entry, index) => normalizeBrand({
+            id: entry.id || "gallery-" + index,
+            name: entry.title || (entry.type === "video" ? "فيديو" : "تصميم"),
+            market: entry.market || "egypt",
+            egyptCategory: entry.category || "other",
+            media: [{ file: entry.file, type: entry.type, title: entry.title || "", orientation: entry.orientation || "auto" }],
+            sortOrder: Number.isFinite(entry.sortOrder) ? entry.sortOrder : index,
+            coverUrl: entry.coverUrl || ""
+          }))
+        : (cms.brands || []).map(normalizeBrand);
       const playlistJobs = [];
       const regularBrands = [];
       for (const brand of brands) {
