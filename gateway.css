@@ -232,3 +232,51 @@ body.cm-category-mode #portfolio #portfolio-groups .cm-portfolio-card:hover {
 .cm-playlist-status { margin: 20px auto; padding: 16px 20px; text-align: center; background: rgba(10,24,41,.72); color: #dce8f4; border: 1px solid rgba(255,255,255,.16); border-radius: 14px; max-width: 760px; line-height: 1.8; }
 .cm-playlist-warning { border-color: rgba(255,180,90,.42); color:#ffdfb0; }
 .cm-playlist-warning a { color: #ffbc71; text-decoration: underline; }
+
+
+/* Clean bilingual heading inside each category: same white Arabic/gold English
+   color pairing as the selection card, on a Core Media navy background. */
+body.cm-category-mode #portfolio .cm-section-head {
+  max-width: 780px;
+  margin-inline: auto;
+  margin-bottom: clamp(1.6rem, 3.5vw, 2.8rem);
+}
+body.cm-category-mode #portfolio .cm-section-head h2.cm-category-display-title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: .15rem;
+  text-align: center;
+  background: linear-gradient(140deg, #103654, #051728);
+  border: 1px solid rgba(101, 158, 195, .28);
+  border-radius: 22px;
+  padding: clamp(1.25rem, 3vw, 2rem) clamp(1rem, 3vw, 2.2rem);
+  box-shadow: 0 16px 35px rgba(0, 0, 0, .10);
+  line-height: 1.35;
+  background-clip: border-box;
+  -webkit-background-clip: border-box;
+  -webkit-text-fill-color: initial;
+  color: #fff;
+}
+body.cm-category-mode #portfolio .cm-category-name-ar {
+  display: block;
+  color: #fff;
+  -webkit-text-fill-color: #fff;
+  font-family: "Cairo", sans-serif;
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  font-weight: 800;
+}
+body.cm-category-mode #portfolio .cm-category-name-en {
+  display: block;
+  color: var(--cm-guide-accent, #e4911f);
+  -webkit-text-fill-color: var(--cm-guide-accent, #e4911f);
+  font-family: "Poppins", Arial, sans-serif;
+  font-size: clamp(.96rem, 2vw, 1.32rem);
+  font-weight: 700;
+  letter-spacing: .045em;
+  text-align: center;
+}
+body.cm-category-mode #portfolio [data-cm="portfolio-subtitle"] {
+  display: none !important;
+}

@@ -623,7 +623,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!list.length) return '<p class="cm-media-empty">مفيش ' + (type === "video" ? "فيديوهات" : "تصميمات") + ' معروضة في القسم ده حاليًا.</p>';
       const noun = type === "video" ? "الفيديوهات" : "التصميمات";
       return '<div class="cm-work-carousel" data-work-carousel="' + type + '">' +
-        '<div class="cm-work-carousel-viewport" role="region" aria-roledescription="شريط متحرك" aria-label="أعمال ' + noun + ' - اسحب للعرض" tabindex="0">' +
+        '<div class="cm-work-carousel-viewport" role="region" aria-roledescription="شريط متحرك" aria-label="شريط ' + noun + ' - اسحب للعرض" tabindex="0">' +
           '<div class="cm-work-carousel-track">' + list.map(buildCardHtml).join("") + '</div>' +
         '</div></div>';
     };
@@ -634,20 +634,34 @@ document.addEventListener("DOMContentLoaded", () => {
     groupsRoot.innerHTML =
       '<div class="cm-media-category-layout">' +
         '<section class="cm-media-section cm-media-designs" aria-labelledby="cm-designs-heading">' +
-          '<div class="cm-media-section-heading"><div><span class="cm-media-section-eyebrow">OUR WORK · 01</span>' +
-          '<h3 id="cm-designs-heading">التصميمات</h3><p>تصميمات من أعمالنا في قسم ' + escAttr(category.label) + '</p></div>' +
+          '<div class="cm-media-section-heading"><div>' +
+          '<h3 id="cm-designs-heading">التصميمات</h3></div>' +
           '<span class="cm-media-section-count">' + designs.length + ' تصميم</span></div>' +
           designList +
         '</section>' +
         '<section class="cm-media-section cm-media-videos" aria-labelledby="cm-videos-heading">' +
-          '<div class="cm-media-section-heading"><div><span class="cm-media-section-eyebrow">OUR WORK · 02</span>' +
-          '<h3 id="cm-videos-heading">الفيديوهات</h3><p>شاهد فيديوهات أعمالنا في قسم ' + escAttr(category.label) + '</p></div>' +
+          '<div class="cm-media-section-heading"><div>' +
+          '<h3 id="cm-videos-heading">الفيديوهات</h3></div>' +
           '<span class="cm-media-section-count">' + videos.length + ' فيديو</span></div>' +
           videoList + loadingMarkup + errorMarkup +
         '</section>' +
       '</div>';
-    setText('[data-cm="portfolio-title"]', 'أعمال ' + category.label);
-    setText('[data-cm="portfolio-subtitle"]', category.description || 'استكشف التصميمات والفيديوهات في قسم ' + category.label + '.');
+    // Match the bilingual names and color pairing on the category-selection cards.
+    // Names always come from the editable section configuration (not hardcoded).
+    const categoryHeading = document.querySelector('[data-cm="portfolio-title"]');
+    if (categoryHeading) {
+      categoryHeading.classList.remove("cm-gradient-text");
+      categoryHeading.classList.add("cm-category-display-title");
+      const englishName = category.enLabel || DEFAULT_EN_CATEGORY_LABELS[category.id] || "";
+      categoryHeading.innerHTML =
+        '<span class="cm-category-name-ar" lang="ar">' + escAttr(category.label) + '</span>' +
+        (englishName ? '<span class="cm-category-name-en" lang="en" dir="ltr">' + escAttr(englishName) + '</span>' : "");
+    }
+    const categorySubtitle = document.querySelector('[data-cm="portfolio-subtitle"]');
+    if (categorySubtitle) {
+      categorySubtitle.textContent = "";
+      categorySubtitle.hidden = true;
+    }
     if (resultsBar) resultsBar.textContent = designs.length + ' تصميم · ' + videos.length + ' فيديو';
     window.cmPortfolioCarousel?.mount(groupsRoot);
     if (window.AOS) window.AOS.refresh();
@@ -693,7 +707,8 @@ document.addEventListener("DOMContentLoaded", () => {
       if (selected) link.setAttribute("aria-current", "page");
       else link.removeAttribute("aria-current");
     });
-    const label = view === "category" ? `أعمال ${EGYPT_CATEGORIES.find((entry) => entry.id === activeCategory)?.label || "القسم"}` : pageTitles[view];
+    const currentCategory = EGYPT_CATEGORIES.find(entry => entry.id === activeCategory);
+    const label = view === "category" ? [currentCategory?.label || "القسم", currentCategory?.enLabel].filter(Boolean).join(" | ") : pageTitles[view];
     document.title = `${label || "Core Media"} | Core Media & Production`;
     window.scrollTo(0, 0);
     if (window.AOS) requestAnimationFrame(() => window.AOS.refresh());
