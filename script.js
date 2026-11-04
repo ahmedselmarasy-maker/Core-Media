@@ -795,7 +795,38 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
   });
-  window.addEventListener("popstate", restoreViewFromUrl);
+  // A fullscreen media viewer is a history entry of its own: mobile back
+  // gestures dismiss it before they can navigate away from the category.
+  let pendingLightboxHistoryBack = false;
+  const routeMatchesCurrentView = () => {
+    const params = new URL(window.location.href).searchParams;
+    const category = params.get("category");
+    if (category) return activeCategory === category && document.body.classList.contains("cm-category-mode");
+    const view = params.get("view");
+    if (informationalViews.has(view)) return document.body.getAttribute("data-current-view") === view;
+    return document.body.classList.contains("cm-gateway-mode");
+  };
+  window.addEventListener("popstate", event => {
+    const savedMedia = event.state?.cmMediaOverlay;
+    if (savedMedia?.mediaHtml && !document.getElementById("cm-lightbox")?.classList.contains("is-open")) {
+      // Forward returns to the same video / design, without creating another history entry.
+      pendingLightboxHistoryBack = false;
+      openLightbox(savedMedia.title, savedMedia.mediaHtml, {
+        lightboxClass: savedMedia.lightboxClass,
+        description: savedMedia.description,
+        fromHistory: true,
+      });
+      return;
+    }
+    const wasOpen = document.getElementById("cm-lightbox")?.classList.contains("is-open");
+    if (wasOpen) closeLightbox("history");
+    const dismissedMedia = wasOpen || pendingLightboxHistoryBack;
+    pendingLightboxHistoryBack = false;
+    // The modal and the underlying category share a URL. Don't re-render or
+    // reset the visitor's scroll position when only dismissing the modal.
+    if (dismissedMedia && routeMatchesCurrentView()) return;
+    restoreViewFromUrl();
+  });
 
   const contactForm = document.getElementById("contactForm");
   if (contactForm) {
@@ -829,6 +860,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const introVideoTrigger = document.getElementById("cm-intro-video-trigger");
   const getIntroVideoPath = () => cleanIntroVideoUrl(introVideoTrigger?.getAttribute("data-file"));
   let introVideoOpen = false;
+  let mediaHistoryEntryActive = false;
   const videoProtectionAttrs =
     'preload="auto" playsinline webkit-playsinline controls controlslist="nodownload noplaybackrate" disablepictureinpicture disableremoteplayback';
 
@@ -946,6 +978,29 @@ document.addEventListener("DOMContentLoaded", () => {
     lightbox.classList.add("is-open");
     lightbox.setAttribute("aria-hidden", "false");
     document.body.style.overflow = "hidden";
+    if (options.fromHistory) {
+      mediaHistoryEntryActive = true;
+    } else {
+      mediaHistoryEntryActive = false;
+      try {
+        const baseState = window.history.state && typeof window.history.state === "object"
+          ? window.history.state : {};
+        // The same URL is deliberate: browser back goes to the current section,
+        // not the previous page. Small media markup also supports Forward.
+        window.history.pushState({
+          ...baseState,
+          cmMediaOverlay: {
+            title: lightboxTitle.textContent,
+            mediaHtml: mediaHtml.length <= 16000 ? mediaHtml : "",
+            lightboxClass: options.lightboxClass || "",
+            description,
+          },
+        }, "", window.location.href);
+        mediaHistoryEntryActive = true;
+      } catch (error) {
+        console.warn("Media viewer history could not be added:", error);
+      }
+    }
     closeBtn?.focus({preventScroll:true});
     enhanceLightboxVideos();
   };
@@ -958,14 +1013,37 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   const closeLightbox = (reason = "manual") => {
-    if (!lightbox) return;
-    lightbox.querySelectorAll("video").forEach((v) => v.pause());
-    // Removing iframe from the DOM stops YouTube audio when the dialog is closed.
+    if (!lightbox || !lightbox.classList.contains("is-open")) return;
+    const goBackToCategory = !["history", "pagehide"].includes(reason) &&
+      mediaHistoryEntryActive && Boolean(window.history.state?.cmMediaOverlay);
+    mediaHistoryEntryActive = false;
+
+    // Pause native video and physically remove YouTube iframes. Hiding the
+    // overlay without removing its iframe would keep playing audio on mobile.
+    lightbox.querySelectorAll("video").forEach(video => {
+      video.pause();
+      video.removeAttribute("autoplay");
+    });
+    lightbox.querySelectorAll("iframe").forEach(frame => {
+      frame.src = "about:blank";
+      frame.remove();
+    });
     if (lightboxText) lightboxText.replaceChildren();
     lightbox.classList.remove("is-open", "is-intro-open", "is-media-fullscreen");
     lightbox.setAttribute("aria-hidden", "true");
     document.body.style.overflow = "";
     introVideoOpen = false;
+
+    // Closing via X / overlay / Escape uses the same history action as a
+    // back gesture, but stops playback immediately (before popstate fires).
+    if (goBackToCategory) {
+      pendingLightboxHistoryBack = true;
+      try {
+        window.history.back();
+      } catch (_) {
+        pendingLightboxHistoryBack = false;
+      }
+    }
   };
 
   const openCompanyIntro = ({ autoOpen = false } = {}) => {
@@ -1040,6 +1118,7 @@ document.addEventListener("DOMContentLoaded", () => {
       true
     );
   }
+  window.addEventListener("pagehide", () => closeLightbox("pagehide"));
   if (closeBtn) closeBtn.addEventListener("click", () => closeLightbox("manual"));
   if (backdrop) backdrop.addEventListener("click", () => closeLightbox("manual"));
   document.addEventListener("keydown", (e) => {
