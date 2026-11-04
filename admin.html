@@ -65,20 +65,20 @@
             <span class="cm-sidebar-brand-name">Core Media</span>
           </div>
 
-          <nav class="cm-sidebar-nav">
+          <nav class="cm-sidebar-nav"><div class="cm-nav-group-label">البدء</div>
             <button class="cm-nav-item active" data-view="dashboard" type="button">
               <i data-lucide="layout-dashboard"></i>
               <span>الرئيسية</span>
             </button>
-            <button class="cm-nav-item" data-view="brands" type="button">
+            <div class="cm-nav-group-label">المشروعات والأقسام</div><button class="cm-nav-item" data-view="brands" type="button">
               <i data-lucide="briefcase"></i>
-              <span>البراندات والقاطعات</span>
+              <span>المشروعات والفيديوهات</span>
             </button>
             <button class="cm-nav-item" data-view="sectors" type="button">
               <i data-lucide="folder-tree"></i>
-              <span>إدارة الأقسام والمشاريع</span>
+              <span>الأقسام وتوزيع المشروعات</span>
             </button>
-            <button class="cm-nav-item" data-view="hero" type="button">
+            <div class="cm-nav-group-label">محتوى الموقع</div><button class="cm-nav-item" data-view="hero" type="button">
               <i data-lucide="sparkles"></i>
               <span>الصفحة الرئيسية</span>
             </button>
@@ -92,7 +92,7 @@
             </button>
             <button class="cm-nav-item" data-view="contact" type="button">
               <i data-lucide="phone"></i>
-              <span>التواصل والإعدادات</span>
+              <span>التواصل والروابط</span>
             </button>
             <div class="cm-nav-spacer"></div>
             <button class="cm-nav-item cm-nav-logout" id="admin-logout-sidebar" type="button">
@@ -127,10 +127,19 @@
             <!-- Dashboard -->
             <div class="cm-view active" id="view-dashboard">
               <div class="cm-view-header">
-                <h2>نظرة عامة</h2>
-                <p>إحصائيات سريعة وتحكم كامل في محتوى Core Media</p>
+                <h2>تحب تعدّل إيه النهارده؟</h2>
+                <p>اختار المهمة، وكل خيارات التحكم القديمة هتفضل متاحة.</p>
               </div>
 
+<div class="cm-simple-welcome"><div><strong>لوحة تحكم Core Media</strong><h3>كل تعديل في مكانه</h3><p>تعديل مشروع أو إضافة فيديو وتصميم أو تغيير نصوص الموقع، من غير ما تدور بين اختيارات كتير.</p></div><button type="button" id="cm-quick-create-brand" class="cm-btn cm-btn-primary">+ مشروع جديد</button></div>
+<div class="cm-task-grid">
+<button class="cm-task-card" type="button" data-goto="brands"><strong>المشروعات والتصميمات والفيديوهات</strong><span>إضافة مشروع أو تعديل أعمال مشروع موجود</span></button>
+<button class="cm-task-card" type="button" data-goto="sectors"><strong>الأقسام والتصنيفات</strong><span>إضافة قسم وتوزيع المشروعات عليه</span></button>
+<button class="cm-task-card" type="button" data-goto="hero"><strong>واجهة الموقع</strong><span>العناوين والفيديو التعريفي والأرقام</span></button>
+<button class="cm-task-card" type="button" data-goto="about"><strong>من نحن ومعرض الأعمال</strong><span>كل نصوص التعريف والأعمال</span></button>
+<button class="cm-task-card" type="button" data-goto="services"><strong>الخدمات</strong><span>إضافة خدمة أو تعديل وصفها</span></button>
+<button class="cm-task-card" type="button" data-goto="contact"><strong>التواصل</strong><span>واتساب والبريد وروابط السوشيال</span></button>
+</div><h3 class="cm-task-subheading">ملخص المشروعات</h3>
               <div class="cm-stats-grid">
                 <div class="cm-stat-card">
                   <div class="cm-stat-icon" style="background: rgba(9, 162, 235, 0.12); color: var(--secondary);">
@@ -161,29 +170,6 @@
                 </div>
               </div>
 
-              <div class="cm-quick-links">
-                <button type="button" class="cm-quick-link" data-goto="brands">
-                  <i data-lucide="briefcase"></i>
-                  <span>إدارة البراندات</span>
-                </button>
-                <button type="button" class="cm-quick-link" data-goto="sectors">
-                  <i data-lucide="folder-tree"></i>
-                  <span>إدارة الأقسام والمشاريع</span>
-                </button>
-                <button type="button" class="cm-quick-link" data-goto="hero">
-                  <i data-lucide="sparkles"></i>
-                  <span>تعديل الهيرو والفيديو</span>
-                </button>
-                <button type="button" class="cm-quick-link" data-goto="services">
-                  <i data-lucide="layers"></i>
-                  <span>تعديل الخدمات</span>
-                </button>
-                <button type="button" class="cm-quick-link" data-goto="contact">
-                  <i data-lucide="phone"></i>
-                  <span>واتساب والبريد</span>
-                </button>
-              </div>
-
               <div class="cm-recent-activity">
                 <div class="cm-card">
                   <div class="cm-card-head">
@@ -197,14 +183,14 @@
             <!-- Brands -->
             <div class="cm-view" id="view-brands">
               <div class="cm-view-header">
-                <h2>البراندات والقاطعات</h2>
+                <h2>المشروعات والصور والفيديوهات</h2>
                 <p>غيّر الاسم، صورة الغلاف، التصاميم، والقاطعات لكل براند</p>
               </div>
-              <div class="cm-dashboard-grid">
+              <div class="cm-simple-steps"><span>① اختار مشروع أو أضف جديد</span><span>② عدّل بياناته واضغط حفظ</span><span>③ أضف الصور أو روابط الفيديو</span></div><p class="cm-active-project">المشروع الحالي: <strong id="cm-active-project-name">اختار مشروع من القائمة</strong></p><div class="cm-dashboard-grid">
                 <aside class="cm-dashboard-sidebar">
                   <div class="cm-card">
                     <div class="cm-card-head">
-                      <h2><i data-lucide="list"></i> قائمة البراندات</h2>
+                      <h2><i data-lucide="list"></i> ① اختار المشروع</h2>
                     </div>
                     <div class="cm-search-box">
                       <i data-lucide="search"></i>
@@ -217,7 +203,7 @@
                 <div class="cm-dashboard-content">
                   <form id="brand-form" class="cm-card cm-brand-details-card">
                     <div class="cm-card-head">
-                      <h2><i data-lucide="edit-3"></i> تفاصيل البراند</h2>
+                      <h2><i data-lucide="edit-3"></i> ② بيانات المشروع</h2>
                       <button class="cm-btn cm-btn-outline cm-btn-sm" type="button" id="brand-reset">
                         <i data-lucide="plus"></i> <span>براند جديد</span>
                       </button>
@@ -279,7 +265,7 @@
 
                   <div class="cm-card cm-media-card">
                     <div class="cm-card-head">
-                      <h2><i data-lucide="images"></i> التصاميم والقاطعات</h2>
+                      <h2><i data-lucide="images"></i> ③ الصور والفيديوهات</h2>
                     </div>
 
                     <p class="cm-admin-note" style="margin: 0.75rem 1.25rem 0;">
@@ -350,7 +336,7 @@
             <!-- Sectors -->
             <div class="cm-view" id="view-sectors">
               <div class="cm-view-header">
-                <h2>الأقسام والتصنيفات</h2>
+                <h2>الأقسام وتوزيع المشروعات</h2>
                 <p>أضف أو عدّل أقسام الأنشطة التي تظهر في صفحة اختيار القسم. تنطبق على جميع المشاريع في كل الأسواق.</p>
               </div>
               <form id="sectors-form" class="cm-card cm-settings-card">
@@ -582,7 +568,7 @@
             <!-- Contact -->
             <div class="cm-view" id="view-contact">
               <div class="cm-view-header">
-                <h2>التواصل والإعدادات</h2>
+                <h2>التواصل والروابط</h2>
                 <p>البريد، واتساب، وروابط السوشيال</p>
               </div>
               <form id="contact-form-settings" class="cm-card cm-settings-card">

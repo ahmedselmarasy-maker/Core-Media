@@ -1158,3 +1158,22 @@
 .cm-media-video-controls button { width: 100%; white-space: normal; }
 
 .cm-admin-playlist-thumb { width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#112d4b,#071421);color:#fff;font-size:13px;font-weight:700;text-align:center; }
+
+/* Clear, guided admin layout; all original controls remain available */
+.cm-nav-group-label{font-size:.74rem;font-weight:800;color:#a7c7da;padding:1rem .9rem .3rem;}
+.cm-sidebar-nav{overflow-y:auto;scrollbar-width:thin;}
+.cm-sidebar-nav .cm-nav-item{font-size:.87rem;line-height:1.65;padding:.7rem .8rem;}
+.cm-simple-welcome{padding:1.6rem 1.8rem;border-radius:18px;background:linear-gradient(120deg,#061a2c,#105078);color:#fff;display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-bottom:1.25rem;}
+.cm-simple-welcome h3{font-size:1.4rem;color:#fff;margin:.35rem 0;}
+.cm-simple-welcome p{color:#e2edf5;font-size:.92rem;margin:0;}
+.cm-simple-welcome .cm-btn{background:#fff;color:#092f49;flex-shrink:0;}
+.cm-task-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.85rem;margin-bottom:1.5rem;}
+.cm-task-card{font:inherit;display:flex;flex-direction:column;align-items:flex-start;text-align:right;gap:.45rem;background:#fff;border:1px solid var(--border);border-radius:14px;padding:1.1rem;min-height:115px;color:var(--text-main);cursor:pointer;}
+.cm-task-card:hover,.cm-task-card:focus-visible{border-color:#09a2eb;box-shadow:0 8px 24px rgba(9,162,235,.12);}
+.cm-task-card strong{font-size:.97rem;}.cm-task-card span{font-size:.81rem;line-height:1.7;color:var(--text-muted);}
+.cm-task-subheading{font-size:1.1rem;margin:0 0 .8rem;}
+.cm-simple-steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.7rem;margin-bottom:.7rem;}
+.cm-simple-steps span{background:#e9f6fc;border:1px solid #cbe7f8;border-radius:10px;padding:.8rem;font-size:.81rem;font-weight:700;color:#0e3c56;}
+.cm-active-project{padding:.85rem 1rem;border:1px solid #f2deb2;background:#fff9e9;border-radius:11px;margin-bottom:1rem;color:#654b23;}
+@media(max-width:1150px){.cm-task-grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
+@media(max-width:750px){.cm-simple-welcome{flex-direction:column;align-items:stretch;}.cm-task-grid,.cm-simple-steps{grid-template-columns:1fr;}.cm-task-card{min-height:0;}}

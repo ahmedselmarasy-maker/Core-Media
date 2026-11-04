@@ -518,7 +518,7 @@ document.addEventListener("DOMContentLoaded", () => {
     brandCoverPreviewWrap?.classList.remove("hidden");
   };
 
-  const clearForm = () => {
+  const clearForm = () => {const selectedName=document.getElementById("cm-active-project-name");if(selectedName) selectedName.textContent="مشروع جديد — احفظه الأول";
     brandIdInput.value = "";
     brandForm.reset();
     brandEgyptCategoryInput.disabled = false;
@@ -722,7 +722,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (window.lucide) window.lucide.createIcons();
   };
 
-  const fillBrandForm = (brand) => {
+  const fillBrandForm = (brand) => {const selectedName=document.getElementById("cm-active-project-name");if(selectedName) selectedName.textContent=brand.name || "المشروع الحالي";
     brandIdInput.value = brand.id;
     brandNameInput.value = brand.name || "";
     brandMarketInput.value = brand.market || "egypt";
@@ -943,6 +943,7 @@ document.addEventListener("DOMContentLoaded", () => {
     activeUploadXhr.abort();
   });
 
+  document.getElementById("cm-quick-create-brand")?.addEventListener("click", () => {switchView("brands");brandResetBtn.click();brandNameInput?.focus();});
   brandResetBtn.addEventListener("click", clearForm);
 
   brandDeleteBtn?.addEventListener("click", async () => {
