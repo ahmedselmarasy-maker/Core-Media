@@ -40,6 +40,125 @@ document.addEventListener("DOMContentLoaded", () => {
   const preloaderName = document.getElementById("preloader-name");
   const preloaderTagline = document.getElementById("preloader-tagline");
 
+  // Original sound effects synthesized locally; no external files or downloads.
+  // Audio starts only after the visitor explicitly taps "تشغيل المقدمة بالصوت".
+  const introSounds = (() => {
+    const AudioEngine = window.AudioContext || window.webkitAudioContext;
+    let context = null;
+    let output = null;
+    let enabled = false;
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const ready = () => enabled && context && context.state === "running";
+
+    // Short filtered noise sounds like a shutter click, soft mechanical
+    // movement, or a key stroke (rather than an intrusive electronic beep).
+    const noise = (delay, length, filterFreq, volume, shape = "bandpass") => {
+      if (!ready()) return;
+      const start = context.currentTime + delay;
+      const samples = Math.ceil(context.sampleRate * (length + .008));
+      const buffer = context.createBuffer(1, samples, context.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < samples; i++) data[i] = Math.random() * 2 - 1;
+      const source = context.createBufferSource();
+      const filter = context.createBiquadFilter();
+      const gain = context.createGain();
+      source.buffer = buffer;
+      filter.type = shape;
+      filter.frequency.value = filterFreq;
+      filter.Q.value = .65;
+      gain.gain.setValueAtTime(.0001, start);
+      gain.gain.exponentialRampToValueAtTime(Math.max(.001, volume), start + .003);
+      gain.gain.exponentialRampToValueAtTime(.0001, start + length);
+      source.connect(filter).connect(gain).connect(output);
+      source.start(start);
+      source.stop(start + length + .008);
+    };
+    const tone = (delay, length, startHz, endHz, volume, shape = "sine") => {
+      if (!ready()) return;
+      const start = context.currentTime + delay;
+      const osc = context.createOscillator();
+      const gain = context.createGain();
+      osc.type = shape;
+      osc.frequency.setValueAtTime(startHz, start);
+      osc.frequency.exponentialRampToValueAtTime(Math.max(40, endHz), start + length);
+      gain.gain.setValueAtTime(.0001, start);
+      gain.gain.exponentialRampToValueAtTime(Math.max(.001, volume), start + .012);
+      gain.gain.exponentialRampToValueAtTime(.0001, start + length);
+      osc.connect(gain).connect(output);
+      osc.start(start);
+      osc.stop(start + length + .008);
+    };
+    return {
+      unlock() {
+        if (!AudioEngine || reducedMotion.matches) return false;
+        try {
+          context = new AudioEngine();
+          output = context.createGain();
+          output.gain.value = .43; // Intentionally subtle, not a loud intro.
+          output.connect(context.destination);
+          enabled = true;
+          // Resume is invoked synchronously inside the user's click handler.
+          context.resume().catch(() => { enabled = false; });
+          return true;
+        } catch (_) { enabled = false; return false; }
+      },
+      focus() {
+        tone(0, .32, 145, 215, .11, "triangle");
+        noise(.02, .25, 620, .18, "lowpass");
+      },
+      shutter() {
+        tone(0, .085, 165, 75, .17);
+        noise(0, .075, 1500, .38);
+        noise(.075, .046, 2600, .18);
+      },
+      flash() {
+        noise(0, .12, 3500, .23, "highpass");
+        tone(0, .11, 520, 980, .035);
+      },
+      typing(char, index) {
+        if (!char || /\s/.test(char)) return;
+        // Subtle per-letter taps at the existing typewriter timing.
+        noise(0, .024, 1150 + (index % 4) * 160, .12);
+        tone(0, .023, 420 + (index % 3) * 45, 315, .017, "triangle");
+      },
+      transition() {
+        noise(0, .48, 1050, .24, "lowpass");
+        tone(0, .38, 270, 120, .055);
+      },
+      stop() {
+        enabled = false;
+        if (context) context.close().catch(() => {});
+        context = null;
+        output = null;
+      }
+    };
+  })();
+
+  const choosePreloaderAudio = () => new Promise(resolve => {
+    const choice = document.getElementById("preloader-audio-choice");
+    const soundOn = document.getElementById("preloader-sound-on");
+    const soundOff = document.getElementById("preloader-sound-off");
+    if (!choice || !soundOn || !soundOff) {
+      resolve(false);
+      return;
+    }
+    let chosen = false;
+    const finish = soundEnabled => {
+      if (chosen) return;
+      chosen = true;
+      clearTimeout(timeout);
+      choice.hidden = true;
+      resolve(soundEnabled);
+    };
+    const timeout = setTimeout(() => finish(false), 3200);
+    soundOn.addEventListener("click", () => {
+      // No browser autoplay workaround: the sound engine is unlocked legally
+      // through the visitor's direct interaction.
+      finish(introSounds.unlock());
+    }, { once: true });
+    soundOff.addEventListener("click", () => finish(false), { once: true });
+  });
+
   // A camera, not a decorative circle: the original glass and bezel are separate image layers.
   // Only the shutter blades are generated in SVG, perfectly clipped inside the real lens rim.
   const playCoreLensV3 = () => {
@@ -47,6 +166,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const glass = document.querySelector(".cm-lens-glass");
     const glow = document.querySelector(".cm-lens-capture-glow");
     if (!blades || !glass || !glow) return;
+    introSounds.focus();
+    setTimeout(() => introSounds.shutter(), 380);
+    setTimeout(() => introSounds.shutter(), 940);
+    setTimeout(() => introSounds.flash(), 1350);
     const NS = "http://www.w3.org/2000/svg";
     const leaves = Array.from({ length: 7 }, (_, i) => {
       const path = document.createElementNS(NS, "path");
@@ -102,6 +225,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const timer = setInterval(() => {
         if (i < text.length) {
           element.innerHTML += text.charAt(i);
+          introSounds.typing(text.charAt(i), i);
           i++;
         } else {
           clearInterval(timer);
@@ -114,6 +238,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const startPreloader = async () => {
     // Prevent scrolling while preloading
     document.body.style.overflow = "hidden";
+    await choosePreloaderAudio();
 
     // Show Logo
     setTimeout(() => {
@@ -152,6 +277,7 @@ document.addEventListener("DOMContentLoaded", () => {
       preloaderTagline.style.transition = "opacity 0.3s ease";
       
       const flyingLogo = preloaderLogoStage || preloaderLogo;
+      introSounds.transition();
       flyingLogo.style.transition = "transform 0.8s cubic-bezier(0.77, 0, 0.175, 1)";
       flyingLogo.style.transform = `translate(${deltaX}px, ${deltaY}px) scale(${scale})`;
     }
@@ -162,6 +288,7 @@ document.addEventListener("DOMContentLoaded", () => {
     
     await new Promise((r) => setTimeout(r, 800));
     preloader.classList.add("is-hidden");
+    introSounds.stop();
     document.body.style.overflow = "";
 
     // Initialize AOS after preloader
