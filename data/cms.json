@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-11-04T18:07:04.038Z",
+  "updatedAt": "2026-11-04T18:07:13.570Z",
   "brands": [
     {
       "id": "cm-youtube-medical",
@@ -1718,7 +1718,7 @@
         "title": "تصميم 1",
         "file": "بنت السلطان/عرض.png",
         "orientation": "auto",
-        "visible": false,
+        "visible": true,
         "sortOrder": 13,
         "sourceProject": "بنت السلطان"
       },
