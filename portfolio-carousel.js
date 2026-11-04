@@ -28,6 +28,8 @@
     const viewport = element.querySelector(".cm-work-carousel-viewport");
     const track = element.querySelector(".cm-work-carousel-track");
     const originals = Array.from(track.children);
+    // Carousel cards are continually visible; scroll reveal effects must not hide repeated slides.
+    originals.forEach(card => { card.removeAttribute("data-aos"); card.removeAttribute("data-aos-delay"); card.classList.add("aos-animate"); });
     const instance = { element, viewport, track, originals, unit:0, paused:false, hovered:false, focused:false, interactingUntil:0, observer:null };
     const pause = element.querySelector('[data-work-control="pause"]');
     const previous = element.querySelector('[data-work-control="previous"]');
