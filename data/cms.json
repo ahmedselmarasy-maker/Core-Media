@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-11-04T18:07:32.827Z",
+  "updatedAt": "2026-11-11T17:36:05.819Z",
   "brands": [],
   "site": {
     "hero": {
@@ -223,6 +223,18 @@
         "orientation": "landscape",
         "visible": true,
         "sortOrder": 0,
+        "sourceProject": ""
+      },
+      {
+        "id": "557f76d3-9725-4352-8d10-744abdca4bfd",
+        "type": "video",
+        "market": "egypt",
+        "category": "medical",
+        "title": "مركز الشفاء",
+        "file": "https://youtube.com/shorts/gSAjP5YYcww?feature=share",
+        "orientation": "auto",
+        "visible": true,
+        "sortOrder": 1,
         "sourceProject": ""
       }
     ]
