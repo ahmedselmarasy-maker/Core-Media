@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-11-11T17:42:27.654Z",
+  "updatedAt": "2026-11-11T17:42:44.465Z",
   "brands": [],
   "site": {
     "hero": {
@@ -329,6 +329,18 @@
         "orientation": "auto",
         "visible": true,
         "sortOrder": 1,
+        "sourceProject": ""
+      },
+      {
+        "id": "a2d6cd35-1628-47e8-b7a6-696fea709fe6",
+        "type": "video",
+        "market": "egypt",
+        "category": "cat-1794418776299",
+        "title": "حل أسئلة تجزئة التيار والجهد بطريقة النقاط | فيزياء 3 ثانوي | د. أحمد السنباوي",
+        "file": "https://youtu.be/4xVxdKhTN40",
+        "orientation": "auto",
+        "visible": true,
+        "sortOrder": 2,
         "sourceProject": ""
       }
     ]
