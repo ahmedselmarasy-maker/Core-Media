@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-11-11T17:44:04.049Z",
+  "updatedAt": "2026-11-11T17:59:40.918Z",
   "brands": [],
   "site": {
     "hero": {
@@ -177,20 +177,20 @@
           "coverUrl": ""
         },
         {
-          "id": "other",
-          "label": "مشاريع أخرى",
-          "enLabel": "Other Projects",
-          "icon": "other",
+          "id": "cat-1794418776299",
+          "label": "محاضرات",
+          "enLabel": "Lectures",
+          "icon": "education",
           "visible": true,
           "description": "",
           "tagline": "",
           "coverUrl": ""
         },
         {
-          "id": "cat-1794418776299",
-          "label": "محاضرات",
-          "enLabel": "Lecture",
-          "icon": "education",
+          "id": "other",
+          "label": "مشاريع أخرى",
+          "enLabel": "Other Projects",
+          "icon": "other",
           "visible": true,
           "description": "",
           "tagline": "",
