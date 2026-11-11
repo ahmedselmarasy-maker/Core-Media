@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-11-11T17:43:09.999Z",
+  "updatedAt": "2026-11-11T17:43:27.577Z",
   "brands": [],
   "site": {
     "hero": {
@@ -353,6 +353,18 @@
         "orientation": "auto",
         "visible": true,
         "sortOrder": 3,
+        "sourceProject": ""
+      },
+      {
+        "id": "3a267d30-3231-47d9-ad08-bc2a9e83a7e5",
+        "type": "video",
+        "market": "egypt",
+        "category": "cat-1794418776299",
+        "title": "حل أسئلة تجزئة التيار والجهد | فيزياء 3 ثانوي | د. أحمد السنباوي",
+        "file": "https://youtu.be/qm1hoH5NGoY",
+        "orientation": "auto",
+        "visible": true,
+        "sortOrder": 4,
         "sourceProject": ""
       }
     ]
