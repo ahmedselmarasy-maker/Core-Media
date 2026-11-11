@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-11-11T17:42:04.675Z",
+  "updatedAt": "2026-11-11T17:42:27.654Z",
   "brands": [],
   "site": {
     "hero": {
@@ -317,6 +317,18 @@
         "orientation": "auto",
         "visible": true,
         "sortOrder": 0,
+        "sourceProject": ""
+      },
+      {
+        "id": "0070486a-2b9d-4708-bc57-453995562e2e",
+        "type": "video",
+        "market": "egypt",
+        "category": "cat-1794418776299",
+        "title": "حل أسئلة قانون أوم للدائرة المغلقة | فيزياء 3 ثانوي | د. أحمد السنباوي",
+        "file": "https://youtu.be/JcrC7y3Nw0Q",
+        "orientation": "auto",
+        "visible": true,
+        "sortOrder": 1,
         "sourceProject": ""
       }
     ]
