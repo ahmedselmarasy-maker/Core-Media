@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-11-11T17:43:46.423Z",
+  "updatedAt": "2026-11-11T17:44:04.049Z",
   "brands": [],
   "site": {
     "hero": {
@@ -377,6 +377,18 @@
         "orientation": "auto",
         "visible": true,
         "sortOrder": 5,
+        "sourceProject": ""
+      },
+      {
+        "id": "05e725b0-e1c6-4e1f-befe-6722c3a3a44e",
+        "type": "video",
+        "market": "egypt",
+        "category": "cat-1794418776299",
+        "title": "شرح التوالي والتوازي | فيزياء 3 ثانوي | د. أحمد السنباوي",
+        "file": "https://youtu.be/4fGmSfsDaIg",
+        "orientation": "auto",
+        "visible": true,
+        "sortOrder": 6,
         "sourceProject": ""
       }
     ]
