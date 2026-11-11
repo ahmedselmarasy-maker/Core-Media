@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-11-11T17:43:27.577Z",
+  "updatedAt": "2026-11-11T17:43:46.423Z",
   "brands": [],
   "site": {
     "hero": {
@@ -365,6 +365,18 @@
         "orientation": "auto",
         "visible": true,
         "sortOrder": 4,
+        "sourceProject": ""
+      },
+      {
+        "id": "9c5bac68-8ed5-4a75-a325-0af65cf3816b",
+        "type": "video",
+        "market": "egypt",
+        "category": "cat-1794418776299",
+        "title": "شرح تجزئة التيار والجهد | فيزياء 3 ثانوي  | د. أحمد السنباوي",
+        "file": "https://youtu.be/89RCylUGK0Q",
+        "orientation": "auto",
+        "visible": true,
+        "sortOrder": 5,
         "sourceProject": ""
       }
     ]
