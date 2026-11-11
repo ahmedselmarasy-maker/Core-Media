@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-11-11T17:38:27.486Z",
+  "updatedAt": "2026-11-11T17:38:43.559Z",
   "brands": [],
   "site": {
     "hero": {
@@ -271,6 +271,18 @@
         "orientation": "auto",
         "visible": true,
         "sortOrder": 2,
+        "sourceProject": ""
+      },
+      {
+        "id": "c4bfb44e-117d-4aa7-a3ae-45fcdfba9838",
+        "type": "video",
+        "market": "egypt",
+        "category": "education",
+        "title": "مستر محمود قابيل",
+        "file": "https://youtube.com/shorts/Yxz3-IXSaqk?feature=share",
+        "orientation": "auto",
+        "visible": true,
+        "sortOrder": 3,
         "sourceProject": ""
       }
     ]
