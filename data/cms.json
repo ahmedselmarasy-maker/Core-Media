@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-11-11T17:39:11.163Z",
+  "updatedAt": "2026-11-11T17:40:29.549Z",
   "brands": [],
   "site": {
     "hero": {
@@ -138,53 +138,63 @@
       "egyptCategories": [
         {
           "id": "restaurants",
-          "icon": "restaurants",
           "label": "مطاعم",
-          "tagline": "",
+          "enLabel": "Restaurants",
+          "icon": "restaurants",
           "visible": true,
-          "coverUrl": "",
           "description": "",
-          "enLabel": "Restaurants"
+          "tagline": "",
+          "coverUrl": ""
         },
         {
           "id": "cafes",
-          "icon": "cafes",
           "label": "كافيهات",
-          "tagline": "",
+          "enLabel": "Cafés",
+          "icon": "cafes",
           "visible": true,
-          "coverUrl": "",
           "description": "",
-          "enLabel": "Cafés"
+          "tagline": "",
+          "coverUrl": ""
         },
         {
           "id": "medical",
+          "label": "طبي",
+          "enLabel": "Medical",
           "icon": "medical",
-          "label": "ميديكال",
-          "tagline": "",
           "visible": true,
-          "coverUrl": "",
           "description": "",
-          "enLabel": "Medical"
+          "tagline": "",
+          "coverUrl": ""
         },
         {
           "id": "education",
-          "icon": "education",
           "label": "معلمين",
-          "tagline": "",
+          "enLabel": "Education",
+          "icon": "education",
           "visible": true,
-          "coverUrl": "",
           "description": "",
-          "enLabel": "Education"
+          "tagline": "",
+          "coverUrl": ""
         },
         {
           "id": "other",
-          "icon": "other",
           "label": "مشاريع أخرى",
-          "tagline": "",
+          "enLabel": "Other Projects",
+          "icon": "other",
           "visible": true,
-          "coverUrl": "",
           "description": "",
-          "enLabel": "Other Projects"
+          "tagline": "",
+          "coverUrl": ""
+        },
+        {
+          "id": "cat-1794418776299",
+          "label": "محاضرات",
+          "enLabel": "Lecture",
+          "icon": "education",
+          "visible": true,
+          "description": "",
+          "tagline": "",
+          "coverUrl": ""
         }
       ]
     },
