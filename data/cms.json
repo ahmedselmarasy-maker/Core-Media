@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-11-11T17:59:40.918Z",
+  "updatedAt": "2026-11-11T18:00:08.317Z",
   "brands": [],
   "site": {
     "hero": {
@@ -137,6 +137,16 @@
       "projectCategories": {},
       "egyptCategories": [
         {
+          "id": "medical",
+          "label": "طبي",
+          "enLabel": "Medical",
+          "icon": "medical",
+          "visible": true,
+          "description": "",
+          "tagline": "",
+          "coverUrl": ""
+        },
+        {
           "id": "restaurants",
           "label": "مطاعم",
           "enLabel": "Restaurants",
@@ -151,16 +161,6 @@
           "label": "كافيهات",
           "enLabel": "Cafés",
           "icon": "cafes",
-          "visible": true,
-          "description": "",
-          "tagline": "",
-          "coverUrl": ""
-        },
-        {
-          "id": "medical",
-          "label": "طبي",
-          "enLabel": "Medical",
-          "icon": "medical",
           "visible": true,
           "description": "",
           "tagline": "",
