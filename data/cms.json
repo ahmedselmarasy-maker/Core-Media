@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-11-11T17:37:32.935Z",
+  "updatedAt": "2026-11-11T17:38:10.339Z",
   "brands": [],
   "site": {
     "hero": {
@@ -247,6 +247,18 @@
         "orientation": "auto",
         "visible": true,
         "sortOrder": 2,
+        "sourceProject": ""
+      },
+      {
+        "id": "48df7991-d33a-4267-836e-f5ad7007bfd8",
+        "type": "video",
+        "market": "egypt",
+        "category": "education",
+        "title": "مس ريهام",
+        "file": "https://youtube.com/shorts/zvZgCD6TBUo?feature=share",
+        "orientation": "auto",
+        "visible": true,
+        "sortOrder": 1,
         "sourceProject": ""
       }
     ]
