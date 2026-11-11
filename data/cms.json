@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-11-11T17:40:29.549Z",
+  "updatedAt": "2026-11-11T17:42:04.675Z",
   "brands": [],
   "site": {
     "hero": {
@@ -305,6 +305,18 @@
         "orientation": "auto",
         "visible": true,
         "sortOrder": 4,
+        "sourceProject": ""
+      },
+      {
+        "id": "8042b025-4a63-40a5-94dd-59e5130cc37a",
+        "type": "video",
+        "market": "egypt",
+        "category": "cat-1794418776299",
+        "title": "حل أسئلة مادة التاريخ | الصف الثاني بكالوريا | أ. محمود قابيل",
+        "file": "https://youtu.be/0W_KOCE1-MI",
+        "orientation": "auto",
+        "visible": true,
+        "sortOrder": 0,
         "sourceProject": ""
       }
     ]
