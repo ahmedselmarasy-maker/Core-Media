@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-11-11T17:36:05.819Z",
+  "updatedAt": "2026-11-11T17:37:32.935Z",
   "brands": [],
   "site": {
     "hero": {
@@ -235,6 +235,18 @@
         "orientation": "auto",
         "visible": true,
         "sortOrder": 1,
+        "sourceProject": ""
+      },
+      {
+        "id": "bb3c2643-cc61-44d0-8ee8-d0e441934d85",
+        "type": "video",
+        "market": "egypt",
+        "category": "medical",
+        "title": "دكتور محمد جمال",
+        "file": "https://youtube.com/shorts/CCs-NtUxLlM?feature=share",
+        "orientation": "auto",
+        "visible": true,
+        "sortOrder": 2,
         "sourceProject": ""
       }
     ]
